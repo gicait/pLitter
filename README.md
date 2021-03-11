@@ -25,10 +25,10 @@ The datasets used in this repository can be downloaded from following links. Eac
 
 Models that are trained separately for each of the datasets, as well as model that is trained on combined dataset can be downloaded from following links,
 
-| Talaad Thai | Rangsit | Ubon Ratchathani I | Chiang Rai I | Ubon Ratchathani II | Chiang Rai II |
-| --- | --- | --- | --- | --- | --- |
-| [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) |
-| [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) |
+| Talaad Thai | Rangsit | Ubon Ratchathani I | Chiang Rai I | Ubon Ratchathani II | Chiang Rai II | Combined Dataset |
+| --- | --- | --- | --- | --- | --- | --- |
+| [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) |
+| [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) |
 
 ## Usage
 
