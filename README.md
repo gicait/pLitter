@@ -1,6 +1,8 @@
 # pLitter - Teaching Computers to Identify Plastic Litter
 
-Identifies plastic litter from images using deep learning methods and generates heatmaps using predictions and exif metada.
+pLitter is a standardized, deep learning friendly data set and pre-trained models that can be used for detecting road-size plastic litter. Aditionally, all suplimentary codes related to this repository is also published here.
+
+_Note: This is a preliminary release and more data from more cities will be added in future._
 
 ## Motivation
 
