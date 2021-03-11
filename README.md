@@ -29,6 +29,8 @@ The datasets used in this repository can be downloaded from following links. Eac
 * Ubon Ratchathani II (ongoing)
 * Chiang Rai II (ongoing)
 
+*Note: We have used [COCO Annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is an one option*
+
 ## Pre-trained models
 
 Models that are trained separately for each of the datasets, as well as model that is trained on combined dataset can be downloaded from following links,
@@ -37,6 +39,8 @@ Models that are trained separately for each of the datasets, as well as model th
 | --- | --- | --- | --- | --- | --- | --- |
 | [Docker](#) | [Docker](#) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | <ins>[Docker](#)</ins> |
 | [EDGE Model](#) | [EDGE Model](#) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | <ins>[EDGE Model](#)</ins> |
+
+*Note: These models are trained using Google [AutoML Vision tool](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/)*
 
 ## Usage
 
