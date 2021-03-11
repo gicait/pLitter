@@ -24,13 +24,7 @@ Add some para about motivation
 
 ## Our Approach
 
-In the conventional sense, typical machine learning pipeline consisted of collecting data, annotating data, training, validation and prediction. This is a very successful pipeline for decades for many problems such as face detection, character recognition, etc. But the problem with trash is, simply it is trash, it can be seen in various types, shapes, forms, backgrounds etc. So, variations are too complex to capture in a single model with a single annotated dataset. So we believe, the solution for this is inActive Learning.
-
-In essence, active learning brings collecting data, annotating data, training, validation and prediction into a single parallel framework, rather than sequential pipeline as in conventional machine learning projects. Schematic diagram of active learning framework that we are proposing for trash identification problem is shows in the below Figure. 
-
-
-**_Our Ultimate Goal:_** Our ultimate goal would be to go beyond domain specific trash detection, and provide detection capabilities in a wide range of cities (universal plastic litter detector)
-
+In the conventional sense, typical machine learning pipeline consisted of collecting data, annotating data, training, validation and prediction. This is a very successful pipeline for decades for many problems such as face detection, character recognition, etc. But the problem with trash is, simply it is trash, it can be seen in various types, shapes, forms, backgrounds etc. So, variations are too complex to capture in a single model with a single annotated dataset. So we believe, the solution for this is inActive Learning. Our ultimate goal would be to go beyond domain specific trash detection, and provide detection capabilities in a wide range of cities (universal plastic litter detector). Schematic diagram of active learning framework that we are proposing for trash identification problem is shows in the below Figure. 
 
 ## Datasets
 
