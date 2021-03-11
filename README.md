@@ -12,9 +12,21 @@ Add some para about approach
 
 ## Datasets
 
+The datasets used in this repository can be downloaded from following links. Each link contains RGB images, plastic litter annotations (COCO format) and ReadMe file.
+
+* [Talaad Thai](#)
+* [Rangsit](#)
+* Ubon Ratchathani I (ongoing)
+* Chiang Rai I (ongoing)
+* Ubon Ratchathani II (ongoing)
+* Chiang Rai II (ongoing)
+
 ## Pre-trained models
 
-
+| Talaad Thai | Rangsit | Ubon Ratchathani I | Chiang Rai I | Ubon Ratchathani II | Chiang Rai II |
+| --- | --- | --- | --- | --- | --- |
+| [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) | [Docker](#) |
+| [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) | [EDGE Model](#) |
 
 ## Usage
 
