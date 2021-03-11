@@ -3,8 +3,8 @@
 pLitter is a standardized, deep learning friendly dataset and pre-trained model that can be used for detecting road-size plastic litter. Additionally, all supplementary codes related to this repository are also published here. *Example video showing plastic litter detection from our model (click on image to see the YouTube video) is shown below.*
 
 <p align="center">
-<a href="https://www.youtube.com/watch?v=OntRaEVCE44" target="_blank">
-<img src="https://img.youtube.com/vi/OntRaEVCE44/0.jpg" alt="DL_Detection" width="50%"/>
+<a href="https://www.youtube.com/watch?v=REv0XEcWXVE" target="_blank">
+<img src="https://img.youtube.com/vi/REv0XEcWXVE/0.jpg" alt="DL_Detection" width="50%"/>
 </a>
 </p>
 
