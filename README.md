@@ -6,14 +6,14 @@ __Example video showing plastic litter ditection from out model__
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=OntRaEVCE44" target="_blank">
-<img src="https://img.youtube.com/vi/OntRaEVCE44/0.jpg" alt="DL_Detection" width="50%"/>
+<img src="https://img.youtube.com/vi/OntRaEVCE44/0.jpg" alt="DL_Detection" width="70%"/>
 </a>
 </p>
 
 __Example heatmap showing plastic litter distribution__
 
 <p align="center">
-<img src="./graphics/example_heatmap.PNG" alt="HeatMap" width="50%"/>
+<img src="./graphics/example_heatmap.PNG" alt="HeatMap" width="70%"/>
 </p>
 
 _Note: This is a preliminary release and more data from more cities will be added in future._
