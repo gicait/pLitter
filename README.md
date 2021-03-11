@@ -52,6 +52,12 @@ Models that are trained separately for each of the datasets, as well as model th
 
 Please add some technical details about basic use of repository.
 
+__Dependencies:__
+
+* numpy
+* scipy
+* Add more
+
 ## Documentation
 Documentation is located in "docs" folder.
 
