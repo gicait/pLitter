@@ -40,7 +40,7 @@ Models that are trained separately for each of the datasets, as well as model th
 | [Docker](#) | [Docker](#) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | <ins>[Docker](#)</ins> |
 | [EDGE Model](#) | [EDGE Model](#) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | <ins>[EDGE Model](#)</ins> |
 
-*Note: These models are trained using Google [AutoML Vision tool](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/)*
+*Note: These models are trained using Google [AutoML Vision tool](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
 ## Usage
 
