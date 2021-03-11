@@ -1,6 +1,6 @@
 # pLitter - Teaching Computers to Identify Plastic Litter
 
-pLitter is a standardized, deep learning friendly data set and pre-trained model that can be used for detecting road-size plastic litter. Aditionally, all suplimentary codes related to this repository is also published here. *Example video showing plastic litter ditection from out model (click on image to see the YouTube video) is shown below.*
+pLitter is a standardized, deep learning friendly dataset and pre-trained model that can be used for detecting road-size plastic litter. Additionally, all supplementary codes related to this repository are also published here. *Example video showing plastic litter detection from our model (click on image to see the YouTube video) is shown below.*
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=OntRaEVCE44" target="_blank">
@@ -8,7 +8,7 @@ pLitter is a standardized, deep learning friendly data set and pre-trained model
 </a>
 </p>
 
-These detection are currently being used to map plastic litter distribution in cities. *Example heatmap showing plastic litter distribution in a city is shown below.*
+These detections are currently being used to map plastic litter distribution in cities. *Example heat-map showing plastic litter distribution in a city is shown below.*
 
 <p align="center">
 <img src="./graphics/example_heatmap.PNG" alt="HeatMap" width="70%"/>
@@ -22,7 +22,7 @@ Add some para about motivation
 
 ## Our Approach
 
-In the conventional sense, typical machine learning pipeline consisted of collecting data, annotating data, training, validation and prediction. This is a very successful pipeline for decades for many problems such as face detection, character recognition, etc. But the problem with trash is, simply it is trash, it can be seen in various types, shapes, forms, backgrounds etc. So, variations are too complex to capture in a single model with a single annotated dataset. So we believe, the solution for this is inActive Learning. Our ultimate goal would be to go beyond domain specific trash detection, and provide detection capabilities in a wide range of cities (universal plastic litter detector). Schematic diagram of active learning framework that we are proposing for trash identification problem is shows in the below Figure. 
+In the conventional sense, typical machine learning pipeline consisted of collecting data, annotating data, training, validation and prediction. This is a very successful pipeline for many problems such as face detection, character recognition, etc. But the problem with plastic litter is, simply it is trash, it can be seen in various types, shapes, forms, backgrounds etc. So, variations are too complex to capture in a single model with a single annotated dataset. So we believe, the solution for this is Active Learning. Our ultimate goal would be to go beyond domain specific plastic litter detections, and provide detection capabilities in a wide range of cities (universal plastic litter detector). Schematic diagram of active learning framework that we are using for plastic litter identification problem is shows in the below Figure. 
 
 ## Datasets
 
@@ -35,7 +35,7 @@ The datasets used in this repository can be downloaded from following links. Eac
 * Ubon Ratchathani II (ongoing)
 * Chiang Rai II (ongoing)
 
-*Note: We have used [COCO Annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is an one option*
+*Note: We have used [COCO Annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is a one option*
 
 ## Pre-trained models
 
@@ -46,7 +46,7 @@ Models that are trained separately for each of the datasets, as well as model th
 | [Docker](#) | [Docker](#) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | <ins>[Docker](#)</ins> |
 | [EDGE Model](#) | [EDGE Model](#) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | <ins>[EDGE Model](#)</ins> |
 
-*Note: These models are trained using Google [AutoML Vision tool](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
+*Note: These models are trained using Google [AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
 ## Usage
 
