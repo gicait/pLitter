@@ -8,7 +8,7 @@ pLitter is a standardized, deep learning friendly data set and pre-trained model
 </a>
 </p>
 
-These detection are currently being used to map areas in cities which are . *Example heatmap showing plastic litter distribution in a city is shown below.*
+These detection are currently being used to map plastic litter distribution in cities. *Example heatmap showing plastic litter distribution in a city is shown below.*
 
 <p align="center">
 <img src="./graphics/example_heatmap.PNG" alt="HeatMap" width="70%"/>
