@@ -4,11 +4,15 @@ pLitter is a standardized, deep learning friendly data set and pre-trained model
 
 __Example video showing plastic litter ditection from out model__
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/OntRaEVCE44/0.jpg)](https://www.youtube.com/watch?v=OntRaEVCE44)
+<p align="center">
+<img src="https://img.youtube.com/vi/OntRaEVCE44/0.jpg" src="https://www.youtube.com/watch?v=OntRaEVCE44" alt="DL_Detection" width="70%"/>
+</p>
 
 __Example heatmap showing plastic litter distribution__
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/OntRaEVCE44/0.jpg)](https://www.youtube.com/watch?v=OntRaEVCE44)
+<p align="center">
+<img src="./code/graphics/example_heatmap.PNG" alt="HeatMap" width="70%"/>
+</p>
 
 _Note: This is a preliminary release and more data from more cities will be added in future._
 
