@@ -1,6 +1,6 @@
 import requests, tqdm, tarfile
 
-url = "http://f70f5de5f5fe.ngrok.io/taladthai"
+url = "http://203.159.29.51:5005/taladthai"
 target_path = 'talad_thai.tar.xz'
 
 response = requests.get(url, stream=True)
