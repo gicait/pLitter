@@ -52,12 +52,6 @@ Models that are trained separately for each of the datasets, as well as model th
 | [EDGE Model](#) | [EDGE Model](#) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | [EDGE Model](#) |
 | mAP = xx | mAP = xx | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) |
 
-| Model trained on combined dataset |
-| --- |
-| [Docker](#) |
-| [EDGE Model](#) |
-| mAP = xx |
-
 *Note: These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
 ## Usage
