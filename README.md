@@ -33,7 +33,7 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 The datasets used in this repository can be downloaded from following links. Each link contains RGB images, plastic litter annotations (COCO format) and ReadMe file.
 
-* [Talaad Thai](#)
+* [Talaad Thai](http://de0206d59054.ngrok.io/taladthai)
 * [Rangsit](#)
 * Ubon Ratchathani I (ongoing)
 * Chiang Rai I (ongoing)
