@@ -56,10 +56,10 @@ Models that are trained separately for each of the datasets, as well as model th
 
 | Model (trained on combined dataset) | Download | mAP |
 | --- | --- | --- |
-| Google AutoML | [EDGE Model](#), [Docker](#) | xx.xx |
+| Google AutoML\* | [EDGE Model](#), [Docker](#) | xx.xx |
 | Mask RCNN | (ongoing) | (ongoing) |
 
-*Note: These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
+*Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
 ## Usage
 
