@@ -5,7 +5,6 @@ import os
 import cv2
 import csv
 import sys
-import pyexiv2
 import fractions
 from PIL import Image
 from PIL.ExifTags import TAGS
