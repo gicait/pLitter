@@ -14,6 +14,17 @@ class inference():
         predictions = res['predictions']
         return predictions
     
+    def load_local_model(model_path):
+        loaded = tf.saved_model.load(export_dir=model_path)
+        infer = loaded.signatures["serving_default"]
+    
+    def predict_from_local():
+        img = cv2.imread(path)
+        flag, bts = cv2.imencode('.jpg', img)
+        inp = [bts[:,0].tobytes()]
+        out = infer(key=tf.constant('something_unique'), image_bytes=tf.constant(inp))   
+        return out
+
     def predict_from_container(self, image_file_path, image_key, port_number=8501):
         """Sends a prediction request to TFServing docker container REST API.
 
