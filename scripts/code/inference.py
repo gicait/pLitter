@@ -42,7 +42,12 @@ class inference():
         # please change localhost to IP of other servers.
         url = 'http://localhost:{}/v1/models/default:predict'.format(port_number)
 
-        response = requests.post(url, data=json.dumps(instances))
+        try:
+            response = requests.post(url, data=json.dumps(instances))
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as err:
+            raise SystemExit(err)
+        
         res = response.json()
         predictions = res['predictions']
         return predictions
