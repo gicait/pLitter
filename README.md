@@ -46,13 +46,20 @@ The datasets used in this repository can be downloaded from following links. Eac
 
 Models that are trained separately for each of the datasets, as well as model that is trained on combined dataset can be downloaded from following links,
 
+<!---
 | Talaad Thai | Rangsit | Ubon Ratchathani I | Chiang Rai I | Ubon Ratchathani II | Chiang Rai II | <ins>Combined Dataset</ins> |
 | --- | --- | --- | --- | --- | --- | --- |
 | [Docker](#) | [Docker](#) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | Docker (ongoing) | [Docker](#) |
 | [EDGE Model](#) | [EDGE Model](#) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | EDGE Model (ongoing) | [EDGE Model](#) |
 | mAP = xx | mAP = xx | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) |
+-->
 
-*Note: These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
+| Model (trained on combined dataset) | Download | mAP |
+| --- | --- | --- |
+| Google AutoML\* | [EDGE Model](#), [Docker](#) | xx.xx |
+| Mask RCNN | (ongoing) | (ongoing) |
+
+*Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
 ## Usage
 
