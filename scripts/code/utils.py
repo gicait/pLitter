@@ -12,3 +12,6 @@ def draw_bboxs(image, ymin, xmin, ymax, xmax, color='red', thickness=4, display_
     (left, right, top, bottom) = (xmin, xmax, ymin, ymax)
   if thickness > 0:
     draw.line([(left, top), (left, bottom), (right, bottom), (right, top), (left, top)], width=thickness, fill=color)
+
+def visualize():
+  return 1
