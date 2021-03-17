@@ -92,6 +92,10 @@ Use this bibtex to cite us.
 
 [Geoinformatics Center](www.geoinfo.ait.ac.th) of [Asian Institute of Technology](www.ait.ac.th) and [Google Sustainability Team](https://sustainability.google/).
 
+__Our Team__
+* To be added
+* ...
+
 ## Funding
 
 [CounterMEASURE](https://countermeasure.asia/) project of [UN Environment Programme](https://www.unep.org/).
