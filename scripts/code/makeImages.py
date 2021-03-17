@@ -144,68 +144,60 @@ class Video:
                     os.mkdir(abs_folder_name) 
             except OSError as error: 
                 print(error)
-        gps_tag_filename = os.path.join(abs_folder_name, folder_name+'.csv') 
-        with open(gps_tag_filename, 'w') as gps_tag_file:
-            gps_tag_writer = csv.writer(gps_tag_file, delimiter=',')
+                
+            gps_tag_filename = os.path.join(abs_folder_name, folder_name+'.csv') 
+            with open(gps_tag_filename, 'w') as gps_tag_file:
+                gps_tag_writer = csv.writer(gps_tag_file, delimiter=',')
 
-            first_frame = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-            count = 0
-            image_count = 0
-            image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
-            cv2.imwrite(image_name, frame1)
-            gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', gps_list[1][2], gps_list[1][3]]
-            gps_tag_writer.writerow(gps_tag_row)
-            image_count += 1
-            match_cnt1 = 100
-            match_cnt2 = 100
-            for row in gps_list[2:]:
-                pts = float(row[0])
-                vidcap.set(cv2.CAP_PROP_POS_MSEC,(pts))
-                success, frame2 = vidcap.read()
-                count += 1
-                if success == False:
-                    print('Unable to read frame at', pts)
-                    continue
-                second_frame = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+                first_frame = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+                count = 0
+                image_count = 0
+                image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
+                cv2.imwrite(image_name, frame1)
+                gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', gps_list[1][2], gps_list[1][3]]
+                gps_tag_writer.writerow(gps_tag_row)
+                image_count += 1
+                match_cnt1 = 100
+                match_cnt2 = 100
+                for row in gps_list[2:]:
+                    pts = float(row[0])
+                    vidcap.set(cv2.CAP_PROP_POS_MSEC,(pts))
+                    success, frame2 = vidcap.read()
+                    count += 1
+                    if success == False:
+                        print('Unable to read frame at', pts)
+                        continue
+                    second_frame = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
 
-                orb = cv2.ORB_create()
-                kp1, kp_des1 = orb.detectAndCompute(first_frame, None)
-                kp2, kp_des2 = orb.detectAndCompute(second_frame, None)
-                kp_matcher = cv2.BFMatcher()
-                kp_matched = kp_matcher.knnMatch(kp_des1, kp_des2, k=2)
+                    orb = cv2.ORB_create()
+                    kp1, kp_des1 = orb.detectAndCompute(first_frame, None)
+                    kp2, kp_des2 = orb.detectAndCompute(second_frame, None)
+                    kp_matcher = cv2.BFMatcher()
+                    kp_matched = kp_matcher.knnMatch(kp_des1, kp_des2, k=2)
 
-                # Apply ratio test
-                kp_matched_well = []
-                for m,n in kp_matched:
-                    if m.distance < qlt_th*n.distance:
-                        kp_matched_well.append(m)
-            
-                kp_matched_well_len = len(kp_matched_well)
-            
-                match_cnt1 = match_cnt2
-                match_cnt2 = kp_matched_well_len
+                    # Apply ratio test
+                    kp_matched_well = []
+                    for m,n in kp_matched:
+                        if m.distance < qlt_th*n.distance:
+                            kp_matched_well.append(m)
+                
+                    kp_matched_well_len = len(kp_matched_well)
+                
+                    match_cnt1 = match_cnt2
+                    match_cnt2 = kp_matched_well_len
 
-                print(match_cnt1, match_cnt2)
-                print('iter: '+str(count)+', len: '+str(kp_matched_well_len))
-            
-                if (match_cnt1 <= cnt_th) and (match_cnt2 <= cnt_th):
-                    print("saving image at", pts)
-                    image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
-                    cv2.imwrite(image_name, frame2)
-                    gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', row[2], row[3]]
-                    gps_tag_writer.writerow(gps_tag_row)
-                    image_count += 1
-                    first_frame = second_frame
-                    match_cnt1 = 100
-                    match_cnt2 = 100
+                    print(match_cnt1, match_cnt2)
+                    print('iter: '+str(count)+', len: '+str(kp_matched_well_len))
+                
+                    if (match_cnt1 <= cnt_th) and (match_cnt2 <= cnt_th):
+                        print("saving image at", pts)
+                        image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
+                        cv2.imwrite(image_name, frame2)
+                        gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', row[2], row[3]]
+                        gps_tag_writer.writerow(gps_tag_row)
+                        image_count += 1
+                        first_frame = second_frame
+                        match_cnt1 = 100
+                        match_cnt2 = 100
 
-            vidcap.release()
-
-
-
-
-
-    
-
-    
-
+                vidcap.release()
