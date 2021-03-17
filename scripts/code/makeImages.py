@@ -193,7 +193,7 @@ class Video:
                     image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
                     cv2.imwrite(image_name, frame2)
                     gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', row[2], row[3]]
-                    gps_tag_writer.writerow(gps_tag_row)(gps_tag_row)
+                    gps_tag_writer.writerow(gps_tag_row)
                     image_count += 1
                     first_frame = second_frame
                     match_cnt1 = 100
