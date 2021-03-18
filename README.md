@@ -1,6 +1,6 @@
-# pLitter - Teaching Computers to Identify Plastic Litter
+# pLitter - Plastic Litter identification using Vision and AI
 
-pLitter is a standardized, deep learning friendly dataset and pre-trained model that can be used for detecting road-size plastic litter. Additionally, all supplementary codes related to this repository are also published here. *Example video showing plastic litter detection from our model (click on image to see the YouTube video) is shown below.*
+pLitter is a standardized, deep learning friendly dataset and pre-trained model that can be used for detecting plastic litter at streets, road sides, and other outdoor areas. Additionally, all supplementary codes related to this repository are also published here. *Example video showing plastic litter detection from our model (click on image to see the YouTube video) is shown below.*
 
 <p align="center">
 <a href="https://www.youtube.com/watch?v=REv0XEcWXVE" target="_blank">
@@ -79,7 +79,7 @@ Documentation is located in "docs" folder.
 Use this bibtex to cite us.
 ```
 @misc{pLitter_2021,
-  title={pLitter - Teaching Computers to Identify Plastic Litter},
+  title={pLitter - Plastic Litter identification using Vision and AI},
   author={We have to add names here},
   year={2021},
   publisher={Github},
