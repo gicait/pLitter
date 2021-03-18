@@ -8,6 +8,7 @@ import sys
 import fractions
 from PIL import Image
 from PIL.ExifTags import TAGS
+from .tag_exif import set_gps_location
 
 class Video:
     def __init__(self, file_name, gps_file=''):
@@ -154,6 +155,8 @@ class Video:
                 image_count = 0
                 image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
                 cv2.imwrite(image_name, frame1)
+                print(float(gps_list[1][2]), float(gps_list[1][3]), float(gps_list[1][4]))
+                set_gps_location(image_name, str(gps_list[1][1]), float(gps_list[1][2]), float(gps_list[1][3]), int(float(gps_list[1][4])))
                 gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', gps_list[1][2], gps_list[1][3]]
                 gps_tag_writer.writerow(gps_tag_row)
                 image_count += 1
@@ -193,6 +196,7 @@ class Video:
                         print("saving image at", pts)
                         image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
                         cv2.imwrite(image_name, frame2)
+                        set_gps_location(image_name, gps_list[1][1], float(gps_list[1][2]), float(gps_list[1][3]), float(gps_list[1][4]))
                         gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', row[2], row[3]]
                         gps_tag_writer.writerow(gps_tag_row)
                         image_count += 1
