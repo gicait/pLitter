@@ -205,3 +205,27 @@ class Video:
                         match_cnt2 = 100
 
                 vidcap.release()
+
+
+
+
+
+# class pLimage():
+#     def __init__(self, plimage_path):
+#         self.plimage = cv2.imread(plimage_path)
+
+
+# class pLoder():
+#     def __init__(self, ploder_path):
+#         self.plimage_path = [f for f in os.listdir(ploder_path) if f.endswith(('.jpg', '.png', '.tif'))]
+
+
+
+class pLitter():
+    def __init__(self):
+        self.plimages = []
+
+    def add(self, path):
+        if os.path.isdir(path):
+            self.plimages.append([f for f in os.listdir(path) if f.endswith(('.jpg', '.png', '.tif'))])
+
