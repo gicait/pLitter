@@ -205,27 +205,27 @@ class Video:
                         match_cnt2 = 100
 
                 vidcap.release()
+        return abs_folder_name
 
 
 
-
-
-# class pLimage():
-#     def __init__(self, plimage_path):
-#         self.plimage = cv2.imread(plimage_path)
-
-
-# class pLoder():
-#     def __init__(self, ploder_path):
-#         self.plimage_path = [f for f in os.listdir(ploder_path) if f.endswith(('.jpg', '.png', '.tif'))]
-
-
-
-class pLitter():
+class pLimage():
     def __init__(self):
         self.plimages = []
+        self.plidios = []
 
-    def add(self, path):
-        if os.path.isdir(path):
-            self.plimages.append([f for f in os.listdir(path) if f.endswith(('.jpg', '.png', '.tif'))])
+    def addImages(self, path):
+        if type(path) is str:
+            if os.path.isfile(path) and path.endswith(('.jpg', '.png', '.tif')):
+                self.plimages.append(path)
+            elif os.path.isdir(path):
+                self.plimages.extend([os.path.join(path, f) for f in os.listdir(path) if f.endswith(('.jpg', '.png', '.tif')) and os.path.isfile(os.path.join(path, f))])
+        elif type(path) is list:
+            self.plimages.extend([f for f in path if f.endswith(('.jpg', '.png', '.tif')) and os.path.isfile(f)])
+        print("Total", len(self.plimages), "images.")
 
+    def addVideoImages(self, video_path, gps_path):
+        if (os.path.isfile(video_path) and video_path.endswith(('.mp4', '.avi', '.mkl'))) and (os.path.isfile(gps_path) and gps_path.endswith(('.csv'))):
+            video = Video(file_name=video_path, gps_file=gps_path)
+            folder_path = video.byGps(cnt_th=1, qlt_th=0.7, out_path='')
+            self.addImages(folder_path)
