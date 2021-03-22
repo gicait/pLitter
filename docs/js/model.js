@@ -1,5 +1,5 @@
 // change file for license issue
-const MODEL_URL = '../models/tfjs/model.json'
+const MODEL_URL = 'js/tfjs/model.json'
 async function run() {
     alert("start")
     const model = await tf.automl.loadObjectDetection(MODEL_URL);
