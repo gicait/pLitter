@@ -1,0 +1,29 @@
+<script src="https://unpkg.com/@tensorflow/tfjs"></script>
+<script src="https://unpkg.com/@tensorflow/tfjs-automl"></script>
+<script src="js/model.js"></script>
+<body>
+  <p><input type="file"  accept="image/*" name="image" id="inputimage"  onchange="loadFile(event)" style="display: none;"></p>
+  <p><label for="inputimage" style="cursor: pointer;">Upload Image</label></p>
+  <div id="imgDiv" style="position:relative;">
+    <!-- <img id="salad" width="500" crossorigin="anonymous" src="https://storage.googleapis.com/tfjs-testing/tfjs-automl/object_detection/test_image.jpg" /> -->
+    <img id="input" width="500" crossorigin="anonymous"  />
+    <svg width="500" height="375" style="position: absolute;top:0;left:0;">
+      <style>
+        .box {
+          stroke-width: 2;
+          fill: none;
+          stroke: red;
+        }
+        .label {
+          font-size: 12px;
+          fill: white;
+          text-anchor: middle;
+        }
+        .label-rect {
+          fill: black;
+        }
+      </style>
+    </svg>
+  </div>
+</body>
+</html>
