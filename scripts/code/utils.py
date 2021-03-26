@@ -99,7 +99,8 @@ def draw_bounding_box_on_image(image,
 def resize_images_in_dir(dir_path, t_width, t_height):
   for image_path in sorted(os.listdir(dir_path)):
     print(image_path)
-    image = cv2.imread(os.path.join(dir_path, image_path))
-    resized_image = cv2.resize(image, (t_width, t_height))
-    ret = cv2.imwrite(os.path.join(dir_path, image_path), resized_image)
-    print(ret)
+    if os.path.isfile(os.path.join(dir_path, image_path)):
+      image = cv2.imread(os.path.join(dir_path, image_path))
+      resized_image = cv2.resize(image, (t_width, t_height))
+      ret = cv2.imwrite(os.path.join(dir_path, image_path), resized_image)
+      print(ret)
