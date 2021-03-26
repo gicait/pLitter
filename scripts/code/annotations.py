@@ -22,8 +22,8 @@ def csvtojson(file1, file2):
             if not image:
                 image = {}
                 image["id"] = new_image_id+1
-                image["width"] = 3840
-                image["height"] = 2160
+                image["width"] = 1280
+                image["height"] = 720
                 image["file_name"] = row[0]
                 images.append(image)
                 new_image_id += 1
@@ -73,4 +73,5 @@ def csvtojson(file1, file2):
     
 #     def other():
 #         return "other"
+
 
