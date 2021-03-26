@@ -90,3 +90,13 @@ def draw_bounding_box_on_image(image,
               fill='black',
               font=font)
     text_bottom -= text_height - 2 * margin
+
+
+
+
+def resize_images_in_dir(dir_path, t_width, t_height):
+  for image_path in os.listdir(dir_path):
+    print(image_path)
+    image = cv2.imread(os.path.join(dir_path, image_path))
+    resized_image = cv2.resize(image, (t_width, t_height))
+    cv2.imwrite(image_path, resized_image)
