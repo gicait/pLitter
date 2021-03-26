@@ -101,5 +101,5 @@ def resize_images_in_dir(dir_path, t_width, t_height):
     print(image_path)
     image = cv2.imread(os.path.join(dir_path, image_path))
     resized_image = cv2.resize(image, (t_width, t_height))
-    cv2.imwrite(image_path, resized_image)
+    cv2.imwrite(os.path.join(dir_path, image_path), resized_image)
     
