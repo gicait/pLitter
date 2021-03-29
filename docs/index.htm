@@ -20,6 +20,13 @@
   <link rel="stylesheet" href="https://cocodataset.org/other/cocostyles.css" />
   <script src="js/scripts.js"></script>
   <!-- <script>googleAnalytics();</script> -->
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
 </head>
 
 <body>
@@ -42,15 +49,24 @@
           <a class="dropdown-toggle" data-toggle="dropdown">Dataset<b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a data-toggle="tab" href="#overview"><i class="glyphicon glyphicon-info-sign"></i> Overview</a></li>
-            <li><a data-toggle="tab" href="#explore"><i class="glyphicon glyphicon-search"></i> Explore</a></li>
+            <!-- <li><a data-toggle="tab" href="#explore"><i class="glyphicon glyphicon-search"></i> Explore</a></li> -->
             <li><a data-toggle="tab" href="#download"><i class="glyphicon glyphicon-download"></i> Download</a></li>
             <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
           </ul>
         </li>
-        <li>
+        <!-- <li>
           <div class="nav-tab-header"></div>
           <a data-toggle="tab" href="#demo">Demo</a>
-        </li>        <li>
+        </li> -->
+        <li>
+          <div class="nav-tab-header"></div>
+          <a data-toggle="tab" href="#maps">Maps</a>
+        </li>
+        <li>
+          <div class="nav-tab-header"></div>
+          <a data-toggle="tab" href="#upload">Upload</a>
+        </li>      
+        <li>
           <div class="nav-tab-header"></div>
           <a data-toggle="tab" href="#annotate">Annotate</a>
         </li>

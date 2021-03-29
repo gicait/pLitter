@@ -1,9 +1,11 @@
+import os
 import base64
 import io
 import json
 import tensorflow as tf
 import requests
 import cv2
+import csv
 
 class inference():
 
@@ -63,6 +65,28 @@ class inference():
         res = response.json()
         predictions = res['predictions']
         return predictions
+
+    def predict_and_save_to_csv(self, dir_path, thresould=0.35):
+        with open(os.path.join(dir_path, os.path.basename(dir_path)+'local_predictions.csv'), 'w') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            for image in sorted(os.listdir(dir_path)):
+                if image.endswith(('.png', '.jpg')):
+                    img = cv2.imread(os.path.join(dir_path, image))
+                    flag, bts = cv2.imencode('.jpg', img)
+                    inp = [bts[:,0].tobytes()]
+                    out = self.infer(key=tf.constant('something_unique'), image_bytes=tf.constant(inp))
+                    for i in range(int(out['num_detections'].numpy()[0])):
+                        if out['detection_scores'].numpy()[0][i] >= thresould:
+                            row = []
+                            row.append(image)
+                            row.append(out['detection_classes_as_text'].numpy()[0][i].decode('utf-8'))
+                            row.append(out['detection_scores'].numpy()[0][i])
+                            row.extend(out['detection_boxes'].numpy()[0][i])
+                            csvwriter.writerow(row)
+        csvfile.close()
+
+
+
 
 # def container_predict(image_file_path, image_key, port_number=8501):
 #     """Sends a prediction request to TFServing docker container REST API.

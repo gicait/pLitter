@@ -1,7 +1,7 @@
 function datasetTabNav() {
     // Enable dataset tab controls. See also: https://getbootstrap.com/docs/3.3/javascript/#tabs
     // And: http://stackoverflow.com/questions/12131273/twitter-bootstrap-tabs-url-doesnt-change
-    var tabs = ["people", "overview", "explore", "download", "external", "termsofuse", "detection-2021", "demo"];
+    var tabs = ["people", "overview", "explore", "download", "external", "termsofuse", "detection-2021", "demo", "maps", "upload"];
     for( var i=0; i<tabs.length; i++ ) {
       $("#content").append('<div role="tabpanel" class="tab-pane fade" id="' + tabs[i] + '"></div>\n');
     }

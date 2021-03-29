@@ -63,6 +63,24 @@ def csvtojson(file1, file2):
     with open(file2, 'w') as outfile:
         json.dump(data, outfile)
 
+
+
+def jsontocsv(file1, file2):
+    with open(file1, "r") as jsonfile:
+        json_data = json.load(jsonfile)
+        rows = []
+        images = json_data['images']
+        categories = json_data['categories']
+        annotations = json_data['annotations']
+        for annotation in annotations:
+            segmentation = annotation['segmentation']
+            xmin = segmentation[0]
+            ymin = segmentation[1]
+            xmax = segmentation[2]
+            ymax = segmentation[5]
+
+
+
 # class pLitterAnnots:
 
 #     def requestAnnots():

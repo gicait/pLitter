@@ -12,7 +12,7 @@ async function run() {
     // Show the resulting object on the page.
     const pre = document.createElement('pre');
     pre.textContent = JSON.stringify(predictions, null, 2);
-    document.body.append(pre);
+    // document.body.append(pre);
 
     drawBoxes(predictions);
 }
@@ -46,7 +46,7 @@ function drawBoxes(predictions) {
     textRect.setAttribute('width', textBBox.width);
     textRect.setAttribute('height', textBBox.height);
     textRect.setAttribute('class', 'label-rect');
-    svg.insertBefore(textRect, text);
+    svg.insertBefore(textRect, text.substr(1, text.length-2));
     });
 }
 
