@@ -59,13 +59,13 @@ def csvtojson(file1, file2):
     data["categories"] = categories
     data["annotations"] = annotations
 
-    print(data)
+    # print(data)
     with open(file2, 'w') as outfile:
         json.dump(data, outfile)
+    outfile.close()
 
 
-
-def jsontocsv(file1, file2):
+def jsontocsv(file1, file2, image_width, image_height):
     with open(file1, "r") as jsonfile:
         json_data = json.load(jsonfile)
         rows = []
@@ -73,11 +73,34 @@ def jsontocsv(file1, file2):
         categories = json_data['categories']
         annotations = json_data['annotations']
         for annotation in annotations:
-            segmentation = annotation['segmentation']
-            xmin = segmentation[0]
-            ymin = segmentation[1]
-            xmax = segmentation[2]
-            ymax = segmentation[5]
+            row = []
+            segmentation = annotation['segmentation'][0]
+            xmin = segmentation[0]/image_width
+            ymin = segmentation[1]/image_height
+            xmax = segmentation[2]/image_width
+            ymax = segmentation[5]/image_height
+
+            image_id = annotation['image_id']
+            image_name = next((image['file_name'] for image in images if image["id"] == image_id), None)
+            category_id = annotation['category_id']
+            category_name = next((category['name'] for category in categories if category['id'] == category_id), None)
+            row.append(image_name)
+            row.append(category_name)
+            row.append(xmin)
+            row.append(ymin)
+            row.append(xmax)
+            row.append(ymax)
+            rows.append(row)
+            
+        with open(file2, 'w') as csvfile:
+            csvwriter = csv.writer(csvfile)
+            for row in rows:
+                csvwriter.writerow(row)
+        csvfile.close()
+
+
+
+            # GX044613 5.jpg,Plastic,0.1770421713590622,0.5861731171607971,0.20449234545230865,0.6124027371406555
 
 
 

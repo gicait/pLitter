@@ -22,10 +22,16 @@ class inference():
         self.infer = loaded.signatures["serving_default"]
     
     def predict_from_local(self, path):
-        img = cv2.imread(path)
-        flag, bts = cv2.imencode('.jpg', img)
-        inp = [bts[:,0].tobytes()]
-        out = self.infer(key=tf.constant('something_unique'), image_bytes=tf.constant(inp))   
+        if type(path) == str:
+            img = cv2.imread(path)
+            flag, bts = cv2.imencode('.jpg', img)
+            inp = [bts[:,0].tobytes()]
+            out = self.infer(key=tf.constant('something_unique'), image_bytes=tf.constant(inp))
+        else:
+            # change condition to check image
+            flag, bts = cv2.imencode('.jpg', path)
+            inp = [bts[:,0].tobytes()]
+            out = self.infer(key=tf.constant('something_unique'), image_bytes=tf.constant(inp))
         return out
 
     def predict_from_container(self, image_file_path, image_key, port_number=8501):
