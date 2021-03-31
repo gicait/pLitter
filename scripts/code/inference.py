@@ -106,9 +106,9 @@ class inference():
         else:
             vid_cap = video
         num_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        fps = vid_cap.get(CV_CAP_PROP_FPS)
-        width = vid_cap.get(CV_CAP_PROP_FRAME_WIDTH)
-        height = vid_cap.get(CV_CAP_PROP_FRAME_HEIGHT)
+        fps = vid_cap.get(cv2.CV_CAP_PROP_FPS)
+        width = vid_cap.get(cv2.CV_CAP_PROP_FRAME_WIDTH)
+        height = vid_cap.get(cv2.CV_CAP_PROP_FRAME_HEIGHT)
 
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         vid_out = cv2.VideoWriter(vid_out_path, fourcc, fps, (width,  height))
