@@ -123,8 +123,8 @@ class inference():
             category_index = {1: {'id': 1, 'name': 'pL'}}
             res = visualize_boxes_and_labels_on_image_array(image=frame, boxes=boxes, classes=classes, scores=scores, use_normalized_coordinates=True, min_score_thresh=.2, category_index=category_index)
             vid_out.write(res)
-        cap.release()
-        out.release()
+        vid_cap.release()
+        vid_out.release()
 
 
 
