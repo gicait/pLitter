@@ -107,6 +107,7 @@ class inference():
         else:
             vid_cap = video
         num_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        print(num_frames)
         fps = int(vid_cap.get(cv2.CAP_PROP_FPS))
         width = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -115,7 +116,7 @@ class inference():
         vid_out = cv2.VideoWriter(vid_out_path, fourcc, fps, (width,  height))
 
         for frame in tqdm.tqdm(self.frame_from_video(vid_cap), total=num_frames):
-            pred = inf.predict_from_local(frame)
+            pred = self.predict_from_local(frame)
             classes = pred['detection_classes'].numpy()[0]
             classes = classes.astype('int32')
             scores = pred['detection_multiclass_scores'].numpy()[0][:,1]
