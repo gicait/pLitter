@@ -7,6 +7,7 @@ import requests
 import cv2
 import csv
 import tqdm
+from visualize.vis_utils import visualize_boxes_and_labels_on_image_array
 
 class inference():
 
@@ -92,7 +93,7 @@ class inference():
                             csvwriter.writerow(row)
         csvfile.close()
 
-    def frame_from_video(video):
+    def frame_from_video(self, video):
         while video.isOpened():
             ret, frame = video.read()
             if ret:
@@ -113,14 +114,14 @@ class inference():
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         vid_out = cv2.VideoWriter(vid_out_path, fourcc, fps, (width,  height))
 
-        for frame in tqdm.tqdm(frame_from_video(vid_cap), total=num_frames):
+        for frame in tqdm.tqdm(self.frame_from_video(vid_cap), total=num_frames):
             pred = inf.predict_from_local(frame)
             classes = pred['detection_classes'].numpy()[0]
             classes = classes.astype('int32')
             scores = pred['detection_multiclass_scores'].numpy()[0][:,1]
             boxes = pred['detection_boxes'].numpy()[0]
             category_index = {1: {'id': 1, 'name': 'pL'}}
-            res = vis(image=frame, boxes=boxes, classes=classes, scores=scores, use_normalized_coordinates=True, min_score_thresh=.2, category_index=category_index)
+            res = visualize_boxes_and_labels_on_image_array(image=frame, boxes=boxes, classes=classes, scores=scores, use_normalized_coordinates=True, min_score_thresh=.2, category_index=category_index)
             vid_out.write(res)
         cap.release()
         out.release()
