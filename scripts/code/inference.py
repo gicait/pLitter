@@ -6,6 +6,7 @@ import tensorflow as tf
 import requests
 import cv2
 import csv
+import tqdm
 
 class inference():
 
@@ -90,6 +91,42 @@ class inference():
                             row.extend(out['detection_boxes'].numpy()[0][i])
                             csvwriter.writerow(row)
         csvfile.close()
+
+    def frame_from_video(video):
+        while video.isOpened():
+            ret, frame = video.read()
+            if ret:
+                yield frame
+            else:
+                break 
+
+    def video_inference(self, video, vid_out_path):
+        if type(video) == str:
+            vid_cap = cv2.VideoCapture(video)
+        else:
+            vid_cap = video
+        num_frames = int(vid_cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        fps = vid_cap.get(CV_CAP_PROP_FPS)
+        width = vid_cap.get(CV_CAP_PROP_FRAME_WIDTH)
+        height = vid_cap.get(CV_CAP_PROP_FRAME_HEIGHT)
+
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        vid_out = cv2.VideoWriter(vid_out_path, fourcc, fps, (width,  height))
+
+        for frame in tqdm.tqdm(frame_from_video(vid_cap), total=num_frames):
+            pred = inf.predict_from_local(frame)
+            classes = pred['detection_classes'].numpy()[0]
+            classes = classes.astype('int32')
+            scores = pred['detection_multiclass_scores'].numpy()[0][:,1]
+            boxes = pred['detection_boxes'].numpy()[0]
+            category_index = {1: {'id': 1, 'name': 'pL'}}
+            res = vis(image=frame, boxes=boxes, classes=classes, scores=scores, use_normalized_coordinates=True, min_score_thresh=.2, category_index=category_index)
+            vid_out.write(res)
+        cap.release()
+        out.release()
+
+
+
 
 
 
