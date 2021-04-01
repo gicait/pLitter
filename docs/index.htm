@@ -32,7 +32,8 @@
 <body>
   <script>$(function(){datasetTabNav()});</script>
   <div id="header"><div id="headerBody">
-    <img id="headerImage" src="https://raw.githubusercontent.com/gicait/pLitter/main/graphics/plitter.png" alt="Logo" />
+    <!-- <img id="headerImage" src="https://raw.githubusercontent.com/gicait/pLitter/main/graphics/plitter.png" alt="Logo" /> -->
+    <img id="headerImage" src="icons/plitter.png" alt="Logo" />
     <div id="headerTabs">
       <div id="headerEmail">pLitter@pLitter</div>
       <ul class="nav nav-tabs">
@@ -54,22 +55,31 @@
             <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
           </ul>
         </li>
-        <!-- <li>
+        <li>
           <div class="nav-tab-header"></div>
           <a data-toggle="tab" href="#demo">Demo</a>
-        </li> -->
-        <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#maps">Maps</a>
         </li>
         <li>
+          <div class="nav-tab-header"></div>
+          <a data-toggle="tab" href="#maps">Map</a>
+        </li>
+        <li class="dropdown">
+          <div class="nav-tab-header"></div>
+          <a class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a data-toggle="tab" href="#upload"><i class="glyphicon glyphicon-picture"></i> Upload</a></li>
+            <li><a data-toggle="tab" href="#annotate"><i class="glyphicon glyphicon-pencil"></i> Annotate</a></li>
+          </ul>
+        </li>
+        <li>
+        <!-- <li>
           <div class="nav-tab-header"></div>
           <a data-toggle="tab" href="#upload">Upload</a>
         </li>      
         <li>
           <div class="nav-tab-header"></div>
           <a data-toggle="tab" href="#annotate">Annotate</a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div></div>
