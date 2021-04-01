@@ -56,7 +56,7 @@ Models that are trained separately for each of the datasets, as well as model th
 
 | Model (trained on combined dataset) | Download | mAP |
 | --- | --- | --- |
-| Google AutoML\* | [EDGE Model](#), [Docker](#) | xx.xx |
+| Google AutoML\* | [Mobile High](/models/automl) | xx.xx |
 | Mask RCNN | (ongoing) | (ongoing) |
 
 *Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
@@ -67,9 +67,7 @@ Please add some technical details about basic use of repository.
 
 __Dependencies:__
 
-* numpy
-* scipy
-* Add more
+Refer to requirements(/requirements.txt)
 
 ## Documentation
 Documentation is located in "docs" folder.
