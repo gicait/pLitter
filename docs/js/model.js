@@ -1,4 +1,5 @@
 // change file for license issue
+const osvg = document.querySelector('svg');
 const MODEL_URL = 'js/tfjs/model.json'
 async function run() {
     alert("start")
@@ -30,12 +31,15 @@ function drawBoxes(predictions) {
     rect.setAttribute('x', left);
     rect.setAttribute('y', top);
     rect.setAttribute('class', 'box');
+    rect.setAttribute('id', 'box');
     const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     text.setAttribute('x', left + width / 2);
     text.setAttribute('y', top);
-    text.setAttribute('dy', 12);
+    text.setAttribute('dy', 1);
+    text.setAttribute('dx', 1);
     text.setAttribute('class', 'label');
-    text.textContent = `${label}: ${score.toFixed(3)}`;
+    text.setAttribute('id', 'label');
+    text.textContent = `${label.substring(2, 9)}: ${score.toFixed(3)}`;
     svg.appendChild(rect);
     svg.appendChild(text);
     const textBBox = text.getBBox();
@@ -46,7 +50,8 @@ function drawBoxes(predictions) {
     textRect.setAttribute('width', textBBox.width);
     textRect.setAttribute('height', textBBox.height);
     textRect.setAttribute('class', 'label-rect');
-    svg.insertBefore(textRect, text.substr(1, text.length-2));
+    textRect.setAttribute('id', 'label-rect');
+    svg.insertBefore(textRect, text);
     });
 }
 
@@ -54,9 +59,21 @@ function drawBoxes(predictions) {
 
 
 var loadFile = function(event) {
+    // var svg = document.querySelector('svg');
+    while(rect = document.getElementById("box")){
+        rect.remove()
+      }
+    while(label = document.getElementById("label")){
+        label.remove()
+      }
+    while(label_rect = document.getElementById("label-rect")){
+        label_rect.remove()
+      }
     var image = document.getElementById('input');
     image.src = URL.createObjectURL(event.target.files[0]);
+
     // SavePhoto(event.target)
+
 
 run();
 
