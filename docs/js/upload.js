@@ -45,7 +45,7 @@ function get_images_from_coco(){
             if(images.total > 0){
                 for (let index = 0; index < images.total; index++) {
                     const image = images.images[index];
-                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick='open_image('"+image.id+"')'><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
+                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick='open_image("+image.id+")'><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
                 }
             }
         })
