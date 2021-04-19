@@ -3,58 +3,56 @@ var user = {}
 var set_user = false
 var images = {}
 
-(function() {
-    var anno = Annotorious.init({
-      image: 'ann-img',
-      locale: 'auto',
-      disableEditor: true
-    });
+var anno = Annotorious.init({
+    image: 'ann-img',
+    locale: 'auto',
+    disableEditor: true
+});
 
-    anno.on('createSelection', async function(selection) {
-      selection.body = [{
-        type: 'TextualBody',
-        purpose: 'tagging',
-        value: 'MyOtherTag'
-      }];
+anno.on('createSelection', async function(selection) {
+    selection.body = [{
+    type: 'TextualBody',
+    purpose: 'tagging',
+    value: 'MyOtherTag'
+    }];
 
-      await anno.updateSelected(selection);
-      anno.saveSelected();
-    });
+    await anno.updateSelected(selection);
+    anno.saveSelected();
+});
 
-    anno.on('selectAnnotation', function(a) {
-      console.log('selectAnnotation', a);
-    });
+anno.on('selectAnnotation', function(a) {
+    console.log('selectAnnotation', a);
+});
 
-    anno.on('cancelSelected', function(a) {
-      console.log('cancelSelected', a);
-    });
+anno.on('cancelSelected', function(a) {
+    console.log('cancelSelected', a);
+});
 
-    anno.on('createAnnotation', function(a) {
-      console.log('created', a);
-    });
+anno.on('createAnnotation', function(a) {
+    console.log('created', a);
+});
 
-    anno.on('updateAnnotation', function(annotation, previous) {
-      console.log('updated', previous, 'with', annotation);
-    });
+anno.on('updateAnnotation', function(annotation, previous) {
+    console.log('updated', previous, 'with', annotation);
+});
 
-    var toolToggle = document.getElementById('current-tool');
-    toolToggle.addEventListener('click', function() {
-      if (toolToggle.innerHTML == 'RECTANGLE') {
-        toolToggle.innerHTML = 'POLYGON';
-        anno.setDrawingTool('polygon');
-      } else {
-        toolToggle.innerHTML = 'RECTANGLE';
-        anno.setDrawingTool('rect');
-      }
-    });
+var toolToggle = document.getElementById('current-tool');
+toolToggle.addEventListener('click', function() {
+    if (toolToggle.innerHTML == 'RECTANGLE') {
+    toolToggle.innerHTML = 'POLYGON';
+    anno.setDrawingTool('polygon');
+    } else {
+    toolToggle.innerHTML = 'RECTANGLE';
+    anno.setDrawingTool('rect');
+    }
+});
 
-    var editorToggle = document.getElementById('toggle-editor');
-    editorToggle.addEventListener('click', function() {
-      const updatedState = !anno.disableEditor;
-      console.log('setting disableEditor', updatedState);
-      anno.disableEditor = updatedState;
-    });
-  })()
+var editorToggle = document.getElementById('toggle-editor');
+editorToggle.addEventListener('click', function() {
+    const updatedState = !anno.disableEditor;
+    console.log('setting disableEditor', updatedState);
+    anno.disableEditor = updatedState;
+});
 
 
 
