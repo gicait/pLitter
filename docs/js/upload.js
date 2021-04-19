@@ -21,8 +21,9 @@ function open_image(image_id){
     // .then(res => res.json())
     // .then(data => console.log(data))
     // .catch(error => console.log(error))
-    $( "image-veiwer" ).remove();
-    $( image_id.toString() ).append("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
+    // $( "image-veiwer" ).remove();
+    document.getElementById("image-veiwer").innerHTML = "<img src='http://203.159.29.187:8080/api/image/"+image_id+"' />"
+    // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 }
 
 function get_images_from_coco(){
@@ -44,7 +45,7 @@ function get_images_from_coco(){
             if(images.total > 0){
                 for (let index = 0; index < images.total; index++) {
                     const image = images.images[index];
-                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick='+open_image(image.id)+'><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
+                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick='open_image(image.id)'><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
                 }
             }
         })
