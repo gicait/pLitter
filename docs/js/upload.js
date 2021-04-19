@@ -5,6 +5,26 @@ var set_user = false
 
 var images = {}
 
+function open_image(image_id){
+    // fetch("http://203.159.29.187:8080/api/annotator/data/"+image_id.toString(), {
+    //     "headers": {
+    //         "accept": "application/json",
+    //         "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+    //     },
+    //     "referrer": "http://203.159.29.187:8080",
+    //     "referrerPolicy": "strict-origin-when-cross-origin",
+    //     "body": null,
+    //     "method": "GET",
+    //     "mode": "cors",
+    //     "credentials": "include"
+    // })
+    // .then(res => res.json())
+    // .then(data => console.log(data))
+    // .catch(error => console.log(error))
+    $( "image-veiwer" ).remove();
+    $( image_id.toString() ).append("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
+}
+
 function get_images_from_coco(){
     fetch("http://203.159.29.187:8080/api/dataset/55/data?page=1&limit=50&annotated=false", {
         "headers": {
@@ -24,32 +44,11 @@ function get_images_from_coco(){
             if(images.total > 0){
                 for (let index = 0; index < images.total; index++) {
                     const image = images.images[index];
-                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick="+open_image(image.id)+"><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
+                    $(imagelist).find('tbody').append("<tr id="+image.id+" onclick='+open_image(image.id)+'><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
                 }
             }
         })
     .catch(error => console.log(error))
-}
-
-
-function open_image(image_id){
-    // fetch("http://203.159.29.187:8080/api/annotator/data/"+image_id.toString(), {
-    //     "headers": {
-    //         "accept": "application/json",
-    //         "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
-    //     },
-    //     "referrer": "http://203.159.29.187:8080",
-    //     "referrerPolicy": "strict-origin-when-cross-origin",
-    //     "body": null,
-    //     "method": "GET",
-    //     "mode": "cors",
-    //     "credentials": "include"
-    // })
-    // .then(res => res.json())
-    // .then(data => console.log(data))
-    // .catch(error => console.log(error))
-    $( "image-veiwer" ).remove();
-    $( image_id.toString() ).append("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 }
 
 
