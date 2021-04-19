@@ -60,16 +60,16 @@ function open_image(image_id){
         console.log('updated', previous, 'with', annotation);
     })
     
-    var toolToggle = document.getElementById('current-tool');
-    toolToggle.addEventListener('click', function() {
-        if (toolToggle.innerHTML == 'RECTANGLE') {
-        toolToggle.innerHTML = 'POLYGON';
-        anno.setDrawingTool('polygon');
-        } else {
-        toolToggle.innerHTML = 'RECTANGLE';
-        anno.setDrawingTool('rect');
-        }
-    })
+    // var toolToggle = document.getElementById('current-tool');
+    // toolToggle.addEventListener('click', function() {
+    //     if (toolToggle.innerHTML == 'RECTANGLE') {
+    //     toolToggle.innerHTML = 'POLYGON';
+    //     anno.setDrawingTool('polygon');
+    //     } else {
+    //     toolToggle.innerHTML = 'RECTANGLE';
+    //     anno.setDrawingTool('rect');
+    //     }
+    // })
     
     var editorToggle = document.getElementById('toggle-editor');
     editorToggle.addEventListener('click', function() {
@@ -231,6 +231,7 @@ function upload_to_coco_backend(){
         })
         .then(response => response.json())
         .then(data => new_image_id = data)
+        .then(() => console.log(new_image_id))
         .then($('<tr id='+new_image_id+' onclick="open_image("'+new_image_id+'")"><td>'+new_image_id+'</td><td>'+uploaded_images.files[i].name+'</td><td>false</td></tr>').insertBefore('table > tbody > tr:first'))
         .catch(error => console.log(error))
       }
