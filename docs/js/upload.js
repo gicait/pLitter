@@ -73,6 +73,7 @@ fetch("http://203.159.29.187:8080/api/user/", {
 }
 
 
+
 function upload_to_coco_backend(){
     var uploaded_images = document.getElementById("uploadFile");
       for (var i = 0; i < uploaded_images.files.length; i++) {
