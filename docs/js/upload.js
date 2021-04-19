@@ -37,7 +37,7 @@ function open_image(image_id){
         selection.body = [{
         type: 'TextualBody',
         purpose: 'tagging',
-        value: 'MyOtherTag'
+        value: 'Plastic'
         }];
     
         await anno.updateSelected(selection);
@@ -208,14 +208,14 @@ fetch("http://203.159.29.187:8080/api/user/", {
 }
 
 
-
 function upload_to_coco_backend(){
     var uploaded_images = document.getElementById("uploadFile");
       for (var i = 0; i < uploaded_images.files.length; i++) {
         let form = new FormData();
+        var new_image_id;
         form.append("image", uploaded_images.files[i]);
         form.append("dataset_id", 55);
-        alert(uploaded_images.files[i].size)
+        // alert(uploaded_images.files[i].size)
         fetch("http://203.159.29.187:8080/api/image/", {
             "headers": {
                 "accept": "application/json, text/plain, */*",
@@ -230,7 +230,8 @@ function upload_to_coco_backend(){
             "credentials": "include"
         })
         .then(response => response.json())
-        .then(data => console.log(data))
+        .then(data => new_image_id = data)
+        .then($('<tr id='+new_image_id+' onclick="open_image("'+new_image_id+'")"><td>'+new_image_id+'</td><td>'+uploaded_images.files[i].name+'</td><td>false</td></tr>').insertBefore('table > tbody > tr:first'))
         .catch(error => console.log(error))
       }
 }
@@ -238,7 +239,7 @@ function upload_to_coco_backend(){
 $(document).ready(function(){
     user_from_coco()
     if(set_user){
-        get_images_from_coco();
+        get_images_from_coco()
     }
     // get_images_from_coco()
 })
