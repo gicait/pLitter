@@ -25,7 +25,12 @@ function open_image(image_id){
     var anno = Annotorious.init({
         image: 'ann-img',
         locale: 'auto',
-        disableEditor: true
+        // disableEditor: true
+        widgets: [
+            // { widget: 'COMMENT' },
+            // { widget: return    },
+            { widget: 'TAG', vocabulary: [ 'Plastic', 'Pile', 'Trash Bin', 'Face mask'] }
+        ]
     })
     
     anno.on('createSelection', async function(selection) {
