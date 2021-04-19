@@ -2,6 +2,36 @@ var response_data = {}
 var user = {}
 var set_user = false
 
+
+var images = {}
+
+function get_images_from_coco(){
+    fetch("http://203.159.29.187:8080/api/dataset/55/data?page=1&limit=50&annotated=false", {
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+        },
+        "referrer": "http://203.159.29.187:8080/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+    .then(response => response.json())
+    .then(data => images = data)
+        .then(() => {
+            if(images.total > 0){
+                for (let index = 0; index < images.total; index++) {
+                    const image = images.images[index];
+                    $(imagelist).find('tbody').append("<tr><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
+                }
+            }
+        })
+    .catch(error => console.log(error))
+}
+
+
 function login_from_coco(){
 
     var userName = document.getElementById("user").value;
@@ -31,6 +61,7 @@ function login_from_coco(){
             user = response_data["user"];
             var ele = document.getElementById("login")
             ele.innerHTML='Logged in as: <b>'+user["name"]+'</b> <button onclick="getUser()">Log out</button>'
+            get_images_from_coco();
         }
         else {
             alert("Could not authenticate user")
@@ -128,34 +159,6 @@ function upload_to_coco_backend(){
         .then(data => console.log(data))
         .catch(error => console.log(error))
       }
-}
-
-var images = {}
-
-function get_images_from_coco(){
-    fetch("http://203.159.29.187:8080/api/dataset/55/data?page=1&limit=50&annotated=false", {
-        "headers": {
-            "accept": "application/json",
-            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
-        },
-        "referrer": "http://203.159.29.187:8080/",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors",
-        "credentials": "include"
-    })
-    .then(response => response.json())
-    .then(data => images = data)
-        .then(() => {
-            if(images.total > 0){
-                for (let index = 0; index < images.total; index++) {
-                    const image = images.images[index];
-                    $(imagelist).find('tbody').append("<tr><td>"+image.id+"</td><td>"+image.file_name+"</td><td>"+image.annotated+"</td></tr>")
-                }
-            }
-        })
-    .catch(error => console.log(error))
 }
 
 $(document).ready(function(){
