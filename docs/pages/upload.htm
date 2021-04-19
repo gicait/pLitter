@@ -11,9 +11,10 @@
 
 <div id="upload">
   <input type="file" id="uploadFile" multiple size="50" onchange="upload_to_coco_backend()"> <br>
-  <div id="list">
-    <table>
-      <tr><th><td>Image</td><td>Upload status</td><td>Annotation status</td></th></tr>
+  <div>
+    <table id="imagelist">
+      <thead><tr><td></td>Image</td><td>Upload status</td><td>Annotation status</td></tr></thead>
+      <tbody></tbody>
     </table>
   </div>
 </div>
