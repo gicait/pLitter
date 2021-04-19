@@ -1,5 +1,36 @@
 <p> Upload images to pLitter, so they will be used to train the model to improve the accuracy. (Add note) </p>
-<iframe id="frame" src="http://203.159.29.187:8001" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:500px;width:100%;border:none;overflow:hidden;"></iframe>
+
+<p>You need to login with credidentials of coco-annotator of GIC. If not register from here <a href="http://203.159.29.187:8080">Coco-annotator.</a> </p>
+
+
+<div id="login">
+  <input type = "text" id = "user"/>
+  <input type = "password" id = "pass"/>
+  <button onclick="login_from_coco()">Log in</button>
+</div>
+
+<div id="upload">
+  <input type="file" id="uploadFile" multiple size="50" onchange="upload_to_coco_backend()"> <br>
+  <div id="list">
+    <table>
+      <tr><th><td>Image</td><td>Upload status</td><td>Annotation status</td></th></tr>
+    </table>
+  </div>
+</div>
+
+
+
+
+
+
+
+<div id="anno-front" style="display:block; visibility:hidden"><iframe src="http://203.159.29.187:8080" height="1px" width=" 100%" ></iframe></div>
+
+<!-- <iframe id="frame" src="http://203.159.29.187:8001" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:1000px;width:100%;border:none;overflow:hidden;"></iframe> -->
+
+
+<!-- <iframe src="http://203.159.29.187:8001" id="frame" scrolling="yes" frameborder="0" style="position: relative; height: 100%; width: 100%;"></iframe> -->
+
 
 <!-- <head>
   <meta charset="utf-8">
