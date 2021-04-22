@@ -22,6 +22,8 @@ function open_image(image_id){
     // $( "image-veiwer" ).remove();
     document.getElementById("image-veiwer").innerHTML = "<img id='ann-img' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto />"
     // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
+
+    
     var anno = Annotorious.init({
         image: 'ann-img',
         locale: 'auto',
@@ -134,7 +136,7 @@ function login_from_coco(){
             set_user = true
             user = response_data["user"];
             var ele = document.getElementById("login")
-            ele.innerHTML='Logged in as: <b>'+user["name"]+'</b> <button onclick="getUser()">Log out</button>'
+            ele.innerHTML='Logged in as: <b>'+user["name"]+'</b> <button onclick="logout_from_coco()">Log out</button>'
             get_images_from_coco();
         }
         else {
@@ -165,6 +167,7 @@ function logout_from_coco(){
         if(response_data["success"] === true){
             var ele = document.getElementById("login")
             ele.innerHTML='<input type = "text" id = "user"/><input type = "password" id = "pass"/><button onclick="login_from_coco()">Log in</button>'
+            $(imagelist).find('tbody').innerHTML=""
         }
         else {
             console.log(response_data)            
@@ -242,5 +245,5 @@ $(document).ready(function(){
     if(set_user){
         get_images_from_coco()
     }
-    // get_images_from_coco()
+    get_images_from_coco()
 })
