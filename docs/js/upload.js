@@ -8,7 +8,42 @@ var new_image_id;
 
 
 function drawBoxes_annotorius(predictions){
-    console.log(predictions)
+    // console.log(predictions)
+    var preds_format = []
+    predictions.forEach(prediction => {
+        var pred_dict = {}
+        pred_dict["type"] = "Annotation"
+        pred_dict["body"] = []
+        pred_dict["target"] = {}
+        pred_dict["@context"] = ""
+        pred_dict["id"] = ""
+
+        preds_format.push(pred_dict)
+        console.log(preds_format)
+    });
+
+
+
+//     {
+//     "type": "Annotation",
+//     "body": [
+//         {
+//             "type": "TextualBody",
+//             "purpose": "tagging",
+//             "value": "Plastic"
+//         }
+//     ],
+//     "target": {
+//         "source": "http://203.159.29.187:8080/api/image/28568",
+//         "selector": {
+//             "type": "FragmentSelector",
+//             "conformsTo": "http://www.w3.org/TR/media-frags/",
+//             "value": "xywh=pixel:515.7105102539062,478.37109375,237.6204833984375,189.046142578125"
+//         }
+//     },
+//     "@context": "http://www.w3.org/ns/anno.jsonld",
+//     "id": "#29d84ed6-a1ea-46e4-aa4e-7b77fc06cae3"
+// }
 }
 
 async function predict_on_this() {
@@ -100,6 +135,7 @@ function open_image(image_id){
     // .then(data => console.log(data))
     // .catch(error => console.log(error))
     // $( "image-veiwer" ).remove();
+    
     document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
     // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 
