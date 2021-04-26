@@ -100,7 +100,7 @@ function open_image(image_id){
     // .then(data => console.log(data))
     // .catch(error => console.log(error))
     // $( "image-veiwer" ).remove();
-    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
+    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
     // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 
 
