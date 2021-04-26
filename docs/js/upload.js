@@ -11,10 +11,24 @@ function drawBoxes_annotorius(predictions){
     // console.log(predictions)
     var preds_format = []
     predictions.forEach(prediction => {
+        const {box, label, score} = prediction;
+        const {left, top, width, height} = box;
         var pred_dict = {}
         pred_dict["type"] = "Annotation"
         pred_dict["body"] = []
+        pred_dict_body = {}
+        pred_dict_body["type"] =  "TextualBody"
+        pred_dict_body["purpose"] = "tagging"
+        pred_dict_body["value"] = "Plastic"
+        pred_dict["body"].push(pred_dict_body)
+        
         pred_dict["target"] = {}
+        pred_dict["target"]["source"] = "http://203.159.29.187:8080/api/image/28568",
+        pred_dict["target"]["selector"] = {}
+        pred_dict["target"]["selector"]["type"] = "FragmentSelector"
+        pred_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
+        pred_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(left)+","+String(top)+","+String(width)+","+String(height)
+        
         pred_dict["@context"] = ""
         pred_dict["id"] = ""
 
