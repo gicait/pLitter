@@ -33,10 +33,9 @@ function drawBoxes_annotorius(predictions){
         pred_dict["id"] = ""
 
         preds_format.push(pred_dict)
-        console.log(preds_format)
-        anno.setAnnotations(preds_format)
     });
-
+    console.log(preds_format)
+    anno.setAnnotations(preds_format)
 
 
 //     {
