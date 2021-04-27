@@ -7,7 +7,7 @@ var new_image_id;
 
 
 
-function drawBoxes_annotorius(predictions){
+function drawBoxes_annotorius(image, predictions){
     // console.log(predictions)
     var preds_format = []
     predictions.forEach(prediction => {
@@ -27,7 +27,15 @@ function drawBoxes_annotorius(predictions){
         pred_dict["target"]["selector"] = {}
         pred_dict["target"]["selector"]["type"] = "FragmentSelector"
         pred_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
-        pred_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(left)+","+String(top)+","+String(width)+","+String(height)
+
+        // convet to natual dimentions to img align dimensions
+
+        a_left = left * (image.naturalWidth/image.width)
+        a_top = top * (image.naturalHeight/image.height)
+        a_width = width * (image.naturalWidth/image.width)
+        a_height = height * (image.naturalHeight/image.height)
+        
+        pred_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
         
         pred_dict["@context"] = ""
         pred_dict["id"] = ""
@@ -74,7 +82,7 @@ async function predict_on_this() {
     pre.textContent = JSON.stringify(predictions, null, 2);
     // document.body.append(pre);
 
-    drawBoxes_annotorius(predictions);
+    drawBoxes_annotorius(image, predictions);
 }
 
 
@@ -88,6 +96,7 @@ var cat_dict = {
 
 function save_anntations_in_coco(im_id){
     var anns = anno.getAnnotations()
+    alert("confirm saving"+anns.length+"annotations")
     console.log(anns)
     var ann_id;
     var ann;
@@ -124,12 +133,10 @@ function save_anntations_in_coco(im_id){
                 "mode": "cors",
                 "credentials": "include"
               });
-
-              im_status = im_id+"_status"
-              document.getElementById(im_status).innerHTML="true" 
-
         }
     }
+    im_status = im_id+"_status"
+    document.getElementById(im_status).innerHTML="true" 
 }
 
 function open_image(image_id){
@@ -150,7 +157,7 @@ function open_image(image_id){
     // .catch(error => console.log(error))
     // $( "image-veiwer" ).remove();
     // width=100% height=auto 
-    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"'  onload='predict_on_this()'/>"
+    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
     // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 
 
@@ -206,12 +213,12 @@ function open_image(image_id){
     //     }
     // })
     
-    var editorToggle = document.getElementById('toggle-editor');
-    editorToggle.addEventListener('click', function() {
-        const updatedState = !anno.disableEditor;
-        console.log('setting disableEditor', updatedState);
-        anno.disableEditor = updatedState;
-    })
+    // var editorToggle = document.getElementById('toggle-editor');
+    // editorToggle.addEventListener('click', function() {
+    //     const updatedState = !anno.disableEditor;
+    //     console.log('setting disableEditor', updatedState);
+    //     anno.disableEditor = updatedState;
+    // })
 }
 
 function get_images_from_coco(){
