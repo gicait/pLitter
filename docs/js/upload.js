@@ -158,8 +158,8 @@ function get_annots_from_coco(im_id){
         
                 anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
         
-                pred_dict["@context"] = ""
-                pred_dict["id"] = annotation["id"]
+                anno_dict["@context"] = ""
+                anno_dict["id"] = annotation["id"]
 
                 annotations_format.push(anno_dict)
             });
