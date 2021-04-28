@@ -138,10 +138,10 @@ function get_annots_from_coco(im_id){
                 box = annotation["bbox"]
                 // console.log(box)
                 // const {left, top, width, height} = box;
-                left = bbox[0][0]
-                top = bbox[0][1]
-                width = bbox[0][2]
-                height = bbox[0][3]
+                left = box[0][0]
+                top = box[0][1]
+                width = box[0][2]
+                height = box[0][3]
 
                 console.log(left, top, width, height)
                 var anno_dict = {}
