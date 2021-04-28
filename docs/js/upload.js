@@ -232,6 +232,8 @@ function save_annots_to_coco(im_id){
         }
     }
     // im_status = im_id+"_status"
+    alert("loading next image")
+    load_random()
 }
 
 
