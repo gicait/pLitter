@@ -205,7 +205,7 @@ function save_annots_to_coco(im_id){
             console.log(x, y, w, h, cat_id, ann.id)
 
             var box = [x, y, w, h]
-            // var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
             // var annot_metadata = {'predicted':true}
             
             fetch("http://203.159.29.187:8080/api/annotation/"+String(ann.id), {
@@ -222,7 +222,7 @@ function save_annots_to_coco(im_id){
                     // category_id: cat_id,
                     // isbbox: true,
                     bbox:box,
-                    // segmentation: seg,
+                    segmentation: seg,
                     // metadata: annot_metadata
                 }),
                 "method": "PUT",
@@ -231,7 +231,7 @@ function save_annots_to_coco(im_id){
               });
         }
     }
-    im_status = im_id+"_status"
+    // im_status = im_id+"_status"
 }
 
 
