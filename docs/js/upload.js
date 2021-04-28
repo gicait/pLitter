@@ -135,7 +135,7 @@ function save_anntations_in_coco(im_id){
                     category_id: cat_id,
                     isbbox: true,
                     segmentation: seg,
-                    metadata = annot_metadata
+                    metadata: annot_metadata
                 }),
                 "method": "POST",
                 "mode": "cors",
