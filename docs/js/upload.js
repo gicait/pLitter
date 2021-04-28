@@ -124,6 +124,7 @@ function get_annots_from_coco(im_id){
             var annotations = category["annotations"]
             var annotations_format = []
 
+            const image = document.getElementById('ran-ann-img');
 
             // to do from below
 
