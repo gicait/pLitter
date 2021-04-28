@@ -205,10 +205,10 @@ function save_annots_to_coco(im_id){
             console.log(x, y, w, h, cat_id, ann.id)
 
             var box = [x, y, w, h]
-            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            var annot_metadata = {'predicted':true}
+            // var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+            // var annot_metadata = {'predicted':true}
             
-            fetch("http://203.159.29.187:8080/api/annotation/", {
+            fetch("http://203.159.29.187:8080/api/annotation/"+String(ann.id), {
                 "headers": {
                   "accept": "application/json, text/plain, */*",
                   "accept-language": "en-US,en;q=0.9",
@@ -217,14 +217,15 @@ function save_annots_to_coco(im_id){
                 "referrer": "http://203.159.29.187:8080/",
                 "referrerPolicy": "strict-origin-when-cross-origin",
                 "body": JSON.stringify({
-                    image_id: im_id,
-                    category_id: cat_id,
-                    isbbox: true,
+                    category_id:28,
+                    // image_id: im_id,
+                    // category_id: cat_id,
+                    // isbbox: true,
                     bbox:box,
-                    segmentation: seg,
-                    metadata: annot_metadata
+                    // segmentation: seg,
+                    // metadata: annot_metadata
                 }),
-                "method": "POST",
+                "method": "PUT",
                 "mode": "cors",
                 "credentials": "include"
               });
