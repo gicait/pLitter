@@ -35,6 +35,11 @@ function drawBoxes_annotorius(predictions){
         preds_format.push(pred_dict)
     });
     console.log(preds_format)
+
+    // if annotation is ready, first save it to backend and change with response id
+
+
+
     anno.setAnnotations(preds_format)
 
 
@@ -103,6 +108,8 @@ function save_anntations_in_coco(im_id){
             console.log(x, y, w, h, cat_id)
 
             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+            var annot_metadata = {}
+            annot_metadata["predicted"] = true
             // [[140,273,170,273,170,280,140,280]]
             // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
             
@@ -118,7 +125,8 @@ function save_anntations_in_coco(im_id){
                     image_id: im_id,
                     category_id: cat_id,
                     isbbox: true,
-                    segmentation: seg  
+                    segmentation: seg,
+                    metadata = annot_metadata
                 }),
                 "method": "POST",
                 "mode": "cors",
@@ -150,7 +158,7 @@ function open_image(image_id){
     // .catch(error => console.log(error))
     // $( "image-veiwer" ).remove();
     // width=100% height=auto 
-    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"'  onload='predict_on_this()'/>"
+    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
     // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
 
 
