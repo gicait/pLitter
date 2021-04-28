@@ -191,7 +191,7 @@ function save_annots_to_coco(im_id){
             var cat_id = cat_dict[cat_name]
             console.log(x, y, w, h, cat_id, ann.id)
 
-
+            var box = [x, y, w, h]
             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
             var annot_metadata = {'predicted':true}
             
@@ -207,6 +207,7 @@ function save_annots_to_coco(im_id){
                     image_id: im_id,
                     category_id: cat_id,
                     isbbox: true,
+                    bbox:box,
                     segmentation: seg,
                     metadata: annot_metadata
                 }),
