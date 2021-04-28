@@ -139,11 +139,11 @@ function get_annots_from_coco(im_id){
                 // console.log(box)
                 // const {left, top, width, height} = box;
                 left = box[0][0]
-                top = box[0][1]
+                atop = box[0][1]
                 width = box[0][2]
                 height = box[0][3]
 
-                console.log(left, top, width, height)
+                console.log(left, atop, width, height)
                 var anno_dict = {}
                 anno_dict["type"] = "Annotation"
                 anno_dict["body"] = []
@@ -162,7 +162,7 @@ function get_annots_from_coco(im_id){
         // convet to natual dimentions to img align dimensions
 
                 a_left = left * (image.naturalWidth/image.width)
-                a_top = top * (image.naturalHeight/image.height)
+                a_top = atop * (image.naturalHeight/image.height)
                 a_width = width * (image.naturalWidth/image.width)
                 a_height = height * (image.naturalHeight/image.height)
         
