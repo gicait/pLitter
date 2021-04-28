@@ -118,12 +118,12 @@ function get_annots_from_coco(im_id){
     .then(data => annotator_response = data)
     .then(() => {
         console.log(annotator_response)
+        var annotations_format = []
         for(cat_num in annotator_response.categories){
             var category = annotator_response.categories[cat_num]
             var cat_name = category["name"]
             console.log(cat_name)
             var annotations = category["annotations"]
-            var annotations_format = []
 
             const image = document.getElementById('ran-ann-img');
 
@@ -133,8 +133,10 @@ function get_annots_from_coco(im_id){
             // *************
 
             annotations.forEach(annotation => {
-                // if !=                 
+                // if !=        
+                console.log(annotation)         
                 box = annotation["bbox"]
+                console.log(box)
                 const {left, top, width, height} = box;
                 console.log(left, top, width, height)
                 var anno_dict = {}
@@ -166,10 +168,9 @@ function get_annots_from_coco(im_id){
 
                 annotations_format.push(anno_dict)
             });
-            console.log(annotations_format)
-
-            ran_anno.setAnnotations(annotations_format)
         }
+        console.log(annotations_format)
+        ran_anno.setAnnotations(annotations_format)
     })
     .catch(error => console.log(error))
 }
