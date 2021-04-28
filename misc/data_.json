@@ -1,0 +1,37 @@
+fetch("http://203.159.29.187:8080/api/annotator/data", {
+    "headers": {
+      "accept": "application/json, text/plain, */*",
+      "accept-language": "en-US,en;q=0.9",
+      "content-type": "application/x-www-form-urlencoded"
+    },
+    "referrer": "http://203.159.29.187:8080/",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "body": "{
+        \"dataset\":{\"id\":55,\"name\":\"check1\",\"directory\":\"/datasets/check1/\",\"categories\":[28],\"owner\":\"check\",\"users\":[\"guest1\",\"guest\"],
+        \"annotate_url\":\"\",
+        \"default_annotation_metadata\":{},
+        \"deleted\":false},
+        \"image\":{\"id\":28572,
+        \"metadata\":{},
+        \"settings\":{\"selectedLayers\":{\"category\":0,\"annotation\":13,\"keypoint\":-1}},\"category_ids\":[28]},
+        \"settings\":{\"activeTool\":\"Select\",\"zoom\":0.2,\"tools\":{}},
+        \"categories\":[
+            {\"id\":28,\"name\":\"ch\",\"show\":true,\"visualize\":true,\"color\":\"#9c541c\",\"metadata\":[],
+            \"annotations\":[
+                {\"id\":157683,\"isbbox\":true,\"color\":\"#04dc01\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":7,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-509.2,104.9],[-467.5,104.9],[-467.5,130.1],[-509.2,130.1]],\"closed\":true}]],\"fillColor\":[0,0.9,0]}],\"sessions\":[]},
+                {\"id\":157684,\"isbbox\":true,\"color\":\"#eff43a\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":8,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-284.6,50],[-222,50],[-222,87.4],[-284.6,87.4]],\"closed\":true}]],\"fillColor\":[0.9,1,0.2]}],\"sessions\":[]},
+                {\"id\":157685,\"isbbox\":true,\"color\":\"#19c46b\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":9,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-356.8,-359.1],[275.2,-359.1],[275.2,-125.3],[-356.8,-125.3]],\"closed\":true}]],\"fillColor\":[0.1,0.8,0.4]}],\"sessions\":[]},
+                {\"id\":157687,\"isbbox\":true,\"color\":\"#9577e2\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":10,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-300.6,138.6],[-280.5,138.6],[-280.5,161.4],[-300.6,161.4]],\"closed\":true}]],\"fillColor\":[0.6,0.5,0.9]}],\"sessions\":[]},
+                {\"id\":157686,\"isbbox\":true,\"color\":\"#c80f79\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":11,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[457.7,302.8],[511,302.8],[511,357.6],[457.7,357.6]],\"closed\":true}]],\"fillColor\":[0.8,0.1,0.5]}],\"sessions\":[]},
+                {\"id\":157688,\"isbbox\":true,\"color\":\"#c4fa68\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":12,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-509.2,104.9],[-467.5,104.9],[-467.5,130.1],[-509.2,130.1]],\"closed\":true}]],\"fillColor\":[0.8,1,0.4]}],\"sessions\":[]},
+                {\"id\":157689,\"isbbox\":true,\"color\":\"#846ae0\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":13,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[130.7,166.3],[174.2,166.3],[174.2,196.1],[130.7,196.1]],\"closed\":true}]],\"fillColor\":[0.5,0.4,0.9]}],\"sessions\":[]},
+                {\"id\":157690,\"isbbox\":true,\"color\":\"#5b34fc\",\"metadata\":{},\"compoundPath\":[\"CompoundPath\",{\"applyMatrix\":true,\"opacity\":0.6,\"data\":{\"annotationId\":15,\"categoryId\":0},\"children\":[[\"Path\",{\"applyMatrix\":true,\"segments\":[[-460,114.7],[-425.7,114.7],[-425.7,137.9],[-460,137.9]],\"closed\":true}]],\"fillColor\":[0.4,0.2,1]}],\"sessions\":[]}],
+            \"supercategory\":\"\",
+            \"keypoint_labels\":[],
+            \"keypoint_edges\":[],
+            \"keypoint_colors\":[]}]
+            }",
+    "method": "POST",
+    "mode": "cors",
+    "credentials": "include"
+  });
