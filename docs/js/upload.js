@@ -117,7 +117,7 @@ function save_anntations_in_coco(im_id){
             console.log(x, y, w, h, cat_id)
 
             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            var annot_metadata = JSON.stringify({predicted:true})
+            var annot_metadata = JSON.stringify({"predicted":true})
             // annot_metadata["predicted"] = true
             // [[140,273,170,273,170,280,140,280]]
             // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
