@@ -132,6 +132,7 @@ function get_annots_from_coco(im_id){
 
             annotations.forEach(annotation => {
                 box = annotation["bbox"]
+                const {left, top, width, height} = box;
                 var anno_dict = {}
                 anno_dict["type"] = "Annotation"
                 anno_dict["body"] = []
