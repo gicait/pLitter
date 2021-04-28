@@ -161,10 +161,14 @@ function get_annots_from_coco(im_id){
 
         // convet to natual dimentions to img align dimensions
 
-                a_left = left * (image.naturalWidth/image.width)
-                a_top = atop * (image.naturalHeight/image.height)
-                a_width = width * (image.naturalWidth/image.width)
-                a_height = height * (image.naturalHeight/image.height)
+                // a_left = left * (image.naturalWidth/image.width)
+                // a_top = atop * (image.naturalHeight/image.height)
+                // a_width = width * (image.naturalWidth/image.width)
+                // a_height = height * (image.naturalHeight/image.height)
+                a_left = left
+                a_top = atop
+                a_width = width
+                a_height = height
         
                 anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
         
