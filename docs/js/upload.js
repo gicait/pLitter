@@ -130,50 +130,40 @@ function get_annots_from_coco(im_id){
             // *********************
             // *************
 
-
-    //         annotations.forEach(annotation => {
-    //             const {box, label, score} = prediction;
-    //             const {left, top, width, height} = box;
-    //     var pred_dict = {}
-    //     pred_dict["type"] = "Annotation"
-    //     pred_dict["body"] = []
-    //     pred_dict_body = {}
-    //     pred_dict_body["type"] =  "TextualBody"
-    //     pred_dict_body["purpose"] = "tagging"
-    //     pred_dict_body["value"] = "Plastic"
-    //     pred_dict["body"].push(pred_dict_body)
+            annotations.forEach(annotation => {
+                box = annotation["bbox"]
+                var anno_dict = {}
+                anno_dict["type"] = "Annotation"
+                anno_dict["body"] = []
+                anno_dict_body = {}
+                anno_dict_body["type"] =  "TextualBody"
+                anno_dict_body["purpose"] = "tagging"
+                anno_dict_body["value"] = "Plastic"
+                anno_dict["body"].push(anno_dict_body)
         
-    //     pred_dict["target"] = {}
-    //     pred_dict["target"]["source"] = "http://203.159.29.187:8080/api/image/28568",
-    //     pred_dict["target"]["selector"] = {}
-    //     pred_dict["target"]["selector"]["type"] = "FragmentSelector"
-    //     pred_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
+                anno_dict["target"] = {}
+                anno_dict["target"]["source"] = "http://203.159.29.187:8080/api/image/28568",
+                anno_dict["target"]["selector"] = {}
+                anno_dict["target"]["selector"]["type"] = "FragmentSelector"
+                anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
 
-    //     // convet to natual dimentions to img align dimensions
+        // convet to natual dimentions to img align dimensions
 
-    //     a_left = left * (image.naturalWidth/image.width)
-    //     a_top = top * (image.naturalHeight/image.height)
-    //     a_width = width * (image.naturalWidth/image.width)
-    //     a_height = height * (image.naturalHeight/image.height)
+                a_left = left * (image.naturalWidth/image.width)
+                a_top = top * (image.naturalHeight/image.height)
+                a_width = width * (image.naturalWidth/image.width)
+                a_height = height * (image.naturalHeight/image.height)
         
-    //     pred_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
+                anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
         
-    //     pred_dict["@context"] = ""
-    //     pred_dict["id"] = ""
+                pred_dict["@context"] = ""
+                pred_dict["id"] = annotation["id"]
 
-    //     preds_format.push(pred_dict)
-    // });
-    // console.log(preds_format)
+                annotations_format.push(anno_dict)
+            });
+            console.log(annotations_format)
 
-    // if annotation is ready, first save it to backend and change with response id
-
-
-
-    anno.setAnnotations(preds_format)
-
-
-
-
+            ran_anno.setAnnotations(annotations_format)
         }
     })
     .catch(error => console.log(error))
@@ -297,8 +287,6 @@ function load_random(){
         const image_id = image["id"]
         document.getElementById("ran-img").innerHTML = "<div id='save'></div><img id='ran-ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto/>"
 
-        get_annots_from_coco(image_id)
-
         ran_anno = Annotorious.init({
             image: 'ran-ann-img',
             locale: 'auto',
@@ -310,6 +298,9 @@ function load_random(){
             ]
         })
         
+        get_annots_from_coco(image_id)
+
+
         // model_run()
         document.getElementById("save").innerHTML = "<button onclick='save_annots_to_coco("+image_id+")'>Save</button>"
         
