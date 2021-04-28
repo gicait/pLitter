@@ -117,6 +117,7 @@ function get_annots_from_coco(im_id){
     .then(response => response.json())
     .then(data => annotator_response = data)
     .then(() => {
+        console.log(annotator_response)
         for(cat_num in annotator_response.categories){
             var category = annotator_response.categories[cat_num]
             var cat_name = category["name"]
@@ -132,6 +133,7 @@ function get_annots_from_coco(im_id){
             // *************
 
             annotations.forEach(annotation => {
+                // if !=                 
                 box = annotation["bbox"]
                 const {left, top, width, height} = box;
                 var anno_dict = {}
