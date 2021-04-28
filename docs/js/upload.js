@@ -134,10 +134,15 @@ function get_annots_from_coco(im_id){
 
             annotations.forEach(annotation => {
                 // if !=        
-                console.log(annotation)         
+                // console.log(annotation)         
                 box = annotation["bbox"]
-                console.log(box)
-                const {left, top, width, height} = box;
+                // console.log(box)
+                // const {left, top, width, height} = box;
+                left = bbox[0][0]
+                top = bbox[0][1]
+                width = bbox[0][2]
+                height = bbox[0][3]
+
                 console.log(left, top, width, height)
                 var anno_dict = {}
                 anno_dict["type"] = "Annotation"
@@ -166,6 +171,8 @@ function get_annots_from_coco(im_id){
                 anno_dict["@context"] = ""
                 anno_dict["id"] = annotation["id"]
 
+                // ************ add condition that bbox exists
+                // 
                 annotations_format.push(anno_dict)
             });
         }
