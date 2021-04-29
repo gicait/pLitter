@@ -1,3 +1,8 @@
+const base_link = "https://ae542e0cd461.ngrok.io"
+// const base_link = "http://203.159.29.187:8080"
+
+
+
 var response_data = {}
 var user = {}
 var set_user = false
@@ -26,7 +31,7 @@ function drawBoxes_annotorius(image, predictions){
         pred_dict["body"].push(pred_dict_body)
         
         pred_dict["target"] = {}
-        pred_dict["target"]["source"] = "http://203.159.29.187:8080/api/image/28568",
+        pred_dict["target"]["source"] = base_link+"/api/image/28568",
         pred_dict["target"]["selector"] = {}
         pred_dict["target"]["selector"]["type"] = "FragmentSelector"
         pred_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
@@ -65,7 +70,7 @@ function drawBoxes_annotorius(image, predictions){
 //         }
 //     ],
 //     "target": {
-//         "source": "http://203.159.29.187:8080/api/image/28568",
+//         "source": base_link+"/api/image/28568",
 //         "selector": {
 //             "type": "FragmentSelector",
 //             "conformsTo": "http://www.w3.org/TR/media-frags/",
@@ -105,12 +110,12 @@ var cat_dict = {
 
 function get_annots_from_coco(im_id){
     alert("yeee")
-    fetch("http://203.159.29.187:8080/api/annotator/data/"+String(im_id), {
+    fetch(base_link+"/api/annotator/data/"+String(im_id), {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-US,en;q=0.9"
         },
-        "referrer": "http://203.159.29.187:8080/api/",
+        "referrer": base_link+"/api/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
@@ -141,10 +146,16 @@ function get_annots_from_coco(im_id){
                 box = annotation["bbox"]
                 // console.log(box)
                 // const {left, top, width, height} = box;
-                left = box[0][0]
-                atop = box[0][1]
-                width = box[0][2]
-                height = box[0][3]
+                box = box.flat()
+                
+                left = box[0]
+                atop = box[1]
+                width = box[2]
+                height = box[3]
+                // left = box[0][0]
+                // atop = box[0][1]
+                // width = box[0][2]
+                // height = box[0][3]
 
 
 
@@ -159,7 +170,8 @@ function get_annots_from_coco(im_id){
                 anno_dict["body"].push(anno_dict_body)
         
                 anno_dict["target"] = {}
-                anno_dict["target"]["source"] = "http://203.159.29.187:8080/api/image/28568",
+                // modify below with id
+                anno_dict["target"]["source"] = base_link+"/api/image/28568",
                 anno_dict["target"]["selector"] = {}
                 anno_dict["target"]["selector"]["type"] = "FragmentSelector"
                 anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
@@ -213,27 +225,60 @@ function save_annots_to_coco(im_id){
             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
             // var annot_metadata = {'predicted':true}
             
-            fetch("http://203.159.29.187:8080/api/annotation/"+String(ann.id), {
-                "headers": {
-                  "accept": "application/json, text/plain, */*",
-                  "accept-language": "en-US,en;q=0.9",
-                  "content-type": "application/json;charset=UTF-8"
-                },
-                "referrer": "http://203.159.29.187:8080/",
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": JSON.stringify({
-                    category_id:28,
-                    // image_id: im_id,
-                    // category_id: cat_id,
-                    // isbbox: true,
-                    bbox:box,
-                    segmentation: seg,
-                    // metadata: annot_metadata
-                }),
-                "method": "PUT",
-                "mode": "cors",
-                "credentials": "include"
-              });
+            // if annotatation is newly created
+            // id is string, then send post
+            // else id is int, send put
+            if (typeof ann.id === 'number'){
+                fetch(base_link+"/api/annotation/"+String(ann.id), {
+                    "headers": {
+                    "accept": "application/json, text/plain, */*",
+                    "accept-language": "en-US,en;q=0.9",
+                    "content-type": "application/json;charset=UTF-8"
+                    },
+                    "referrer": base_link+"/",
+                    "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": JSON.stringify({
+                        category_id:cat_id,
+                        // image_id: im_id,
+                        // category_id: cat_id,
+                        // isbbox: true,
+                        bbox:box,
+                        segmentation: seg,
+                        // metadata: annot_metadata
+                    }),
+                    "method": "PUT",
+                    "mode": "cors",
+                    "credentials": "include"
+                });
+            }
+            else if (typeof ann.id === 'string'){ 
+                fetch(base_link+"/api/annotation/", {
+                    "headers": {
+                      "accept": "application/json, text/plain, */*",
+                      "accept-language": "en-US,en;q=0.9",
+                      "content-type": "application/json;charset=UTF-8"
+                    },
+                    "referrer": base_link+"/",
+                    "referrerPolicy": "strict-origin-when-cross-origin",
+                    "body": JSON.stringify({
+                        image_id: im_id,
+                        category_id: cat_id,
+                        isbbox: true,
+                        segmentation: seg,
+                        bbox: box,
+                        // metadata: annot_metadata
+                    }),
+                    "method": "POST",
+                    "mode": "cors",
+                    "credentials": "include"
+                  })
+                  .then(response => response.json())
+                  .then(data => console.log(data))
+                  .catch(error => console.log(error))
+            }
+            else {
+                console.log("Something wrong with annotation id!")
+            }
         }
     }
 
@@ -269,13 +314,13 @@ function save_anntations_in_coco(im_id){
             // [[140,273,170,273,170,280,140,280]]
             // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
             
-            fetch("http://203.159.29.187:8080/api/annotation/", {
+            fetch(base_link+"/api/annotation/", {
                 "headers": {
                   "accept": "application/json, text/plain, */*",
                   "accept-language": "en-US,en;q=0.9",
                   "content-type": "application/json;charset=UTF-8"
                 },
-                "referrer": "http://203.159.29.187:8080/",
+                "referrer": base_link+"/",
                 "referrerPolicy": "strict-origin-when-cross-origin",
                 "body": JSON.stringify({
                     image_id: im_id,
@@ -297,12 +342,12 @@ function save_anntations_in_coco(im_id){
 
 
 function load_random(){
-    fetch("http://203.159.29.187:8080/api/dataset/55/data?page=1&limit=50&annotated=false", {
+    fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
         },
-        "referrer": "http://203.159.29.187:8080/",
+        "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
@@ -315,7 +360,7 @@ function load_random(){
         const random_index = Math.floor(Math.random() * images.images.length);
         const image = images.images[random_index];
         const image_id = image["id"]
-        document.getElementById("ran-img").innerHTML = "<div id='ran-save'></div><img id='ran-ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto/>"
+        document.getElementById("ran-img").innerHTML = "<div id='ran-save'></div><img id='ran-ann-img' crossorigin='anonymous' src='"+base_link+"/api/image/"+image_id+"' width=100% height=auto/>"
 
         ran_anno = Annotorious.init({
             image: 'ran-ann-img',
@@ -369,12 +414,12 @@ function load_random(){
 
 
 function open_image(image_id){
-    // fetch("http://203.159.29.187:8080/api/annotator/data/"+image_id.toString(), {
+    // fetch(base_link+"/api/annotator/data/"+image_id.toString(), {
     //     "headers": {
     //         "accept": "application/json",
     //         "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
     //     },
-    //     "referrer": "http://203.159.29.187:8080",
+    //     "referrer": base_link+"",
     //     "referrerPolicy": "strict-origin-when-cross-origin",
     //     "body": null,
     //     "method": "GET",
@@ -386,8 +431,8 @@ function open_image(image_id){
     // .catch(error => console.log(error))
     // $( "image-veiwer" ).remove();
     // width=100% height=auto 
-    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
-    // document.getElementById("image-veiwer").innerHTML("<img src='http://203.159.29.187:8080/api/image/"+image_id.toString()+"' />" )
+    document.getElementById("image-veiwer").innerHTML = "<div id='save'></div><img id='ann-img' crossorigin='anonymous' src="+base_link+"'/api/image/"+image_id+"' width=100% height=auto onload='predict_on_this()'/>"
+    // document.getElementById("image-veiwer").innerHTML("<img src="+base_link+"'/api/image/"+image_id.toString()+"' />" )
 
 
     anno = Annotorious.init({
@@ -451,12 +496,12 @@ function open_image(image_id){
 }
 
 function get_images_from_coco(){
-    fetch("http://203.159.29.187:8080/api/dataset/55/data?page=1&limit=50&annotated=false", {
+    fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
         },
-        "referrer": "http://203.159.29.187:8080/",
+        "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
@@ -482,13 +527,13 @@ function login_from_coco(){
     var userName = document.getElementById("user").value;
     var passWord = document.getElementById("pass").value;
 
-    fetch("http://203.159.29.187:8080/api/user/login", {
+    fetch(base_link+"/api/user/login", {
         "headers": {
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
             "content-type": "application/json;charset=UTF-8"
         },
-        "referrer": "http://203.159.29.187:8080/",
+        "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": JSON.stringify({
             username: userName,
@@ -518,12 +563,12 @@ function login_from_coco(){
 }
 
 function logout_from_coco(){
-    fetch("http://203.159.29.187:8080/api/user/logout", {
+    fetch(base_link+"/api/user/logout", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
         },
-        "referrer": "http://203.159.29.187:8080/",
+        "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
@@ -549,12 +594,12 @@ function logout_from_coco(){
 
 function user_from_coco(){
 
-fetch("http://203.159.29.187:8080/api/user/", {
+fetch(base_link+"/api/user/", {
     "headers": {
         "accept": "application/json, text/plain, */*",
         "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
     },
-    "referrer": "http://203.159.29.187:8080/",
+    "referrer": base_link+"/",
     "referrerPolicy": "strict-origin-when-cross-origin",
     "body": null,
     "method": "GET",
@@ -586,12 +631,12 @@ function add_with_id(res_id, im_name){
 
 function get_dataset_stats(){
     // alert("yee")
-    fetch("http://203.159.29.187:8080/api/dataset/55/stats", {
+    fetch(base_link+"/api/dataset/55/stats", {
         "headers": {
           "accept": "application/json",
           "accept-language": "en-US,en;q=0.9"
         },
-        "referrer": "http://203.159.29.187:8080/api/",
+        "referrer": base_link+"/api/",
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
@@ -620,13 +665,13 @@ function upload_to_coco_backend(){
         form.append("image", uploaded_images.files[i]);
         form.append("dataset_id", 55);
         // alert(uploaded_images.files[i].size)
-        fetch("http://203.159.29.187:8080/api/image/", {
+        fetch(base_link+"/api/image/", {
             "headers": {
                 "accept": "application/json, text/plain, */*",
                 "accept-language": "en-US,en;q=0.9"
                 // "content-type": "multipart/form-data;"
             },
-            "referrer": "http://203.159.29.187:8080/",
+            "referrer": base_link+"/",
             "referrerPolicy": "strict-origin-when-cross-origin",
             "body": form,
             "method": "POST",
