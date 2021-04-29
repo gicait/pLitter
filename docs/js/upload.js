@@ -11,6 +11,7 @@ var annotator_response = {}
 function drawBoxes_annotorius(image, predictions){
     // console.log(predictions)
     var preds_format = []
+    var pred_count = 0
     predictions.forEach(prediction => {
         const {box, label, score} = prediction;
         const {left, top, width, height} = box;
@@ -20,6 +21,7 @@ function drawBoxes_annotorius(image, predictions){
         pred_dict_body = {}
         pred_dict_body["type"] =  "TextualBody"
         pred_dict_body["purpose"] = "tagging"
+        // update it pred name
         pred_dict_body["value"] = "Plastic"
         pred_dict["body"].push(pred_dict_body)
         
@@ -39,7 +41,8 @@ function drawBoxes_annotorius(image, predictions){
         pred_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
         
         pred_dict["@context"] = ""
-        pred_dict["id"] = ""
+        pred_dict["id"] = String(pred_count)
+        pred_count = pred_count+1
 
         preds_format.push(pred_dict)
     });
@@ -143,6 +146,8 @@ function get_annots_from_coco(im_id){
                 width = box[0][2]
                 height = box[0][3]
 
+
+
                 console.log(left, atop, width, height)
                 var anno_dict = {}
                 anno_dict["type"] = "Annotation"
@@ -231,7 +236,9 @@ function save_annots_to_coco(im_id){
               });
         }
     }
-    // im_status = im_id+"_status"
+
+    // update annotated to true in image    
+
     alert("loading next image")
     load_random()
 }
@@ -308,7 +315,7 @@ function load_random(){
         const random_index = Math.floor(Math.random() * images.images.length);
         const image = images.images[random_index];
         const image_id = image["id"]
-        document.getElementById("ran-img").innerHTML = "<div id='save'></div><img id='ran-ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto/>"
+        document.getElementById("ran-img").innerHTML = "<div id='ran-save'></div><img id='ran-ann-img' crossorigin='anonymous' src='http://203.159.29.187:8080/api/image/"+image_id+"' width=100% height=auto/>"
 
         ran_anno = Annotorious.init({
             image: 'ran-ann-img',
@@ -325,7 +332,7 @@ function load_random(){
 
 
         // model_run()
-        document.getElementById("save").innerHTML = "<button onclick='save_annots_to_coco("+image_id+")'>Save</button>"
+        document.getElementById("ran-save").innerHTML = "<button onclick='save_annots_to_coco("+image_id+")'>Save</button>"
         
         ran_anno.on('createSelection', async function(selection) {
             selection.body = [{
