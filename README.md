@@ -11,7 +11,7 @@ pLitter is a standardized, deep learning friendly dataset and pre-trained model 
 These detections are currently being used to map plastic litter distribution in cities. *Example heat-map showing plastic litter distribution in a city is shown below.*
 
 <p align="center">
-<img src="./graphics/example_heatmap.PNG" alt="HeatMap" width="50%"/>
+<img src="./docs/graphics/example_heatmap.PNG" alt="HeatMap" width="50%"/>
 </p>
 
 _Note: This is a preliminary release and more data from more cities will be added in future._
@@ -25,7 +25,7 @@ Add some para about motivation
 In the conventional sense, typical machine learning pipeline consisted of collecting data, annotating data, training, validation and prediction. This is a very successful pipeline for many problems such as face detection, character recognition, etc. But the problem with plastic litter is, simply it is trash, it can be seen in various types, shapes, forms, backgrounds etc. So, variations are too complex to capture in a single model with a single annotated dataset. So we believe, the solution for this is Active Learning. Our ultimate goal would be to go beyond domain specific plastic litter detections, and provide detection capabilities in a wide range of cities (universal plastic litter detector). Schematic diagram of active learning framework that we are using for plastic litter identification problem is shows in the below Figure. 
 
 <p align="center">
-<img src="./graphics/active_learning.PNG" alt="HeatMap" width="70%"/>
+<img src="./docs/graphics/active_learning.PNG" alt="HeatMap" width="70%"/>
 </p>
 
 
