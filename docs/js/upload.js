@@ -101,10 +101,10 @@ async function predict_on_this() {
 
 
 var cat_dict = {
-    "Plastic":28,
-    "Pile":28,
-    "Trash Bin":28,
-    "Face Mask":28,
+    "Plastic":27,
+    "Pile":21,
+    "Trash Bin":29,
+    "Face Mask":30,
   };
 
 
@@ -166,7 +166,8 @@ function get_annots_from_coco(im_id){
                 anno_dict_body = {}
                 anno_dict_body["type"] =  "TextualBody"
                 anno_dict_body["purpose"] = "tagging"
-                anno_dict_body["value"] = "Plastic"
+                // anno_dict_body["value"] = "Plastic"
+                anno_dict_body["value"] = cat_name
                 anno_dict["body"].push(anno_dict_body)
         
                 anno_dict["target"] = {}
@@ -342,7 +343,8 @@ function save_anntations_in_coco(im_id){
 
 
 function load_random(){
-    fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
+    fetch(base_link+"/api/dataset/55/data?page=1&limit=50", {
+        // fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
