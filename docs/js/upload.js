@@ -124,6 +124,10 @@ var cat_dict = {
   };
 
 
+//   "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"
+
+  
+
 //   wrapper/sachet 31
 // container 32
 // cup 4 
@@ -406,7 +410,8 @@ function load_random(){
             widgets: [
                 // { widget: 'COMMENT' },
                 // { widget: return    },
-                { widget: 'TAG', vocabulary: [ 'Plastic', 'Pile', 'Trash Bin', 'Face mask'] }
+                
+                { widget: 'TAG', vocabulary: [ 'Plastic', 'Pile', 'Trash Bin', 'Face mask', "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"] }
             ]
         })
         
