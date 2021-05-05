@@ -109,7 +109,7 @@ var cat_dict = {
 
 
 function get_annots_from_coco(im_id){
-    alert("yeee")
+    // alert("yeee")
     fetch(base_link+"/api/annotator/data/"+String(im_id), {
         "headers": {
             "accept": "application/json",
