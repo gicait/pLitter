@@ -1,18 +1,21 @@
 
-<p> Upload images to pLitter, so they will be used to train the model to improve the accuracy. (Add note) </p>
+<p> Upload images to pLitter, we need more images captured plastic litter from all over the globe to achieve the best accuracy and hormonizing the model. </p>
 
-<p>You need to login with credidentials of coco-annotator of GIC. If not register from here <a href="http://203.159.29.187:8080">Coco-annotator.</a> </p>
+<!-- <p>You need to login with credidentials of coco-annotator of GIC. If not register from here <a href="http://203.159.29.187:8080">Coco-annotator.</a> </p> -->
 
-<div id="stats"></div>
+<div id="stats">Our next target is to crowd source 10k images.</div>
 
-
-
-<div id="login">
+<!-- <div id="login">
   <input type = "text" id = "user"/>
   <input type = "password" id = "pass"/>
   <button onclick="login_from_coco()">Log in</button>
-</div>
+</div> -->
 
+<div>
+  <input type="text" id="name" placeholder="name">
+  <input type="text" id="email" placeholder="email"> 
+</div>
+<br>
 <div id="upload">
   <input type="file" id="uploadFile" multiple size="50" onchange="upload_to_coco_backend()"> <br>
   <div>
@@ -33,7 +36,7 @@
 
 <!-- https://ae542e0cd461.ngrok.io -->
 
-<div id="anno-front" style="display:block; visibility:hidden"><iframe src="https://ae542e0cd461.ngrok.io" height="1px" width=" 100%" ></iframe></div>
+<!-- <div id="anno-front" style="display:block; visibility:hidden"><iframe src="https://ae542e0cd461.ngrok.io" height="1px" width=" 100%" ></iframe></div> -->
 <!-- <div id="anno-front" style="display:block; visibility:hidden"><iframe src="http://203.159.29.187:8080" height="1px" width=" 100%" ></iframe></div> -->
 
 <!-- <iframe id="frame" src="http://203.159.29.187:8001" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:1000px;width:100%;border:none;overflow:hidden;"></iframe> -->
