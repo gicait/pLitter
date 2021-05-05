@@ -105,7 +105,42 @@ var cat_dict = {
     "Pile":21,
     "Trash Bin":29,
     "Face Mask":30,
+    "wrapper/sachet":31,
+    "container":32,
+    "cup":4,
+    "plate":33,
+    "Cutleries":34,
+    "Beverage bottle":35,
+    "Other bottle":36,
+    "Bag":37,
+    "Foil":44,
+    "Fishing gear":38,
+    "Rope":39,
+    "Diaper":40,
+    "Textile":41, 
+    "Hand glove":42,
+    "protective gears":43,
+    "other":5
   };
+
+
+//   wrapper/sachet 31
+// container 32
+// cup 4 
+// plate 33
+// Cutleries  34
+// Beverage bottle 35
+// Other bottle 36
+// Bag 37
+// Foil 44
+// Fishing gear 38
+// Rope 39
+// Diaper 40
+// Textile 41 
+
+// Hand glove 42
+// protective gears 43
+// other 5
 
 
 function get_annots_from_coco(im_id){
