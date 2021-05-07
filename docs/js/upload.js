@@ -1,6 +1,8 @@
-const base_link = "https://cc5c6ee1eee3.ngrok.io"
+// const base_link = "https://cc5c6ee1eee3.ngrok.io"
 // const base_link = "http://203.159.29.187:8080"
-// const base_link = "http://203.159.29.51"
+const base_link = "http://203.159.29.51:5000"
+const d_id = 1
+// const d_id = 55
 
 
 var response_data = {}
@@ -99,28 +101,55 @@ async function predict_on_this() {
     drawBoxes_annotorius(image, predictions);
 }
 
+// to do
+// find id by name
 
-var cat_dict = {
-    "Plastic":27,
-    "Pile":21,
-    "Trash Bin":29,
-    "Face Mask":30,
-    "wrapper/sachet":31,
-    "container":32,
-    "cup":4,
-    "plate":33,
-    "Cutleries":34,
-    "Beverage bottle":35,
-    "Other bottle":36,
-    "Bag":37,
-    "Foil":44,
-    "Fishing gear":38,
-    "Rope":39,
-    "Diaper":40,
-    "Textile":41, 
-    "Hand glove":42,
-    "protective gears":43,
-    "other":5
+
+// var cat_dict = {
+//     "Plastic":27,
+//     "Pile":21,
+//     "Trash Bin":29,
+//     "Face Mask":30,
+//     "wrapper/sachet":31,
+//     "container":32,
+//     "cup":4,
+//     "plate":33,
+//     "Cutleries":34,
+//     "Beverage bottle":35,
+//     "Other bottle":36,
+//     "Bag":37,
+//     "Foil":44,
+//     "Fishing gear":38,
+//     "Rope":39,
+//     "Diaper":40,
+//     "Textile":41, 
+//     "Hand glove":42,
+//     "protective gears":43,
+//     "other":5
+//   };
+
+
+  var cat_dict = {
+    "plastic":1,
+    "pile":2,
+    "trash Bin":3,
+    "face Mask":4,
+    "wrapper/sachet":5,
+    "container":6,
+    "cup":7,
+    "plate":8,
+    "Cutleries":9,
+    "Beverage bottle":10,
+    "Other bottle":11,
+    "Bag":12,
+    "Foil":13,
+    "Fishing gear":14,
+    "Rope":15,
+    "Diaper":16,
+    "Textile":17, 
+    "Hand glove":18,
+    "protective gears":19,
+    "other":20
   };
 
 
@@ -382,8 +411,8 @@ function save_anntations_in_coco(im_id){
 
 
 function load_random(){
-    fetch(base_link+"/api/dataset/55/data?page=1&limit=50", {
-        // fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
+        // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
@@ -538,7 +567,7 @@ function open_image(image_id){
 }
 
 function get_images_from_coco(){
-    fetch(base_link+"/api/dataset/55/data?page=1&limit=50&annotated=false", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
@@ -673,7 +702,7 @@ function add_with_id(res_id, im_name){
 
 function get_dataset_stats(){
     // alert("yee")
-    fetch(base_link+"/api/dataset/55/stats", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/stats", {
         "headers": {
           "accept": "application/json",
           "accept-language": "en-US,en;q=0.9"
@@ -705,7 +734,7 @@ function upload_to_coco_backend(){
         var im_name = uploaded_images.files[i].name
         let form = new FormData();
         form.append("image", uploaded_images.files[i]);
-        form.append("dataset_id", 55);
+        form.append("dataset_id", "+String(d_id)+");
         // alert(uploaded_images.files[i].size)
         fetch(base_link+"/api/image/", {
             "headers": {
