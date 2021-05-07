@@ -1,6 +1,6 @@
-const base_link = "https://ae542e0cd461.ngrok.io"
+const base_link = "http://cc5c6ee1eee3.ngrok.io"
 // const base_link = "http://203.159.29.187:8080"
-
+// const base_link = "http://203.159.29.51"
 
 
 var response_data = {}
