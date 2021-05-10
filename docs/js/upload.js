@@ -1,8 +1,6 @@
-// const base_link = "https://cc5c6ee1eee3.ngrok.io"
-// const base_link = "http://203.159.29.187:8080"
-// const base_link = "http://203.159.29.51:5000"
-const base_link = "https://da6a1f661e52.ngrok.io"
-const d_id = 1
+// const base_link = "https://da6a1f661e52.ngrok.io"
+const base_link = "http://annotator.ait.ac.th"
+const d_id = 65
 // const d_id = 55
 
 
@@ -131,24 +129,24 @@ async function predict_on_this() {
 
 
   var cat_dict = {
-    "plastic":1,
-    "pile":2,
-    "trash Bin":3,
-    "face Mask":4,
+    "Plastic":1,
+    "Pile":2,
+    "Trash Bin":3,
+    "Face Mask":4,
     "wrapper/sachet":5,
     "container":6,
     "cup":7,
     "plate":8,
-    "Cutleries":9,
-    "Beverage bottle":10,
-    "Other bottle":11,
-    "Bag":12,
-    "Foil":13,
-    "Fishing gear":14,
-    "Rope":15,
-    "Diaper":16,
-    "Textile":17, 
-    "Hand glove":18,
+    "cutleries":9,
+    "beverage bottle":10,
+    "other bottle":11,
+    "bag":12,
+    "foil":13,
+    "fishing gear":14,
+    "rope":15,
+    "diaper":16,
+    "textile":17, 
+    "hand glove":18,
     "protective gears":19,
     "other":20
   };
