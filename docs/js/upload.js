@@ -431,7 +431,8 @@ function load_random(){
         const random_index = Math.floor(Math.random() * images.images.length);
         const image = images.images[random_index];
         const image_id = image["id"]
-        document.getElementById("ran-img").innerHTML = "<div id='ran-save'></div><img id='ran-ann-img' crossorigin='anonymous' src='"+base_link+"/api/image/"+image_id+"' width=100% height=auto/>"
+        document.getElementById("ran-img").innerHTML
+        = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=auto/>`
 
         ran_anno = Annotorious.init({
             image: 'ran-ann-img',
@@ -449,7 +450,12 @@ function load_random(){
 
 
         // model_run()
-        document.getElementById("ran-save").innerHTML = "<button onclick='save_annots_to_coco("+image_id+")'>Save</button>"
+        document.getElementById("ran-save").innerHTML = 
+        `<button class='button-save' onclick='save_annots_to_coco(${image_id})'>
+            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
+            </svg>
+        </button>`
         
         ran_anno.on('createSelection', async function(selection) {
             selection.body = [{
