@@ -1,5 +1,5 @@
 // const base_link = "https://da6a1f661e52.ngrok.io"
-const base_link = "http://annotator.ait.ac.th"
+const base_link = "https://annotator.ait.ac.th"
 const d_id = 65
 // const d_id = 55
 
