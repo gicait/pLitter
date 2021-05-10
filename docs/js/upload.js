@@ -430,7 +430,7 @@ function load_random(){
         const image = images.images[random_index];
         const image_id = image["id"]
         document.getElementById("ran-img").innerHTML
-        = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=auto/>`
+        = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
 
         ran_anno = Annotorious.init({
             image: 'ran-ann-img',
