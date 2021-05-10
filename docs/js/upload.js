@@ -408,6 +408,53 @@ function save_anntations_in_coco(im_id){
     document.getElementById(im_status).innerHTML="true" 
 }
 
+let TagSelectorWidget = function (args) {
+
+    const tags = args.annotation ?
+        args.annotation.bodies.filter(function (b) {
+            return b.purpose == 'tagging' && b.type == 'TextualBody';
+        }) : [];
+
+    let createDropDown = function (options) {
+        var dropDown = document.createElement('select');
+
+        options.forEach(optionValue => {
+            let optionElement = document.createElement('option');
+            optionElement.appendChild(document.createTextNode(optionValue));
+            optionElement.value = optionValue;
+            if (optionValue == tags[0]?.value) {
+                optionElement.selected = 'selected';
+            }
+            dropDown.appendChild(optionElement);
+        });
+
+        dropDown.addEventListener('change', function () {
+            if (tags.length > 0) {
+                args.onUpdateBody(tags[0], {
+                    type: 'TextualBody',
+                    purpose: 'tagging',
+                    value: this.value
+                });
+            } else {
+                args.onAppendBody({
+                    type: 'TextualBody',
+                    purpose: 'tagging',
+                    value: this.value
+                });
+            }
+        });
+
+        return dropDown;
+    }
+
+    var container = document.createElement('div');
+    container.className = 'tagselector-widget';
+
+    const VOCABULARY = ['Plastic', 'Pile', 'Trash Bin', 'Face mask', "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"];
+    container.appendChild(createDropDown(VOCABULARY));
+
+    return container;
+};
 
 function load_random(){
     fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
@@ -436,12 +483,7 @@ function load_random(){
             image: 'ran-ann-img',
             locale: 'auto',
             // disableEditor: true
-            widgets: [
-                // { widget: 'COMMENT' },
-                // { widget: return    },
-                
-                { widget: 'TAG', vocabulary: [ 'Plastic', 'Pile', 'Trash Bin', 'Face mask', "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"] }
-            ]
+            widgets: [ TagSelectorWidget ]
         })
         
         get_annots_from_coco(image_id)
@@ -515,11 +557,7 @@ function open_image(image_id){
         image: 'ann-img',
         locale: 'auto',
         // disableEditor: true
-        widgets: [
-            // { widget: 'COMMENT' },
-            // { widget: return    },
-            { widget: 'TAG', vocabulary: [ 'Plastic', 'Pile', 'Trash Bin', 'Face mask'] }
-        ]
+        widgets: [ TagSelectorWidget ]
     })
     
     // model_run()
