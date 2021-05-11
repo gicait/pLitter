@@ -451,6 +451,7 @@ function save_annots_to_coco(im_id){
     load_random()
 }
 
+<<<<<<< HEAD
 
 
 // function save_anntations_in_coco(im_id){
@@ -473,6 +474,31 @@ function save_annots_to_coco(im_id){
 //             var box = [[x,y,w,h]]
 //             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
 //             var annot_metadata = {'predicted':true}
+=======
+function save_anntations_in_coco(im_id){
+    var anns = anno.getAnnotations()
+    alert("confirm saving"+anns.length+"annotations")
+    console.log(anns)
+    var ann_id;
+    var ann;
+    for(ann_id in anns){
+        ann = anns[ann_id]
+        if(ann.target.selector.type === 'FragmentSelector' & ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
+            var value = ann.target.selector.value    
+            var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+            var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+            var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+            var cat_name = ann.body[0].value
+            var cat_id = cat_dict[cat_name]
+            console.log(x, y, w, h, cat_id)
+
+            var box = [[x,y,w,h]]
+            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+            var annot_metadata = {'predicted':true}
+            // annot_metadata["predicted"] = true
+            // [[140,273,170,273,170,280,140,280]]
+            // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
+>>>>>>> ff76df5 (load random on first load, move position of buttons)
             
 //             fetch(base_link+"/api/annotation/", {
 //                 "headers": {
@@ -624,12 +650,16 @@ function load_random(){
             id: "openseadragon",
             prefixUrl: "./icons/openseadragon/",
             tileSources: {
-            type: "image",
-            url: String(base_link)+'/api/image/'+String(image_id)
+                type: "image",
+                url: `${base_link}/api/image/${image_id}`
             },
             gestureSettingsTouch: {
-            pinchRotate: true
+                pinchRotate: true
             }
+        });
+
+        viewer.addHandler('open', function () {
+            $("#seadragon-viewer").attr("style", "width: " + window.width + "px");
         });
     
         ran_anno = OpenSeadragon.Annotorious(viewer, {
@@ -641,25 +671,32 @@ function load_random(){
     
         // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
     
-          
-
-        // ran_anno = Annotorious.init({
-        //     image: 'ran-ann-img',
-        //     locale: 'auto',
-        //     // disableEditor: true
-        //     widgets: [ TagSelectorWidget ]
-        // })
-        
         get_annots_from_coco(ran_anno, image_id)
 
+        let reloadButtonDom = 
+            `<button id='button-reload'">
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                    <path d="M26.47 9.53C24.3 7.35 21.32 6 18 6 11.37 6 6 11.37 6 18s5.37 12 12 12c5.94 0 10.85-4.33 11.81-10h-3.04c-.91 4.01-4.49 7-8.77 7-4.97 0-9-4.03-9-9s4.03-9 9-9c2.49 0 4.71 1.03 6.34 2.66L20 16h10V6l-3.53 3.53z" />
+                </svg>
+            </button>`
 
-        // model_run()
-        document.getElementById("ran-save").innerHTML = 
-        `<button class='button-save' onclick='save_annots_to_coco(${image_id})'>
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-                <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
-            </svg>
-        </button>`
+        let saveButtonDom =
+            `<button id='button-save'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                    <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
+                </svg>
+            </button>`
+
+        document.getElementsByClassName('a9s-toolbar')[0].innerHTML
+         = reloadButtonDom
+         + saveButtonDom
+         + document.getElementsByClassName('a9s-toolbar')[0].innerHTML
+
+        document.getElementById('button-save').addEventListener('click', function() {
+            save_annots_to_coco(image_id);
+        })
+        document.getElementById('button-reload').addEventListener('click', load_random)
+
         
         ran_anno.on('createSelection', async function(selection) {
             selection.body = [{
@@ -982,7 +1019,6 @@ function upload_to_coco_backend(){
     get_dataset_stats()
 }
 
-
 $(document).ready(function(){
     get_dataset_stats()
     user_from_coco()
@@ -990,7 +1026,10 @@ $(document).ready(function(){
         get_images_from_coco()
     }
     get_images_from_coco()
+
+    load_random();
 })
+
 
 
 
