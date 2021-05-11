@@ -10,7 +10,9 @@
         </span>
         <span id='ran-save'></span>
     </div>
-    <div id="ran-img" data-zoom-on-wheel></div>
+    <!-- <div id="ran-img" data-zoom-on-wheel></div> -->
+    <div id="toolbar"></div>
+    <div id="openseadragon"></div>
 </div>
 
 
@@ -52,7 +54,31 @@
 </style>
 
 
+<style>
+    #toolbar {
+      margin-bottom:10px;
+    }
+    
+    .openseadragon-canvas {
+      outline:none; 
+      background-color:#f4f4f4 !important;
+      border-radius:3px;
+    }
 
+    #openseadragon {
+      max-width:640px; 
+      height:400px;
+      width:100%;
+    }
+
+    @media only screen and (max-width: 800px) {
+
+      .r6o-editor {
+        width:260px !important;
+      }
+
+    }
+  </style>
 
 
 <!-- <iframe id="frame" src="http://203.159.29.187:8080" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:500px;width:150%;border:none;overflow:hidden;"></iframe> -->

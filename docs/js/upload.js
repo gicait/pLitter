@@ -175,7 +175,7 @@ async function predict_on_this() {
 // other 5
 
 
-function get_annots_from_coco(im_id){
+function get_annots_from_coco(ran_anno, im_id){
     // alert("yeee")
     fetch(base_link+"/api/annotator/data/"+String(im_id), {
         "headers": {
@@ -476,17 +476,43 @@ function load_random(){
         const random_index = Math.floor(Math.random() * images.images.length);
         const image = images.images[random_index];
         const image_id = image["id"]
-        document.getElementById("ran-img").innerHTML
-        = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
+        // document.getElementById("ran-img").innerHTML
+        // = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
 
-        ran_anno = Annotorious.init({
-            image: 'ran-ann-img',
+        document.getElementById("openseadragon").innerHTML = ''
+        document.getElementById("toolbar").innerHTML = ''
+
+        var viewer = OpenSeadragon({
+            id: "openseadragon",
+            prefixUrl: "/icons/openseadragon/",
+            tileSources: {
+            type: "image",
+            url: String(base_link)+'/api/image/'+String(image_id)
+            },
+            gestureSettingsTouch: {
+            pinchRotate: true
+            }
+        });
+    
+        ran_anno = OpenSeadragon.Annotorious(viewer, {
             locale: 'auto',
-            // disableEditor: true
+            allowEmpty: true,
+    
             widgets: [ TagSelectorWidget ]
-        })
+        });
+    
+        Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+    
+          
+
+        // ran_anno = Annotorious.init({
+        //     image: 'ran-ann-img',
+        //     locale: 'auto',
+        //     // disableEditor: true
+        //     widgets: [ TagSelectorWidget ]
+        // })
         
-        get_annots_from_coco(image_id)
+        get_annots_from_coco(ran_anno, image_id)
 
 
         // model_run()
@@ -818,3 +844,52 @@ $(document).ready(function(){
     }
     get_images_from_coco()
 })
+
+
+
+
+
+
+
+
+// var sampleAnnotation = { 
+//     "@context": "http://www.w3.org/ns/anno.jsonld",
+//     "id": "#07475897-d2eb-4dce-aa12-ecb50771c734",
+//     "type": "Annotation",
+//     "body": [{
+//       "type": "TextualBody",
+//       "value": "Annotation"
+//     }],
+//     "target": {
+//       "selector": {
+//         "type": "FragmentSelector",
+//         "conformsTo": "http://www.w3.org/TR/media-frags/",
+//         "value": "xywh=540,240,180,340"
+//       }
+//     }
+//   };
+
+//   function osd_open() {
+//     var viewer = OpenSeadragon({
+//       id: "openseadragon",
+//       prefixUrl: "/icons/openseadragon/",
+//       tileSources: {
+//         type: "image",
+//         url: "../graphics/active_learning.PNG"
+//       },
+//       gestureSettingsTouch: {
+//         pinchRotate: true
+//       }
+//     });
+
+//     var anno = OpenSeadragon.Annotorious(viewer, {
+//       locale: 'auto',
+//       allowEmpty: true,
+
+//       widgets: [ TagSelectorWidget ]
+//     });
+
+//     Annotorious.Toolbar(anno, document.getElementById('toolbar'));
+
+//     anno.addAnnotation(sampleAnnotation);
+//   }
