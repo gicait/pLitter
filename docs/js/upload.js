@@ -484,8 +484,7 @@ function load_random(){
 
         var viewer = OpenSeadragon({
             id: "openseadragon",
-            prefixUrl: "gicait.github.io/pLitter/icons/openseadragon/", //for github pages
-            // prefixUrl: "/icons/openseadragon/",
+            prefixUrl: "/icons/openseadragon/",
             tileSources: {
             type: "image",
             url: String(base_link)+'/api/image/'+String(image_id)
