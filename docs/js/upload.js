@@ -532,8 +532,8 @@ let TagSelectorWidget = function (args) {
 };
 
 function load_random(){
-    // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
-    fetch(base_link+"/api/dataset/"+String(d_id)+"/random_image", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
+    // fetch(base_link+"/api/dataset/"+String(d_id)+"/random_image", {
         // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
@@ -547,12 +547,13 @@ function load_random(){
         "credentials": "include"
     })
     .then(response => response.json())
-    .then(data => image = data)
+    .then(data => images = data)
     .then(() => {
-        // const random_index = Math.floor(Math.random() * images.images.length);
-        // const image = images.images[random_index];
+        const random_index = Math.floor(Math.random() * images.images.length);
+        const image = images.images[random_index];
         console.log(image)
-        const image_id = image.image_id
+        // const image_id = image.image_id
+        const image_id = image["id"]
         console.log(image_id)
         // document.getElementById("ran-img").innerHTML
         // = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
