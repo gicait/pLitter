@@ -152,6 +152,8 @@ async function predict_on_this() {
   };
 
 
+var deleted_ids = []
+
 //   "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"
 
   
@@ -280,18 +282,68 @@ function save_annots_to_coco(im_id){
     var ann;
     for(ann_id in anns){
         ann = anns[ann_id]
-            if(ann.target.selector.type === 'FragmentSelector' & ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
-            var value = ann.target.selector.value    
-            var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
-            var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
-            var [ x, y, w, h ] = coords.split(',').map(parseFloat)
-            var cat_name = ann.body[0].value
-            var cat_id = cat_dict[cat_name]
-            console.log(x, y, w, h, cat_id, ann.id)
+        // if(ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
+            if(ann.target.selector.type === 'FragmentSelector'){
+                var is_it_bbox = true
+                var value = ann.target.selector.value
+                var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+                var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+                var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                console.log(x, y, w, h, cat_id, ann.id)
 
-            var box = [x, y, w, h]
-            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            // var annot_metadata = {'predicted':true}
+                var box = [x, y, w, h]
+                var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+                // var annot_metadata = {'predicted':true}
+            }
+            else if(ann.target.selector.type === "SvgSelector"){
+                var is_it_bbox = false
+                console.log("svg")
+                // var res = svgShape.getAttribute('points')
+                //       .split(' ') // Split x/y tuples
+                //       .map(xy => xy.split(',').map(str => parseFloat(str.trim())));
+                
+                // console.log(res)      
+
+                var value = ann.target.selector.value
+                var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
+
+                // var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                // console.log(x, y, w, h, cat_id, ann.id)
+
+                // var box = [x, y, w, h]
+                var sep_coords = coords.split(' ')
+                var flat_coords = []
+                sep_coords.forEach(sep_coord => {
+                    var temp_cord = sep_coord.split(',').map(i=>Number(i))
+                    flat_coords = flat_coords.concat(temp_cord)
+                });
+                var xs = []
+                var ys = []
+                for (i = 0; i < flat_coords.length; i++) {
+                    if(i%2 === 0){
+                        xs.push(flat_coords[i])
+                    }
+                    else{
+                        ys.push(flat_coords[i])
+                    }
+                }
+                var min_x = Math.min(...xs), max_x = Math.max(...xs)
+                var min_y = Math.min(...ys), max_y = Math.max(...ys)
+                var w = max_x-min_x
+                var h = max_y-min_y
+                var box = [min_x, min_y, w, h]
+                var seg = [flat_coords]
+                console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
+                // var annot_metadata = {'predicted':true}
+            }
+            else{
+                console.log("type error")
+                continue;
+            }
             
             // if annotatation is newly created
             // id is string, then send post
@@ -322,16 +374,16 @@ function save_annots_to_coco(im_id){
             else if (typeof ann.id === 'string'){ 
                 fetch(base_link+"/api/annotation/", {
                     "headers": {
-                      "accept": "application/json, text/plain, */*",
-                      "accept-language": "en-US,en;q=0.9",
-                      "content-type": "application/json;charset=UTF-8"
+                    "accept": "application/json, text/plain, */*",
+                    "accept-language": "en-US,en;q=0.9",
+                    "content-type": "application/json;charset=UTF-8"
                     },
                     "referrer": base_link+"/",
                     "referrerPolicy": "strict-origin-when-cross-origin",
                     "body": JSON.stringify({
                         image_id: im_id,
                         category_id: cat_id,
-                        isbbox: true,
+                        isbbox: is_it_bbox,
                         segmentation: seg,
                         bbox: box,
                         // metadata: annot_metadata
@@ -339,17 +391,39 @@ function save_annots_to_coco(im_id){
                     "method": "POST",
                     "mode": "cors",
                     "credentials": "include"
-                  })
-                  .then(response => response.json())
-                  .then(data => console.log(data))
-                  .catch(error => console.log(error))
+                })
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.log(error))
             }
             else {
                 console.log("Something wrong with annotation id!")
             }
-        }
+        // }
+        // else{
+        //     console.log("something wrong with confirmation")
+        // }
     }
 
+    // deal with deleted
+    deleted_ids.forEach(deleted_id => {
+        fetch(base_link+"/api/annotation/"+String(deleted_id), {
+            "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+        },
+        "referrer": base_link+"/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "DELETE",
+        "mode": "cors",
+        "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.log(error))
+    })
+    deleted_ids = []
     // update annotated to true in image    
 
     alert("loading next image")
@@ -501,7 +575,7 @@ function load_random(){
             widgets: [ TagSelectorWidget ]
         });
     
-        Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+        // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
     
           
 
@@ -550,6 +624,15 @@ function load_random(){
         
         ran_anno.on('updateAnnotation', function(annotation, previous) {
             console.log('updated', previous, 'with', annotation);
+        })
+
+        // to do, on delete 
+        ran_anno.on('deleteAnnotation', function(annotation) {
+            console.log('deleted', annotation.id);
+            if(typeof annotation.id === "number"){
+                console.log("will be deleted from coco-annotator after saving")
+                deleted_ids.push(annotation.id)
+            }
         })
     })
     .catch(error => console.log(error))
