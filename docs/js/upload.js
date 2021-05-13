@@ -4,6 +4,11 @@
 const base_link = "https://annotator.ait.ac.th"
 const d_id = 55
 
+// to do
+// user sigin
+// live count of users
+// progressbar (images annotated/total images(dataset size))
+
 
 var response_data = {}
 var user = {}
@@ -14,6 +19,18 @@ var new_image_id;
 var stats = {}
 var dataset = {}
 var annotator_response = {}
+var deleted_ids = []
+
+var image_annotating_status = false // make it true after image loading, make it false when annotation saving 
+
+
+
+// to do @nischal
+// is it better to use dictionary?
+
+
+
+
 
 function drawBoxes_annotorius(image, predictions){
     // console.log(predictions)
@@ -153,31 +170,7 @@ async function predict_on_this() {
   };
 
 
-var deleted_ids = []
-
-//   "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"
-
-  
-
-//   wrapper/sachet 31
-// container 32
-// cup 4 
-// plate 33
-// Cutleries  34
-// Beverage bottle 35
-// Other bottle 36
-// Bag 37
-// Foil 44
-// Fishing gear 38
-// Rope 39
-// Diaper 40
-// Textile 41 
-
-// Hand glove 42
-// protective gears 43
-// other 5
-
-
+//   fetches annotations, converts to Annotorius format and sets
 function get_annots_from_coco(ran_anno, im_id){
     // alert("yeee")
     fetch(base_link+"/api/annotator/data/"+String(im_id), {
@@ -301,21 +294,16 @@ function save_annots_to_coco(im_id){
             else if(ann.target.selector.type === "SvgSelector"){
                 var is_it_bbox = false
                 console.log("svg")
-                // var res = svgShape.getAttribute('points')
-                //       .split(' ') // Split x/y tuples
-                //       .map(xy => xy.split(',').map(str => parseFloat(str.trim())));
                 
-                // console.log(res)      
-
                 var value = ann.target.selector.value
                 var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
 
-                // var [ x, y, w, h ] = coords.split(',').map(parseFloat)
                 var cat_name = ann.body[0].value
                 var cat_id = cat_dict[cat_name]
-                // console.log(x, y, w, h, cat_id, ann.id)
 
-                // var box = [x, y, w, h]
+                // var res = svgShape.getAttribute('points')
+                //       .split(' ') // Split x/y tuples
+                //       .map(xy => xy.split(',').map(str => parseFloat(str.trim())));
                 var sep_coords = coords.split(' ')
                 var flat_coords = []
                 sep_coords.forEach(sep_coord => {
@@ -339,7 +327,6 @@ function save_annots_to_coco(im_id){
                 var box = [min_x, min_y, w, h]
                 var seg = [flat_coords]
                 console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
-                // var annot_metadata = {'predicted':true}
             }
             else{
                 console.log("type error")
@@ -360,12 +347,8 @@ function save_annots_to_coco(im_id){
                     "referrerPolicy": "strict-origin-when-cross-origin",
                     "body": JSON.stringify({
                         category_id:cat_id,
-                        // image_id: im_id,
-                        // category_id: cat_id,
-                        // isbbox: true,
                         bbox:box,
                         segmentation: seg,
-                        // metadata: annot_metadata
                     }),
                     "method": "PUT",
                     "mode": "cors",
@@ -387,7 +370,6 @@ function save_annots_to_coco(im_id){
                         isbbox: is_it_bbox,
                         segmentation: seg,
                         bbox: box,
-                        // metadata: annot_metadata
                     }),
                     "method": "POST",
                     "mode": "cors",
@@ -415,7 +397,9 @@ function save_annots_to_coco(im_id){
         },
         "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
+        "body": JSON.stringify({
+            cs_annotating: false,
+        }),
         "method": "DELETE",
         "mode": "cors",
         "credentials": "include"
@@ -425,7 +409,26 @@ function save_annots_to_coco(im_id){
         .catch(error => console.log(error))
     })
     deleted_ids = []
-    // update annotated to true in image    
+    
+    // to do (use sockets or normal put?)
+    // image.cs_annotated.append(user), if user not signin: user,user_name = Anonymous
+    fetch(base_link+"/api/image/"+String(im_id), {
+        "headers": {
+        "accept": "application/json, text/plain, */*",
+        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+    },
+    "referrer": base_link+"/",
+    "referrerPolicy": "strict-origin-when-cross-origin",
+    "body": null,
+    "method": "PUT",
+    "mode": "cors",
+    "credentials": "include"
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.log(error))
+
+    image_annotating_status = false
 
     alert("loading next image")
     load_random()
@@ -433,55 +436,52 @@ function save_annots_to_coco(im_id){
 
 
 
-function save_anntations_in_coco(im_id){
-    var anns = anno.getAnnotations()
-    alert("confirm saving"+anns.length+"annotations")
-    console.log(anns)
-    var ann_id;
-    var ann;
-    for(ann_id in anns){
-        ann = anns[ann_id]
-        if(ann.target.selector.type === 'FragmentSelector' & ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
-            var value = ann.target.selector.value    
-            var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
-            var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
-            var [ x, y, w, h ] = coords.split(',').map(parseFloat)
-            var cat_name = ann.body[0].value
-            var cat_id = cat_dict[cat_name]
-            console.log(x, y, w, h, cat_id)
+// function save_anntations_in_coco(im_id){
+//     var anns = anno.getAnnotations()
+//     alert("confirm saving"+anns.length+"annotations")
+//     console.log(anns)
+//     var ann_id;
+//     var ann;
+//     for(ann_id in anns){
+//         ann = anns[ann_id]
+//         if(ann.target.selector.type === 'FragmentSelector' & ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
+//             var value = ann.target.selector.value    
+//             var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+//             var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+//             var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+//             var cat_name = ann.body[0].value
+//             var cat_id = cat_dict[cat_name]
+//             console.log(x, y, w, h, cat_id)
 
-            var box = [[x,y,w,h]]
-            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            var annot_metadata = {'predicted':true}
-            // annot_metadata["predicted"] = true
-            // [[140,273,170,273,170,280,140,280]]
-            // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
+//             var box = [[x,y,w,h]]
+//             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+//             var annot_metadata = {'predicted':true}
             
-            fetch(base_link+"/api/annotation/", {
-                "headers": {
-                  "accept": "application/json, text/plain, */*",
-                  "accept-language": "en-US,en;q=0.9",
-                  "content-type": "application/json;charset=UTF-8"
-                },
-                "referrer": base_link+"/",
-                "referrerPolicy": "strict-origin-when-cross-origin",
-                "body": JSON.stringify({
-                    image_id: im_id,
-                    category_id: cat_id,
-                    isbbox: true,
-                    segmentation: seg,
-                    bbox: box,
-                    metadata: annot_metadata
-                }),
-                "method": "POST",
-                "mode": "cors",
-                "credentials": "include"
-              });
-        }
-    }
-    im_status = im_id+"_status"
-    document.getElementById(im_status).innerHTML="true" 
-}
+//             fetch(base_link+"/api/annotation/", {
+//                 "headers": {
+//                   "accept": "application/json, text/plain, */*",
+//                   "accept-language": "en-US,en;q=0.9",
+//                   "content-type": "application/json;charset=UTF-8"
+//                 },
+//                 "referrer": base_link+"/",
+//                 "referrerPolicy": "strict-origin-when-cross-origin",
+//                 "body": JSON.stringify({
+//                     image_id: im_id,
+//                     category_id: cat_id,
+//                     isbbox: true,
+//                     segmentation: seg,
+//                     bbox: box,
+//                     metadata: annot_metadata
+//                 }),
+//                 "method": "POST",
+//                 "mode": "cors",
+//                 "credentials": "include"
+//               });
+//         }
+//     }
+//     im_status = im_id+"_status"
+//     document.getElementById(im_status).innerHTML="true" 
+// }
 
 let TagSelectorWidget = function (args) {
 
