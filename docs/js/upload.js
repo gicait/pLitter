@@ -1,7 +1,8 @@
-// const base_link = "https://da6a1f661e52.ngrok.io"
+// const base_link = "http://203.159.29.187:5000"
+// const d_id = 104
+
 const base_link = "https://annotator.ait.ac.th"
-const d_id = 65
-// const d_id = 55
+const d_id = 55
 
 
 var response_data = {}
@@ -531,7 +532,8 @@ let TagSelectorWidget = function (args) {
 };
 
 function load_random(){
-    fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
+    // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/random_image", {
         // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
         "headers": {
             "accept": "application/json",
@@ -545,11 +547,13 @@ function load_random(){
         "credentials": "include"
     })
     .then(response => response.json())
-    .then(data => images = data)
+    .then(data => image = data)
     .then(() => {
-        const random_index = Math.floor(Math.random() * images.images.length);
-        const image = images.images[random_index];
-        const image_id = image["id"]
+        // const random_index = Math.floor(Math.random() * images.images.length);
+        // const image = images.images[random_index];
+        console.log(image)
+        const image_id = image.image_id
+        console.log(image_id)
         // document.getElementById("ran-img").innerHTML
         // = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
 
