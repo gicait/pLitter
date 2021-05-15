@@ -1,0 +1,561 @@
+const base_link = "https://bf2a9a00427a.ngrok.io"
+const dataset_id = 104
+
+// const base_link = "https://annotator.ait.ac.th"
+// const dataset_id = 55
+
+// to do @nischal
+// user sigin
+// live count of users
+// progressbar (images annotated/total images(dataset size))
+// flag image
+// disable buttons when image is loading
+// exit button (if leaving, update documents)
+// before close, unlock image
+
+// might need reject button (if user rejects, it should not load again, how? maintain reject record in user model or image model? @nischal)
+var rejectedList = [] // when rejected add image_id to this list, on load_random,, i will send this request
+var user = {}
+var user_name = 'Anonymous' // change it user_name after sign in, otherwise overrides as system, hard to maintain stats after
+var present_image_id
+var image_annotating_status = false // make it true after image loading, make it false when annotation saving 
+var new_image_id;
+var stats = {}
+var dataset = {}
+var annotator_response = {}
+var deleted_ids = []
+var loading_status = false // to avoid calling loading function while its already executing, othetrwise skips unlacking image if image is reloading
+
+
+// move to try catch method for all fetch calls (better with async/await)
+// load category dict from dataset, not defining, ok? add to select list from dictionaly
+var cat_dict = {}
+
+fetch(base_link+"/api/dataset/"+String(dataset_id)+"/cats", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+  },
+  "referrer": base_link,
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+})
+.then(response => response.json())
+.then(data => cats_response = data)
+.then(() => {
+    console.log("Catgeory dictionary fecthed.")
+	cat_dict = cats_response.categories
+})
+.catch(error => console.log(error))
+
+//   var cat_dict = {
+//     "Plastic":1,
+//     "Pile":2,
+//     "Trash Bin":3,
+//     "Face Mask":4,
+//     "wrapper/sachet":5,
+//     "container":6,
+//     "cup":7,
+//     "plate":8,
+//     "cutleries":9,
+//     "beverage bottle":10,
+//     "other bottle":11,
+//     "bag":12,
+//     "foil":13,
+//     "fishing gear":14,
+//     "rope":15,
+//     "diaper":16,
+//     "textile":17, 
+//     "hand glove":18,
+//     "protective gears":19,
+//     "other":20
+//   };
+
+let TagSelectorWidget = function (args) {
+
+    const tags = args.annotation ?
+        args.annotation.bodies.filter(function (b) {
+            return b.purpose == 'tagging' && b.type == 'TextualBody';
+        }) : [];
+
+    let createDropDown = function (options) {
+        var dropDown = document.createElement('select');
+
+        options.forEach(optionValue => {
+            let optionElement = document.createElement('option');
+            optionElement.appendChild(document.createTextNode(optionValue));
+            optionElement.value = optionValue;
+            if (optionValue == tags[0]?.value) {
+                optionElement.selected = 'selected';
+            }
+            dropDown.appendChild(optionElement);
+        });
+
+        dropDown.addEventListener('change', function () {
+            if (tags.length > 0) {
+                args.onUpdateBody(tags[0], {
+                    type: 'TextualBody',
+                    purpose: 'tagging',
+                    value: this.value
+                });
+            } else {
+                args.onAppendBody({
+                    type: 'TextualBody',
+                    purpose: 'tagging',
+                    value: this.value
+                });
+            }
+        });
+
+        return dropDown;
+    }
+
+    var container = document.createElement('div');
+    container.className = 'tagselector-widget';
+
+    const VOCABULARY = ['Plastic', 'Pile', 'Trash Bin', 'Face mask', "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"];
+    container.appendChild(createDropDown(VOCABULARY));
+
+    return container;
+};
+
+//   fetches annotations, converts to Annotorius format and sets
+async function get_annots_from_coco(ran_anno, im_id){
+    // alert("yeee")
+    await fetch(base_link+"/api/annotator/data/"+String(im_id), {
+        "headers": {
+            "accept": "application/json",
+            "accept-language": "en-US,en;q=0.9"
+        },
+        "referrer": base_link+"/api/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+    .then(response => response.json())
+    .then(data => annotator_response = data)
+    .then(() => {
+        // console.log(annotator_response)
+        var annotations_format = []
+        for(cat_num in annotator_response.categories){
+            var category = annotator_response.categories[cat_num]
+            var cat_name = category["name"]
+            // console.log(cat_name)
+            var annotations = category["annotations"]
+            const image = document.getElementById('ran-ann-img');
+            annotations.forEach(annotation => {
+                box = annotation["bbox"]
+                box = box.flat()
+                left = box[0]
+                atop = box[1]
+                width = box[2]
+                height = box[3]
+                // console.log(left, atop, width, height)
+                var anno_dict = {}
+                anno_dict["type"] = "Annotation"
+                anno_dict["body"] = []
+                anno_dict_body = {}
+                anno_dict_body["type"] =  "TextualBody"
+                anno_dict_body["purpose"] = "tagging"
+                anno_dict_body["value"] = cat_name
+                anno_dict["body"].push(anno_dict_body)
+                anno_dict["target"] = {}
+                // modify below with id
+                anno_dict["target"]["source"] = base_link+"/api/image/28568",
+                anno_dict["target"]["selector"] = {}
+                anno_dict["target"]["selector"]["type"] = "FragmentSelector"
+                anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
+                // convet to natual dimentions to img align dimensions
+                // a_left = left * (image.naturalWidth/image.width)
+                // a_top = atop * (image.naturalHeight/image.height)
+                // a_width = width * (image.naturalWidth/image.width)
+                // a_height = height * (image.naturalHeight/image.height)
+                a_left = left
+                a_top = atop
+                a_width = width
+                a_height = height
+                anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(a_left)+","+String(a_top)+","+String(a_width)+","+String(a_height)
+                anno_dict["@context"] = ""
+                anno_dict["id"] = annotation["id"]
+                // ************ add condition that bbox exists
+                annotations_format.push(anno_dict)
+            });
+        }
+        // console.log(annotations_format)
+        ran_anno.setAnnotations(annotations_format)
+    })
+    .catch(error => console.log(error))
+}
+
+async function load_random(){
+    if(loading_status === true){
+        console.log("Loading, Please wait!")
+    }
+    else{
+        loading_status = true
+        if( !!present_image_id & image_annotating_status === true){
+            console.log("image skipping without annotating")
+            await fetch(base_link+"/api/image/"+String(present_image_id), {
+                "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+            },
+            "referrer": base_link+"/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": JSON.stringify({
+                cs_annotating: false,
+                is_annoatations_added: false,
+            }),
+            "method": "PUT",
+            "mode": "cors",
+            "credentials": "include"
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                present_image_id = null
+            })
+            .catch(error => console.log(error))
+            image_annotating_status = false
+        }
+
+        await fetch(base_link+"/api/dataset/"+String(dataset_id)+"/random_image", {
+            "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-US,en;q=0.9",
+                "content-type": "application/json;charset=UTF-8"
+            },
+            "referrer": base_link+"/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": JSON.stringify({
+                dummy: true,
+                rejected: rejectedList,
+            }),
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => image = data)
+        .then(() => {
+            console.log(image)
+            const image_id = image.image_id
+            console.log(image_id)
+            console.log("check bf?af")
+            present_image_id = image_id
+
+            // change image annoattion status to true
+            image_annotating_status = true
+
+            document.getElementById("openseadragon").innerHTML = ''
+            document.getElementById("toolbar").innerHTML = ''
+            var viewer = OpenSeadragon({
+                id: "openseadragon",
+                prefixUrl: "./icons/openseadragon/",
+                tileSources: {
+                type: "image",
+                url: String(base_link)+'/api/image/'+String(image_id)
+                },
+                gestureSettingsTouch: {
+                pinchRotate: true
+                }
+            });
+        
+            ran_anno = OpenSeadragon.Annotorious(viewer, {
+                locale: 'auto',
+                allowEmpty: true,
+                widgets: [ TagSelectorWidget ]
+            });
+        
+            // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+
+            // ran_anno = Annotorious.init({
+            //     image: 'ran-ann-img',
+            //     locale: 'auto',
+            //     // disableEditor: true
+            //     widgets: [ TagSelectorWidget ]
+            // })
+
+            // load annoatations and append on image
+            get_annots_from_coco(ran_anno, image_id)
+
+            // need to add reject button @nischal, 
+            // is it better to keep the button, jsut disbale them, instead adding everytime
+            // loading button has to stay disabled when image is laoding
+            // gif while image loading
+            document.getElementById("ran-save").innerHTML = 
+            `<button class='button-save' onclick='save_annots_to_coco(${image_id})'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                    <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
+                </svg>
+            </button>`
+            
+            ran_anno.on('createSelection', async function(selection) {
+                selection.body = [{
+                type: 'TextualBody',
+                purpose: 'tagging',
+                value: 'Plastic'
+                }];
+                // selection.id = "#0000"
+                console.log(selection)
+                await ran_anno.updateSelected(selection);
+                ran_anno.saveSelected();
+            })
+            ran_anno.on('selectAnnotation', function(a) {
+                console.log('selectAnnotation', a);
+            })
+            
+            ran_anno.on('cancelSelected', function(a) {
+                console.log('cancelSelected', a);
+            })
+            
+            ran_anno.on('createAnnotation', function(a) {
+                console.log('created', a);
+            })
+            
+            ran_anno.on('updateAnnotation', function(annotation, previous) {
+                console.log('updated', previous, 'with', annotation);
+            })
+
+            // to do, on delete 
+            ran_anno.on('deleteAnnotation', function(annotation) {
+                console.log('deleted', annotation.id);
+                if(typeof annotation.id === "number"){
+                    console.log("will be deleted from coco-annotator after saving")
+                    deleted_ids.push(annotation.id)
+                }
+            })
+        })
+        .catch(error => console.log(error))
+
+        loading_status = false
+        if(present_image_id === null){
+            alert("Please reload!")
+        }
+    }
+}
+
+async function save_annots_to_coco(im_id){
+    var anns = ran_anno.getAnnotations()
+    confirm("Are you sure that image completely annotated and confirm saving "+anns.length+" annotations? please submit only if image is completely annotated.")
+    console.log(anns)
+    var ann_id;
+    var ann;
+    for(ann_id in anns){
+        ann = anns[ann_id]
+        if(ann.target.selector.type === 'FragmentSelector'){
+            var is_it_bbox = true
+            var value = ann.target.selector.value
+            var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+            var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+            var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+            var cat_name = ann.body[0].value
+            var cat_id = cat_dict[cat_name]
+            console.log(x, y, w, h, cat_id, ann.id)
+            var box = [x, y, w, h]
+            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+        }
+        else if(ann.target.selector.type === "SvgSelector"){
+            var is_it_bbox = false
+            console.log("svg")
+            var value = ann.target.selector.value
+            var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
+            var cat_name = ann.body[0].value
+            var cat_id = cat_dict[cat_name]
+            var sep_coords = coords.split(' ')
+            var flat_coords = []
+            sep_coords.forEach(sep_coord => {
+                var temp_cord = sep_coord.split(',').map(i=>Number(i))
+                flat_coords = flat_coords.concat(temp_cord)
+            });
+            var xs = []
+            var ys = []
+            for (i = 0; i < flat_coords.length; i++) {
+                if(i%2 === 0){
+                    xs.push(flat_coords[i])
+                }
+                else{
+                    ys.push(flat_coords[i])
+                }
+            }
+            var min_x = Math.min(...xs), max_x = Math.max(...xs)
+            var min_y = Math.min(...ys), max_y = Math.max(...ys)
+            var w = max_x-min_x
+            var h = max_y-min_y
+            var box = [min_x, min_y, w, h]
+            var seg = [flat_coords]
+            console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
+        }
+        else{
+            console.log("type error")
+            continue;
+        }
+        // if annotatation is newly created
+        // id is string, then send post
+        // else id is int, send put
+        if (typeof ann.id === 'number'){
+            fetch(base_link+"/api/annotation/"+String(ann.id), {
+                "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-US,en;q=0.9",
+                "content-type": "application/json;charset=UTF-8"
+                },
+                "referrer": base_link+"/",
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": JSON.stringify({
+                    category_id:cat_id,
+                    bbox:box,
+                    segmentation: seg,
+                }),
+                "method": "PUT",
+                "mode": "cors",
+                "credentials": "include"
+            });
+        }
+        else if (typeof ann.id === 'string'){ 
+            fetch(base_link+"/api/annotation/", {
+                "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-US,en;q=0.9",
+                "content-type": "application/json;charset=UTF-8"
+                },
+                "referrer": base_link+"/",
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": JSON.stringify({
+                    image_id: im_id,
+                    category_id: cat_id,
+                    isbbox: is_it_bbox,
+                    segmentation: seg,
+                    bbox: box,
+                }),
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+            })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch(error => console.log(error))
+        }
+        else {
+            console.log("Something wrong with annotation id!")
+        }
+    }
+
+    // deal with deleted
+    deleted_ids.forEach(deletedataset_id => {
+        fetch(base_link+"/api/annotation/"+String(deletedataset_id), {
+            "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+        },
+        "referrer": base_link+"/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "DELETE",
+        "mode": "cors",
+        "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.log(error))
+    })
+    deleted_ids = []
+    
+    // to do (use sockets or normal put?)
+    // image.cs_annotated.append(user), if user not signin: user,user_name = Anonymous
+    
+    if(image_annotating_status === true){
+        console.log("confirmed as image is complete annotation")
+        await fetch(base_link+"/api/image/"+String(im_id), {
+            "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+	    "content-type": "application/json;charset=UTF-8" 
+        },
+        "referrer": base_link+"/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": JSON.stringify({
+            cs_annotating: false,
+            is_annotations_added: true,
+        }),
+        "method": "PUT",
+        "mode": "cors",
+        "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            present_image_id = null
+        })
+        .catch(error => console.log(error))
+    
+        image_annotating_status = false
+    }
+    alert("loading next image")
+    load_random()
+}
+
+function get_dataset_stats(){
+    fetch(base_link+"/api/dataset/"+String(dataset_id)+"/stats", {
+        "headers": {
+          "accept": "application/json",
+          "accept-language": "en-US,en;q=0.9"
+        },
+        "referrer": base_link+"/api/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": null,
+        "method": "GET",
+        "mode": "cors",
+        "credentials": "include"
+    })
+    .then(response => response.json())
+    .then(data => stats = data)
+    .then(() => {
+        console.log("Dataset stats are fecthed.")
+        document.getElementById("stats").innerHTML="<p>Total: "+String(stats.total.Images)+", Annotated Images: "+String(stats.total["Annotated Images"])
+        })
+    .catch(error => console.log(error))
+}
+
+$(document).ready(function(){
+    get_dataset_stats()
+})
+
+// window.onbeforeunload = function () {
+//     if(confirm("Are you sure that you want to leave this page?")){
+//         if( !!present_image_id & image_annotating_status === true){
+//             console.log("image skipping without annotating")
+//             fetch(base_link+"/api/image/"+String(present_image_id), {
+//                 "headers": {
+//                 "accept": "application/json, text/plain, */*",
+//                 "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+//             },
+//             "referrer": base_link+"/",
+//             "referrerPolicy": "strict-origin-when-cross-origin",
+//             "body": JSON.stringify({
+//                 cs_annotating: false,
+//                 is_annoatations_added: false,
+//             }),
+//             "method": "PUT",
+//             "mode": "cors",
+//             "credentials": "include"
+//             })
+//             .then(response => response.json())
+//             .then(data => {
+//                 console.log(data)
+//                 present_image_id = null
+//             })
+//             .catch(error => console.log(error))
+//             image_annotating_status = false
+//         }
+//         return true
+//     }
+//     else{
+//         return false
+//     }
+// }
