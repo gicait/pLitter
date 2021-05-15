@@ -1,13 +1,24 @@
-// const base_link = "http://203.159.29.187:5000"
-// const d_id = 104
+const base_link = "https://bf2a9a00427a.ngrok.io"
+const d_id = 104
 
-const base_link = "https://annotator.ait.ac.th"
-const d_id = 55
+// const base_link = "https://annotator.ait.ac.th"
+// const d_id = 55
 
-// to do
+// to do @nischal
 // user sigin
 // live count of users
 // progressbar (images annotated/total images(dataset size))
+// flag image
+// disable buttons when image is loading
+// exit button (if leaving, update documents)
+
+// might need reject button (if user rejects, it should not load again, how? maintain reject record in user model or image model? @nischal)
+var rejectedList = [] // when rejected add image_id to this list, on load_random,, i will send this request
+
+var user_name = 'Anonymous' // change it user_name after sign in, otherwise overrides as system, hard to maintain stats after
+
+var present_image_id
+var image_annotating_status = false // make it true after image loading, make it false when annotation saving 
 
 
 var response_data = {}
@@ -21,7 +32,6 @@ var dataset = {}
 var annotator_response = {}
 var deleted_ids = []
 
-var image_annotating_status = false // make it true after image loading, make it false when annotation saving 
 
 
 
@@ -74,31 +84,7 @@ function drawBoxes_annotorius(image, predictions){
 
     // if annotation is ready, first save it to backend and change with response id
 
-
-
     anno.setAnnotations(preds_format)
-
-
-//     {
-//     "type": "Annotation",
-//     "body": [
-//         {
-//             "type": "TextualBody",
-//             "purpose": "tagging",
-//             "value": "Plastic"
-//         }
-//     ],
-//     "target": {
-//         "source": base_link+"/api/image/28568",
-//         "selector": {
-//             "type": "FragmentSelector",
-//             "conformsTo": "http://www.w3.org/TR/media-frags/",
-//             "value": "xywh=pixel:515.7105102539062,478.37109375,237.6204833984375,189.046142578125"
-//         }
-//     },
-//     "@context": "http://www.w3.org/ns/anno.jsonld",
-//     "id": "#29d84ed6-a1ea-46e4-aa4e-7b77fc06cae3"
-// }
 }
 
 async function predict_on_this() {
@@ -120,54 +106,75 @@ async function predict_on_this() {
 
 // to do
 // find id by name
+var cat_dict = {}
+console.log("fetching cats")
+
+fetch(base_link+"/api/dataset/"+String(d_id)+"/cats", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+  },
+  "referrer": base_link,
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+})
+.then(response => response.json())
+.then(data => cats_response = data)
+.then(() => {
+	cat_dict = cats_response.categories
+})
+.catch(error => console.log(error))
 
 
-// var cat_dict = {
-//     "Plastic":27,
-//     "Pile":21,
-//     "Trash Bin":29,
-//     "Face Mask":30,
-//     "wrapper/sachet":31,
-//     "container":32,
-//     "cup":4,
-//     "plate":33,
-//     "Cutleries":34,
-//     "Beverage bottle":35,
-//     "Other bottle":36,
-//     "Bag":37,
-//     "Foil":44,
-//     "Fishing gear":38,
-//     "Rope":39,
-//     "Diaper":40,
-//     "Textile":41, 
-//     "Hand glove":42,
-//     "protective gears":43,
-//     "other":5
+//var cat_dict = {
+//    "Plastic":27,
+//    "Pile":21,
+//    "Trash Bin":29,
+//    "Face Mask":30,
+//    "wrapper/sachet":31,
+//    "container":32,
+//    "cup":4,
+//    "plate":33,
+//    "Cutleries":34,
+//    "Beverage bottle":35,
+//    "Other bottle":36,
+//    "Bag":37,
+//    "Foil":44,
+//    "Fishing gear":38,
+//    "Rope":39,
+//    "Diaper":40,
+//    "Textile":41, 
+//    "Hand glove":42,
+//    "protective gears":43,
+//    "other":5
+//  };
+
+
+//   var cat_dict = {
+//     "Plastic":1,
+//     "Pile":2,
+//     "Trash Bin":3,
+//     "Face Mask":4,
+//     "wrapper/sachet":5,
+//     "container":6,
+//     "cup":7,
+//     "plate":8,
+//     "cutleries":9,
+//     "beverage bottle":10,
+//     "other bottle":11,
+//     "bag":12,
+//     "foil":13,
+//     "fishing gear":14,
+//     "rope":15,
+//     "diaper":16,
+//     "textile":17, 
+//     "hand glove":18,
+//     "protective gears":19,
+//     "other":20
 //   };
-
-
-  var cat_dict = {
-    "Plastic":1,
-    "Pile":2,
-    "Trash Bin":3,
-    "Face Mask":4,
-    "wrapper/sachet":5,
-    "container":6,
-    "cup":7,
-    "plate":8,
-    "cutleries":9,
-    "beverage bottle":10,
-    "other bottle":11,
-    "bag":12,
-    "foil":13,
-    "fishing gear":14,
-    "rope":15,
-    "diaper":16,
-    "textile":17, 
-    "hand glove":18,
-    "protective gears":19,
-    "other":20
-  };
 
 
 //   fetches annotations, converts to Annotorius format and sets
@@ -270,7 +277,7 @@ function get_annots_from_coco(ran_anno, im_id){
 
 function save_annots_to_coco(im_id){
     var anns = ran_anno.getAnnotations()
-    alert("Confirm saving"+anns.length+"annotations")
+    confirm("Confirm saving "+anns.length+" annotations, please submit only if image is completely annotated.")
     console.log(anns)
     var ann_id;
     var ann;
@@ -397,9 +404,7 @@ function save_annots_to_coco(im_id){
         },
         "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": JSON.stringify({
-            cs_annotating: false,
-        }),
+        "body": null,
         "method": "DELETE",
         "mode": "cors",
         "credentials": "include"
@@ -412,23 +417,35 @@ function save_annots_to_coco(im_id){
     
     // to do (use sockets or normal put?)
     // image.cs_annotated.append(user), if user not signin: user,user_name = Anonymous
-    fetch(base_link+"/api/image/"+String(im_id), {
-        "headers": {
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
-    },
-    "referrer": base_link+"/",
-    "referrerPolicy": "strict-origin-when-cross-origin",
-    "body": null,
-    "method": "PUT",
-    "mode": "cors",
-    "credentials": "include"
-    })
-    .then(response => response.json())
-    .then(data => console.log(data))
-    .catch(error => console.log(error))
-
-    image_annotating_status = false
+    
+    if(image_annotating_status === true){
+        console.log("confirmed as image is complete annotation")
+        fetch(base_link+"/api/image/"+String(im_id), {
+            "headers": {
+            "accept": "application/json, text/plain, */*",
+            "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+	    "content-type": "application/json;charset=UTF-8" 
+        },
+        "referrer": base_link+"/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": JSON.stringify({
+            cs_annotating: false,
+            is_annotations_added: true,
+        }),
+        "method": "PUT",
+        "mode": "cors",
+        "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            present_image_id = null
+        })
+        .catch(error => console.log(error))
+    
+        image_annotating_status = false
+    }
+    
 
     alert("loading next image")
     load_random()
@@ -532,31 +549,73 @@ let TagSelectorWidget = function (args) {
 };
 
 function load_random(){
-    fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
-    // fetch(base_link+"/api/dataset/"+String(d_id)+"/random_image", {
-        // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
-        "headers": {
-            "accept": "application/json",
+
+    if( !!present_image_id & image_annotating_status === true){
+        console.log("image skipping without annotating")
+        fetch(base_link+"/api/image/"+String(present_image_id), {
+            "headers": {
+            "accept": "application/json, text/plain, */*",
             "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
         },
         "referrer": base_link+"/",
         "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
+        "body": JSON.stringify({
+            cs_annotating: false,
+            is_annoatations_added: false,
+        }),
+        "method": "PUT",
+        "mode": "cors",
+        "credentials": "include"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            present_image_id = null
+        })
+        .catch(error => console.log(error))
+    
+        image_annotating_status = false
+    }
+    
+
+
+    // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50", {
+    fetch(base_link+"/api/dataset/"+String(d_id)+"/random_image", {
+        // fetch(base_link+"/api/dataset/"+String(d_id)+"/data?page=1&limit=50&annotated=false", {
+        "headers": {
+                    "accept": "application/json, text/plain, */*",
+                    "accept-language": "en-US,en;q=0.9",
+                    "content-type": "application/json;charset=UTF-8"
+        },
+        "referrer": base_link+"/",
+        "referrerPolicy": "strict-origin-when-cross-origin",
+        "body": JSON.stringify({
+		dummy: true,
+		rejected: rejectedList,
+	}),
+        "method": "POST",
         "mode": "cors",
         "credentials": "include"
     })
     .then(response => response.json())
-    .then(data => images = data)
+    // .then(data => images = data)
+    // .then(() => {
+    //     const random_index = Math.floor(Math.random() * images.images.length);
+    //     const image = images.images[random_index];
+    //     console.log(image)
+    //     // const image_id = image.image_id
+    //     const image_id = image["id"]
+    //     console.log(image_id)
+    .then(data => image = data)
     .then(() => {
-        const random_index = Math.floor(Math.random() * images.images.length);
-        const image = images.images[random_index];
         console.log(image)
-        // const image_id = image.image_id
-        const image_id = image["id"]
+        const image_id = image.image_id
         console.log(image_id)
+        present_image_id = image_id
         // document.getElementById("ran-img").innerHTML
         // = `<img id='ran-ann-img' crossorigin='anonymous' src='${base_link}/api/image/${image_id}' width=100% height=100%/>`
+
+        image_annotating_status = true
 
         document.getElementById("openseadragon").innerHTML = ''
         document.getElementById("toolbar").innerHTML = ''
