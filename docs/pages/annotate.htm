@@ -2,14 +2,19 @@
 <br>
 <div id="stats"></div>
 <br>
+  <div id="ann-container">
+
     <div id="toolbar" />
     <div id="openseadragon" />
 
+    <div id="info">
+      some shiz here
+    </div>
+
+  </div>
+
 
 <style>
-        align-items: center;
-        border: 3px solid green;
-    }
     .button-reload {
         background-color: white;
         color: black;
@@ -21,12 +26,15 @@
         background-color: #4CAF50;
         color: white;
     }
-
     .button-save {
-        background-color: white;
+        background-color: transparent;
         color: black;
         border: 2px solid #4CAF50;
         margin: 10px;
+    }
+
+    .a9s-toolbar-btn svg path {
+      stroke-width: 1px;
     }
 
     .button-save:hover {
@@ -53,8 +61,7 @@
     }
 
     #openseadragon {
-      max-width:640px; 
-      height:400px;
+      height:500px;
       width:100%;
     }
 
