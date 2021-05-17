@@ -122,6 +122,16 @@ a[aria-expanded=false] .glyphicon-chevron-down {
   padding-right:10px;
   text-align:right;
 }
+#profile-header {
+  color:white;
+  font-size:13px;
+  padding:10px;
+  float: right;
+}
+#profile-header a {
+  color:white;
+  font-size:13px;
+}
 .nav-tabs {
   margin-top:0px;
   font-size:21px;

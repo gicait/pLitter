@@ -45,6 +45,7 @@
    <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/plugins/leaflet-heatmap/leaflet-heatmap.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
 
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl/dist/tf-automl.min.js"></script>
@@ -60,66 +61,51 @@
 </head>
 
 <body>
-  <div id="header"><div id="headerBody">
-    <!-- <img id="headerImage" src="https://raw.githubusercontent.com/gicait/pLitter/main/graphics/plitter.png" alt="Logo" /> -->
-    <img id="headerImage" src="icons/plitter.png" alt="Logo" />
-    <div id="headerTabs">
-      <!-- <div id="headerEmail">pLitter@pLitter</div> -->
-      <ul class="nav nav-tabs">
-        <li class="active">
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#home">Home</a>
-        </li>
-        <!-- <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#people">People</a>
-        </li> -->
-        <li class="dropdown">
-          <div class="nav-tab-header"></div>
-          <a class="dropdown-toggle" data-toggle="dropdown">Dataset<b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a data-toggle="tab" href="#overview"><i class="glyphicon glyphicon-info-sign"></i> Overview</a></li>
-            <!-- <li><a data-toggle="tab" href="#explore"><i class="glyphicon glyphicon-search"></i> Explore</a></li> -->
-            <li><a data-toggle="tab" href="#download"><i class="glyphicon glyphicon-download"></i> Download</a></li>
-            <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
-          </ul>
-        </li>
-        <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#demo">Demo</a>
-        </li>
-        <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#maps">Map</a>
-        </li>
-        <!-- <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#zoom">zoom</a>
-        </li> -->
-        <!-- <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#help">Help</a>
-        </li> -->
-        <li class="dropdown">
-          <div class="nav-tab-header"></div>
-          <a class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a data-toggle="tab" href="#upload"><i class="glyphicon glyphicon-picture"></i> Upload</a></li>
-            <li><a data-toggle="tab" href="#annotate"><i class="glyphicon glyphicon-pencil"></i> Annotate</a></li>
-          </ul>
-        </li>
-        <!-- <li> -->
-        <!-- <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#upload">Upload</a>
-        </li>      
-        <li>
-          <div class="nav-tab-header"></div>
-          <a data-toggle="tab" href="#annotate">Annotate</a>
-        </li> -->
-      </ul>
+  <div id="header">
+    <div id="headerBody">
+      <!-- <img id="headerImage" src="https://raw.githubusercontent.com/gicait/pLitter/main/graphics/plitter.png" alt="Logo" /> -->
+      <img id="headerImage" src="icons/plitter.png" alt="Logo" />
+      <div id="headerTabs">
+        <!-- <div id="headerEmail">pLitter@pLitter</div> -->
+        <ul class="nav nav-tabs">
+          <li class="active">
+            <div class="nav-tab-header"></div>
+            <a data-toggle="tab" href="#home">Home</a>
+          </li>
+          <li class="dropdown">
+            <div class="nav-tab-header"></div>
+            <a class="dropdown-toggle" data-toggle="dropdown">Dataset<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a data-toggle="tab" href="#overview"><i class="glyphicon glyphicon-info-sign"></i> Overview</a></li>
+              <!-- <li><a data-toggle="tab" href="#explore"><i class="glyphicon glyphicon-search"></i> Explore</a></li> -->
+              <li><a data-toggle="tab" href="#download"><i class="glyphicon glyphicon-download"></i> Download</a></li>
+              <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
+            </ul>
+          </li>
+          <li>
+            <div class="nav-tab-header"></div>
+            <a data-toggle="tab" href="#demo">Demo</a>
+          </li>
+          <li>
+            <div class="nav-tab-header"></div>
+            <a data-toggle="tab" href="#maps">Map</a>
+          </li>
+          <li class="dropdown">
+            <div class="nav-tab-header"></div>
+            <a class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a data-toggle="tab" href="#upload"><i class="glyphicon glyphicon-picture"></i> Upload</a></li>
+              <li><a data-toggle="tab" href="#annotate"><i class="glyphicon glyphicon-pencil"></i> Annotate</a></li>
+            </ul>
+          </li>
+          <li>
+            <div class="nav-tab-header"></div>
+            <a data-toggle="tab" href="#signin">sigin</a>
+          </li>
+        </ul>
+      </div>
     </div>
-  </div></div>
+  </div>
   <div id="content" class="tab-content" >
     <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
   </div>
