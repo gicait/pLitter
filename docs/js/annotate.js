@@ -272,7 +272,7 @@ async function load_random(){
                 widgets: [ TagSelectorWidget ]
             });
         
-            // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+            Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
 
             // ran_anno = Annotorious.init({
             //     image: 'ran-ann-img',
@@ -288,12 +288,35 @@ async function load_random(){
             // is it better to keep the button, jsut disbale them, instead adding everytime
             // loading button has to stay disabled when image is laoding
             // gif while image loading
-            document.getElementById("ran-save").innerHTML = 
-            `<button class='button-save' onclick='save_annots_to_coco(${image_id})'>
+            let reloadButton = document.createElement("button");
+            reloadButton.id = 'button-reload';
+            reloadButton.className = "a9s-toolbar-btn";
+            reloadButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                    <path d="M26.47 9.53C24.3 7.35 21.32 6 18 6 11.37 6 6 11.37 6 18s5.37 12 12 12c5.94 0 10.85-4.33 11.81-10h-3.04c-.91 4.01-4.49 7-8.77 7-4.97 0-9-4.03-9-9s4.03-9 9-9c2.49 0 4.71 1.03 6.34 2.66L20 16h10V6l-3.53 3.53z" />
+                </svg>`;
+            reloadButton.addEventListener('click', load_random);
+
+            let saveButton = document.createElement("button");
+            saveButton.className = "a9s-toolbar-btn";
+            saveButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
                     <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
-                </svg>
-            </button>`
+                </svg>`
+            saveButton.addEventListener('click', function () { save_annots_to_coco(image_id); });
+
+            let rejectButton = document.createElement("button");
+            rejectButton.className = "a9s-toolbar-btn";
+            rejectButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                    <path d="M18 3C9.71 3 3 9.71 3 18s6.71 15 15 15 15-6.71 15-15S26.29 3 18 3zm7.5 20.38l-2.12 2.12L18 20.12l-5.38 5.38-2.12-2.12L15.88 18l-5.38-5.38 2.12-2.12L18 15.88l5.38-5.38 2.12 2.12L20.12 18l5.38 5.38z"/>
+                </svg> `;
+            // TODO: persist the rejected list with cookies
+            rejectButton.addEventListener('click', function () { rejectedList.push(image_id) });
+
+            document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
+            document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
+            document.getElementsByClassName('a9s-toolbar')[0].prepend(rejectButton);
             
             ran_anno.on('createSelection', async function(selection) {
                 selection.body = [{
@@ -524,6 +547,7 @@ function get_dataset_stats(){
 
 $(document).ready(function(){
     get_dataset_stats()
+    load_random();
 })
 
 // window.onbeforeunload = function () {

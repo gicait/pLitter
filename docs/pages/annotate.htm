@@ -2,30 +2,53 @@
 <br>
 <div id="stats"></div>
 <br>
-<div id="ann-div" style="">
-    <div class='center' style="padding: 10px;">
-        <span id="ann-img-div">
-            <button class='button-reload' onclick="load_random()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-                    <path d="M26.47 9.53C24.3 7.35 21.32 6 18 6 11.37 6 6 11.37 6 18s5.37 12 12 12c5.94 0 10.85-4.33 11.81-10h-3.04c-.91 4.01-4.49 7-8.77 7-4.97 0-9-4.03-9-9s4.03-9 9-9c2.49 0 4.71 1.03 6.34 2.66L20 16h10V6l-3.53 3.53z" />
-                </svg>
-            </button>
-        </span>
-        <span id='ran-save'></span>
+  <div id="ann-page-container">
+
+    <div id="ann-container">
+      <div id="toolbar" />
+      <div id="openseadragon" />
     </div>
-    <!-- <div id="ran-img" data-zoom-on-wheel></div> -->
-    <div id="toolbar"></div>
-    <div id="openseadragon"></div>
-</div>
+
+    <div id="info">
+      <h2>Task</h2>
+
+      <strong>Tag any pieces of litter you see in this image</strong>
+
+      Have a careful look, the + and - buttons might help you.
+
+      <h4>Spotted something?</h4>
+      <ul>
+        <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+          using the rectangular drawing option, then select an option from the pop up list and press 'return'
+         or click <strong>OK</strong></li>
+      </ul>
+
+      <h4>Can't find any litter?</h4>
+      <ul>
+        <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.</li>
+      </ul>
+    </div>
+
+  </div>
 
 
 <style>
-    .center {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border: 3px solid green;
-    }
+  #info {
+    float: right;
+    width: 30%;
+        background-color: white;
+        color: black;
+        border: 2px solid #4CAF50;
+        border-radius: 10%;
+        padding: 10px;
+  }
+  #ann-container {
+    float: left;
+    width: 60%;
+  }
+  #ann-page-container {
+    min-height: 720px;
+  }
     .button-reload {
         background-color: white;
         color: black;
@@ -37,12 +60,15 @@
         background-color: #4CAF50;
         color: white;
     }
-
     .button-save {
-        background-color: white;
+        background-color: transparent;
         color: black;
         border: 2px solid #4CAF50;
         margin: 10px;
+    }
+
+    .a9s-toolbar-btn svg path {
+      stroke-width: 1px;
     }
 
     .button-save:hover {
@@ -69,8 +95,7 @@
     }
 
     #openseadragon {
-      max-width:640px; 
-      height:400px;
+      height:500px;
       width:100%;
     }
 
