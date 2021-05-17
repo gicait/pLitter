@@ -2,19 +2,53 @@
 <br>
 <div id="stats"></div>
 <br>
-  <div id="ann-container">
+  <div id="ann-page-container">
 
-    <div id="toolbar" />
-    <div id="openseadragon" />
+    <div id="ann-container">
+      <div id="toolbar" />
+      <div id="openseadragon" />
+    </div>
 
     <div id="info">
-      some shiz here
+      <h2>Task</h2>
+
+      <strong>Tag any pieces of litter you see in this image</strong>
+
+      Have a careful look, the + and - buttons might help you.
+
+      <h4>Spotted something?</h4>
+      <ul>
+        <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+          using the rectangular drawing option, then select an option from the pop up list and press 'return'
+         or click <strong>OK</strong></li>
+      </ul>
+
+      <h4>Can't find any litter?</h4>
+      <ul>
+        <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.</li>
+      </ul>
     </div>
 
   </div>
 
 
 <style>
+  #info {
+    float: right;
+    width: 30%;
+        background-color: white;
+        color: black;
+        border: 2px solid #4CAF50;
+        border-radius: 10%;
+        padding: 10px;
+  }
+  #ann-container {
+    float: left;
+    width: 60%;
+  }
+  #ann-page-container {
+    min-height: 720px;
+  }
     .button-reload {
         background-color: white;
         color: black;

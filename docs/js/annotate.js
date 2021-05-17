@@ -272,7 +272,7 @@ async function load_random(){
                 widgets: [ TagSelectorWidget ]
             });
         
-            // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+            Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
 
             // ran_anno = Annotorious.init({
             //     image: 'ran-ann-img',
@@ -309,9 +309,10 @@ async function load_random(){
             rejectButton.className = "a9s-toolbar-btn";
             rejectButton.innerHTML = `
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-                    <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
-                </svg>`
-            rejectButton.addEventListener('click', function () { rejectedList.push(iamge_id) });
+                    <path d="M18 3C9.71 3 3 9.71 3 18s6.71 15 15 15 15-6.71 15-15S26.29 3 18 3zm7.5 20.38l-2.12 2.12L18 20.12l-5.38 5.38-2.12-2.12L15.88 18l-5.38-5.38 2.12-2.12L18 15.88l5.38-5.38 2.12 2.12L20.12 18l5.38 5.38z"/>
+                </svg> `;
+            // TODO: persist the rejected list with cookies
+            rejectButton.addEventListener('click', function () { rejectedList.push(image_id) });
 
             document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
             document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
