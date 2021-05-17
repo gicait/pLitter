@@ -451,7 +451,6 @@ function save_annots_to_coco(im_id){
     load_random()
 }
 
-<<<<<<< HEAD
 
 
 // function save_anntations_in_coco(im_id){
@@ -474,31 +473,6 @@ function save_annots_to_coco(im_id){
 //             var box = [[x,y,w,h]]
 //             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
 //             var annot_metadata = {'predicted':true}
-=======
-function save_anntations_in_coco(im_id){
-    var anns = anno.getAnnotations()
-    alert("confirm saving"+anns.length+"annotations")
-    console.log(anns)
-    var ann_id;
-    var ann;
-    for(ann_id in anns){
-        ann = anns[ann_id]
-        if(ann.target.selector.type === 'FragmentSelector' & ann.target.selector.conformsTo === "http://www.w3.org/TR/media-frags/"){
-            var value = ann.target.selector.value    
-            var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
-            var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
-            var [ x, y, w, h ] = coords.split(',').map(parseFloat)
-            var cat_name = ann.body[0].value
-            var cat_id = cat_dict[cat_name]
-            console.log(x, y, w, h, cat_id)
-
-            var box = [[x,y,w,h]]
-            var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            var annot_metadata = {'predicted':true}
-            // annot_metadata["predicted"] = true
-            // [[140,273,170,273,170,280,140,280]]
-            // "{\"image_id\":"+image_id+",\"category_id\":"+cat_id+",\"isbbox\":true,\"segmentation\":"+segmentation+"}",
->>>>>>> ff76df5 (load random on first load, move position of buttons)
             
 //             fetch(base_link+"/api/annotation/", {
 //                 "headers": {
