@@ -42,6 +42,16 @@
 </div>
 </div>
 
+<script>
+    $(".buttons .btn").click(function(e){
+      $(".buttons .btn").css("color", "gray");
+      $(this).css("color", "black");
+    });
+
+    $(document).ready(
+      () => $(".buttons .login").css("color", "black")
+    )
+</script>
 
 
 <style>
@@ -77,29 +87,37 @@
         /* background-color: rgb(1, 0, 22); */
     }
 
+    button {
+        transition-duration: 0.4s;
+        cursor: pointer;
+    }
+
     .buttons {
         display: flex;
         width: 100%;
         flex-direction: row;
         justify-content: space-around;
-        height: 50px;
-        float: left;
+        height: 100px;
+        border-bottom: 2px solid #4CAF50;
+        padding: 10px;
+        margin: 10px;
     }
 
     .buttons .btn {
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 25px;
-        width: 50%;
+        font-size: 24px;
+        font-weight: 800;
+        margin: 20px 0;
+        color: gray;
         cursor: pointer;
-        background-color: thistle;
     }
 
     .buttons .btn:hover {
-        background-color: yellow;
+        color:burlywood;
+        cursor: pointer
     }
-
 
     #chbox:checked~.SignUp_form {
         display: flex;
