@@ -1,0 +1,98 @@
+<h2>Sign Up</h2>
+
+<input type="text" id="username_signup" placeholder="username"/> </br>
+<input type="password" id="password_signup" placeholder="password"/> </br>
+<input type="password" id="password_repeat_signup" placeholder="reenter password"/>
+<button id="signup_button">Signup</button>
+
+
+<h2>Log In</h2>
+
+<input type="text" id="username_login" placeholder="username"/> </br>
+<input type="password" id="password_login" placeholder="password"/>
+<button id="login_button">Log In</button>
+
+<style>
+    input {
+        margin: 10px;
+    }
+</style>
+
+<script>
+
+    function signup() {
+        let username = document.getElementById("username_signup").value;
+        let password = document.getElementById("password_signup").value;
+        let password_repeat = document.getElementById("password_repeat_signup").value;
+
+        if (password.trim() == "") { alert("password can't be empty") }
+        else if (password_repeat.trim() == "") { alert("password check can't be empty") }
+        else if (username.trim() == "") { alert("username can't be empty") }
+
+        if (password.trim() !== password.repeat.trim()) { alert("password does not match") }
+    }
+
+    function login() {
+        var userName = document.getElementById("username_login").value;
+        var passWord = document.getElementById("password_login").value;
+
+        fetch(base_link + "/api/user/login", {
+            "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+                "content-type": "application/json;charset=UTF-8"
+            },
+            "referrer": base_link + "/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": JSON.stringify({
+                username: userName,
+                password: passWord
+            }),
+            "method": "POST",
+            "mode": "cors",
+            "credentials": "include"
+        })
+            .then(res => res.json())
+            .then(data => response_data = data)
+            .then((response_data) => {
+                if (response_data["success"] === true) {
+                    set_user = true
+                    user = response_data["user"];
+
+                    setUserCookie(user);
+                    console.log('logged in', user);
+
+                    window.location = "/"
+                }
+                else {
+                    alert("Could not authenticate user")
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+            })
+    }
+    
+    function setUserCookie(user) {
+        Cookies.set('user', JSON.stringify(user));
+    }
+
+    function getUserCookie() {
+        let userString = Cookies.get('user', user);
+        if(userString) return JSON.parse(userString);
+    }
+
+    function getOid() {
+        let user = getUserCookie();
+        return user?.id?.$oid;
+    }
+
+    function getUsername() {
+        getUserCookie
+    }
+
+    $(document).ready(function () {
+        document.getElementById("signup_button").addEventListener("click", signup);
+        document.getElementById("login_button").addEventListener("click", login);
+    })
+</script>
