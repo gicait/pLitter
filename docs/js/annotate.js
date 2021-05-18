@@ -610,9 +610,7 @@ function get_dataset_stats(){
         "referrerPolicy": "strict-origin-when-cross-origin",
         "body": null,
         "method": "GET",
-        "mode": "cors",
-        "credentials": \
-        
+        "mode": "cors"
     })
     .then(response => response.json())
     .then(data => stats = data)
