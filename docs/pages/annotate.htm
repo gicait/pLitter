@@ -22,8 +22,8 @@
     <div class="col-sm-4">
       <div id="info">
         <div id='info-tab-container'>
-          <h2 id="task-tab" class="tab-header" style="float:left">Task</h2>
-          <h2 id="tutorial-tab" class="tab-header" style="float:right">Tutorial</h2>
+          <span id="task-tab" class="tab-header">Task</span>
+          <span id="tutorial-tab" class="tab-header">Tutorial</span>
         </div>
         <div id="info-content"></div>
       </div>  
@@ -95,9 +95,29 @@
 
   </script>
 
+  <script>
+    $("#task-tab").click(function(e){
+      $(".tab-header").css("color", "gray");
+      $("#task-tab").css("color", "black");
+    });
+    $("#tutorial-tab").click(function(e){
+      $(".tab-header").css("color", "gray");
+      $("#tutorial-tab").css("color", "black");
+    });
+    $(document).ready(
+      () => $("#task-tab").css("color", "black")
+    )
+  </script>
+
 <style>
+  .tab-header {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 20px 0;
+    color: gray;
+  }
   .tab-header:hover {
-    text-shadow: 0 0 3px #4CAF50;
+    color:burlywood;
     cursor: pointer
   }
   .container {
@@ -108,14 +128,18 @@
     border-bottom: 2px solid #4CAF50;
     padding: 10px;
     margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
   }
+   
   #info {
     /* float: right; */
     /* width: 30%; */
         background-color: white;
         color: black;
         /* border: 2px solid #4CAF50; */
-        border-radius: 10%;
+        /* border-radius: 10%; */
         padding: 10px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   /* box-shadow: 10px 10px 5px grey; */

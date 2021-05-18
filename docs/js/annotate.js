@@ -314,14 +314,14 @@ async function load_random(){
                 widgets: [ TagSelectorWidget ]
             });
         
-            // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
+            // viewer.addHandler('open', () => {
+            //     let printButton = new OpenSeadragon.Button({
+            //         tooltip: 'Load Random Image',
+            //         onClick: load_random
+            //     });
 
-            // ran_anno = Annotorious.init({
-            //     image: 'ran-ann-img',
-            //     locale: 'auto',
-            //     // disableEditor: true
-            //     widgets: [ TagSelectorWidget ]
-            // })
+            //     viewer.addControl(printButton, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+            // });
 
             // load annoatations and append on image
             get_annots_from_coco(ran_anno, image_id)
