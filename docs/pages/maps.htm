@@ -1,4 +1,10 @@
-<!-- <script>
+<!--map layout
+    Landmark (small) for each image, onclick image should display, also predictions
+    Line for video (Later)
+    Heatmap (source: csv file or table in database (?@nischal), fetch records dynamically, near to location)-->
+
+
+ <script>
     var mymap = L.map('map').setView([14.0823695,100.6126375], 13);
 
     googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
@@ -17,7 +23,7 @@
     var cfg = {
     // radius should be small ONLY if scaleRadius is true (or small radius is intended)
     // if scaleRadius is false it will be the constant radius used in pixels
-    "radius": 1,
+    "radius": 0.1,
     "maxOpacity": .5,
     // scales the radius based on map zoom
     "scaleRadius": true,
@@ -57,9 +63,9 @@
 // }).addTo(mymap);
 </script>
 <br>
-<div id="map" style="height: 440px; border: 1px solid #AAA;"></div>
+<div id="map" style="height: 500px; border: 1px solid #AAA;"></div>
 
-
+<!--
 <div>
     <p> Still in developing. Idea is to visualize plastic pollution along streets with heatmap. User can select on heatmap and see teh ground truth images used to generate the heatmap at corresponding locations.</p>
     <p> At present we are using leaflet for map. Please check out git repository to contribute.</p>

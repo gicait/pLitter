@@ -69,7 +69,7 @@ ul.noBullet {
   margin:0;
 }
 li.checkBullet {
-  background:url(../images/icons/iconCheck.gif) no-repeat left top;
+  background:url(../icons/iconCheck.gif) no-repeat left top;
   height:22px;
   padding-left:38px;
 }
