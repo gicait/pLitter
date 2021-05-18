@@ -1,42 +1,49 @@
-
-<br>
-<div id="stats">
+<div class="container">
+  <div class="row">
+    <div class="col-sm-9">
+      <div id="progress-bar"></div>
+    </div>
+    <div class="col-sm-3">
+      <div id="live-count" style="float: right;" ></div>
+    </div>
+  </div>
 </div>
 <br>
-  <div id="ann-page-container">
-
-    <div id="ann-container">
-      <div id="toolbar" />
-      <div id="openseadragon" />
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div id="ann-page-container">
+        <div id="ann-container">
+          <div id="toolbar" />
+          <div id="openseadragon" />
+        </div>
+      </div>
     </div>
-
-    <div id="info">
-      <h2>Task</h2>
-
-      <strong>Tag any pieces of litter you see in this image</strong>
-
-      Have a careful look, the + and - buttons might help you.
-
-      <h4>Spotted something?</h4>
-      <ul>
-        <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
-          using the rectangular drawing option, then select an option from the pop up list and press 'return'
-         or click <strong>OK</strong></li>
-      </ul>
-
-      <h4>Can't find any litter?</h4>
-      <ul>
-        <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.</li>
-      </ul>
+    <div class="col-sm-4">
+      <div id="info">
+        <h2>Task</h2>
+        <strong>Tag any pieces of litter you see in this image</strong>
+        Have a careful look, the + and - buttons might help you.
+        <h4>Spotted something?</h4>
+        <ul>
+          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+            using the rectangular drawing option, then select an option from the pop up list and press 'return'
+           or click <strong>OK</strong></li>
+        </ul>
+        <h4>Can't find any litter?</h4>
+        <ul>
+          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.</li>
+        </ul>
+      </div>
     </div>
-
   </div>
+</div>
 
 
 <style>
   #info {
-    float: right;
-    width: 30%;
+    /* float: right; */
+    /* width: 30%; */
         background-color: white;
         color: black;
         border: 2px solid #4CAF50;
@@ -111,6 +118,24 @@
 
 
 <script>
+
+get_dataset_stats()
+make_live()
+setInterval(function(){ 
+  get_dataset_stats()
+  make_live()
+ }, 60000);
+
+
+    let flagButton = document.createElement("button");
+            flagButton.id = 'button-flag';
+            flagButton.className = "a9s-toolbar-btn";
+            flagButton.innerHTML = `
+                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+                <path d="M19 6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14.66h.01c.01.1.05.2.12.28a.5.5 0 0 0 .7.03l5.67-4.12 5.66 4.13a.5.5 0 0 0 .71-.03.5.5 0 0 0 .12-.29H19V6zm-6.84 9.97L7 19.64V6a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v13.64l-5.16-3.67a.49.49 0 0 0-.68 0z" fill-rule="evenodd"></path>
+                </svg>`;
+            flagButton.addEventListener('click', function() { flag_image(image_id); });
+            
     let reloadButton = document.createElement("button");
             reloadButton.id = 'button-reload';
             reloadButton.className = "a9s-toolbar-btn";
@@ -139,6 +164,7 @@
             // TODO: persist the rejected list with cookies
             rejectButton.addEventListener('click', function () { rejectedList.push(image_id) });
 
+            document.getElementById('toolbar').prepend(flagButton)
             document.getElementById('toolbar').prepend(saveButton)
             document.getElementById('toolbar').prepend(reloadButton)
             document.getElementById('toolbar').prepend(rejectButton)
