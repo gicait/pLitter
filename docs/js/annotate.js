@@ -365,7 +365,7 @@ async function load_random(){
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
                     <path d="M18 3C9.71 3 3 9.71 3 18s6.71 15 15 15 15-6.71 15-15S26.29 3 18 3zm7.5 20.38l-2.12 2.12L18 20.12l-5.38 5.38-2.12-2.12L15.88 18l-5.38-5.38 2.12-2.12L18 15.88l5.38-5.38 2.12 2.12L20.12 18l5.38 5.38z"/>
                 </svg> `;
-            // TODO: persist the rejected list with cookies
+            // TODO: persist the rejected list with cookies @nischal
             rejectButton.addEventListener('click', function () { rejectedList.push(image_id); load_random() });
 
             document.getElementById('toolbar').prepend(flagButton)
@@ -402,7 +402,7 @@ async function load_random(){
                         <circle cx="58" cy="40" r="5" />
                     </g>
                 </svg> `;
-            rectButton.addEventListener('click', function () {  ran_anno.setDrawingTool('rect'); });
+            rectButton.addEventListener('click', function () {  console.log('selected rect'); ran_anno.setDrawingTool('rect'); ran_anno.setDrawingEnabled(true)});
             document.getElementById('toolbar').prepend(rectButton)
             
             ran_anno.on('selectAnnotation', function(a) {
