@@ -21,26 +21,88 @@
     </div>
     <div class="col-sm-4">
       <div id="info">
-        <h2>Task</h2>
-        <strong>Tag any pieces of litter you see in this image</strong>
-        Have a careful look, the + and - buttons might help you.
-        <h4>Spotted something?</h4>
-        <ul>
-          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
-            using the rectangular drawing option, then select an option from the pop up list and press 'return'
-           or click <strong>OK</strong></li>
-        </ul>
-        <h4>Can't find any litter?</h4>
-        <ul>
-          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.</li>
-        </ul>
-      </div>
+        <div id='info-tab-container'>
+          <h2 id="task-tab" style="float:left">Task</h2>
+          <h2 id="tutorial-tab" style="float:right">Tutorial</h2>
+        </div>
+        <div id="info-content"></div>
+      </div>  
     </div>
   </div>
 </div>
 
+  <script>
+    let taskHTML = `
+        <strong>Tag any pieces of litter you see in this image</strong>
+  
+        Have a careful look, the + and - buttons might help you.
+  
+        <h4>Spotted something?</h4>
+        <ul>
+          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+            using the rectangular drawing option, then select an option from the pop up list and press 'return'
+            or click <strong>OK</strong></li>
+        </ul>
+  
+        <h4>Can't find any litter?</h4>
+        <ul>
+          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
+          </li>
+        </ul>
+  
+        <h4>Spotted something?</h4>
+        <ul>
+          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+            using the rectangular drawing option, then select an option from the pop up list and press 'return'
+            or click <strong>OK</strong></li>
+        </ul>
+  
+        <h4>Can't find any litter?</h4>
+        <ul>
+          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
+          </li>
+        </ul>
+      `;
+
+    let tutorialHTML = `
+        <strong>Tutorial</strong>
+  
+        Have a careful look, the + and - buttons might help you.
+  
+        <h4>Spotted something?</h4>
+        <ul>
+          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
+            using the rectangular drawing option, then select an option from the pop up list and press 'return'
+            or click <strong>OK</strong></li>
+        </ul>
+  
+        <h4>Can't find any litter?</h4>
+        <ul>
+          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
+          </li>
+        </ul>
+      `;
+
+    document.getElementById("info-content").innerHTML = taskHTML;
+
+    document.getElementById("task-tab").addEventListener("click", () => {
+      document.getElementById("info-content").innerHTML = taskHTML;
+    });
+
+    document.getElementById("tutorial-tab").addEventListener("click", () => {
+      document.getElementById("info-content").innerHTML = tutorialHTML;
+    });
+
+  </script>
+
 
 <style>
+  #info-tab-container {
+    height: 100px;
+    border-bottom: 2px solid #4CAF50;
+    padding: 10px;
+    margin: 10px;
+  }
   #info {
     /* float: right; */
     /* width: 30%; */
