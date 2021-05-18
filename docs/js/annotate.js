@@ -299,12 +299,13 @@ async function load_random(){
                 id: "openseadragon",
                 prefixUrl: "./icons/openseadragon/",
                 tileSources: {
-                type: "image",
-                url: String(base_link)+'/api/image/'+String(image_id)
+                    type: "image",
+                    url: String(base_link) + '/api/image/' + String(image_id)
                 },
                 gestureSettingsTouch: {
-                pinchRotate: true
-                }
+                    pinchRotate: true
+                },
+                maxZoomPixelRatio: 6
             });
         
             ran_anno = OpenSeadragon.Annotorious(viewer, {
@@ -372,10 +373,6 @@ async function load_random(){
             document.getElementById('toolbar').prepend(saveButton)
             document.getElementById('toolbar').prepend(reloadButton)
             document.getElementById('toolbar').prepend(rejectButton)
-
-            // document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
-            // document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
-            // document.getElementsByClassName('a9s-toolbar')[0].prepend(rejectButton);
             
             ran_anno.on('createSelection', async function(selection) {
                 selection.body = [{

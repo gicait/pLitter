@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row">
+  <div class="row" style="padding-top:10px">
     <div class="col-sm-9">
       <div id="progress-bar"></div>
     </div>
@@ -22,8 +22,8 @@
     <div class="col-sm-4">
       <div id="info">
         <div id='info-tab-container'>
-          <h2 id="task-tab" style="float:left">Task</h2>
-          <h2 id="tutorial-tab" style="float:right">Tutorial</h2>
+          <h2 id="task-tab" class="tab-header" style="float:left">Task</h2>
+          <h2 id="tutorial-tab" class="tab-header" style="float:right">Tutorial</h2>
         </div>
         <div id="info-content"></div>
       </div>  
@@ -95,8 +95,14 @@
 
   </script>
 
-
 <style>
+  .tab-header:hover {
+    text-shadow: 0 0 3px #4CAF50;
+    cursor: pointer
+  }
+  .container {
+    padding-top: 10px;
+  }
   #info-tab-container {
     height: 100px;
     border-bottom: 2px solid #4CAF50;
@@ -108,13 +114,17 @@
     /* width: 30%; */
         background-color: white;
         color: black;
-        border: 2px solid #4CAF50;
+        /* border: 2px solid #4CAF50; */
         border-radius: 10%;
         padding: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  /* box-shadow: 10px 10px 5px grey; */
   }
   #ann-container {
     float: left;
-    width: 60%;
+    width: 100%;
+  /* box-shadow: 10px 10px 5px grey; */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
   #ann-page-container {
     min-height: 720px;
