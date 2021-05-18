@@ -23,6 +23,10 @@ function datasetTabNav() {
       if(this.hash) window.location.hash = this.hash;
       $('html,body').scrollTop(0);
     });
+    $('#signin').click(function (e) {
+      if(this.hash) window.location.hash = this.hash;
+      $('html,body').scrollTop(0);
+    });
     $(window).bind( 'hashchange', function(e) {
       var hash = window.location.hash;
       var q=hash.replace('detections','detection').replace('challenge','');

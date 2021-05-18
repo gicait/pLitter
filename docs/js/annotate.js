@@ -276,7 +276,7 @@ async function load_random(){
             "referrerPolicy": "strict-origin-when-cross-origin",
             "body": JSON.stringify({
                 dummy: true,
-                rejected: rejectedList,
+                rejected: rejectedList
             }),
             "method": "POST",
             "mode": "cors",
@@ -611,13 +611,23 @@ function get_dataset_stats(){
         "body": null,
         "method": "GET",
         "mode": "cors",
-        "credentials": "include"
+        "credentials": \
+        
     })
     .then(response => response.json())
     .then(data => stats = data)
     .then(() => {
         console.log("Dataset stats are fecthed.")
-        document.getElementById("stats").innerHTML="<p>Total: "+String(stats.total.Images)+", Annotated Images: "+String(stats.total["Annotated Images"])
+        let totalImages = stats.total.Images;
+        let annotatedImages = stats.total["CS Annotated Images"];
+        let percentage = (annotatedImages / totalImages )  * 100;
+        document.getElementById("stats").innerHTML
+        =
+        `
+         <label for="file">Annotation progress:</label>
+<progress id="file" value="${annotatedImages}" max="${totalImages}"> ${percentage} </progress> 
+        `
+
         })
     .catch(error => console.log(error))
 }
@@ -625,7 +635,8 @@ function get_dataset_stats(){
 $(document).ready(function(){
     get_dataset_stats()
     // load_buttons()
-    load_random();
+    // load_random();
+    // get_dataset_stats()
 })
 
 // window.onbeforeunload = function () {
