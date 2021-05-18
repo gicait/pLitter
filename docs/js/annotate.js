@@ -1,5 +1,5 @@
 const base_link = "https://bf2a9a00427a.ngrok.io"
-const dataset_id = 105
+const dataset_id = 104
 
 // const base_link = "https://annotator.ait.ac.th"
 // const dataset_id = 55
@@ -293,8 +293,8 @@ async function load_random(){
             // change image annoattion status to true
             image_annotating_status = true
 
-            document.getElementById("openseadragon").innerHTML = ''
-            document.getElementById("toolbar").innerHTML = ''
+            document.getElementById("openseadragon").innerHTML = '' //@nischal, in case of error we will losee reload button, try catch
+            // document.getElementById("toolbar").innerHTML = ''
             var viewer = OpenSeadragon({
                 id: "openseadragon",
                 prefixUrl: "./icons/openseadragon/",
@@ -314,11 +314,70 @@ async function load_random(){
                 widgets: [ TagSelectorWidget ]
             });
         
-            // viewer.addHandler('open', () => {
-            //     let printButton = new OpenSeadragon.Button({
-            //         tooltip: 'Load Random Image',
-            //         onClick: load_random
-            //     });
+            viewer.addHandler('open', () => {
+                let reloadButton = new OpenSeadragon.Button({
+                  tooltip: 'Reload',
+                  srcRest: `./icons/openseadragon/reload.png`,
+                  srcGroup: `./icons/openseadragon/reload.png`,
+                  srcHover: `./icons/openseadragon/reload.png`,
+                  srcDown: `./icons/openseadragon/reload.png`,
+                  onClick: () => {console.log('refresh'); load_random()},
+                //   onPress: console.log('refresh'),
+                //   onRelease: console.log('refresh'),
+                //   onEnter: console.log('refresh'),
+                });
+          
+                viewer.addControl(reloadButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            });
+
+            viewer.addHandler('open', () => {
+                let ignoreButton = new OpenSeadragon.Button({
+                  tooltip: 'Ignore',
+                  srcRest: `./icons/openseadragon/ignore.png`,
+                  srcGroup: `./icons/openseadragon/ignore.png`,
+                  srcHover: `./icons/openseadragon/ignore.png`,
+                  srcDown: `./icons/openseadragon/ignore.png`,
+                  onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
+                });
+                viewer.addControl(ignoreButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            });
+
+            viewer.addHandler('open', () => {
+                let saveButton = new OpenSeadragon.Button({
+                  tooltip: 'Save',
+                  srcRest: `./icons/openseadragon/save.png`,
+                  srcGroup: `./icons/openseadragon/save.png`,
+                  srcHover: `./icons/openseadragon/save.png`,
+                  srcDown: `./icons/openseadragon/save.png`,
+                  onClick: () => {console.log('saving'); save_annots_to_coco(image_id);},
+                });
+                viewer.addControl(saveButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            });
+
+            viewer.addHandler('open', () => {
+                let raiseButton = new OpenSeadragon.Button({
+                  tooltip: 'Raise',
+                  srcRest: `./icons/openseadragon/bookmark.png`,
+                  srcGroup: `./icons/openseadragon/bookmark.png`,
+                  srcHover: `./icons/openseadragon/bookmark.png`,
+                  srcDown: `./icons/openseadragon/bookmark.png`,
+                  onClick: () => {console.log('raising'); flag_image(image_id);},
+                });
+                viewer.addControl(raiseButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            });
+
+            viewer.addHandler('open', () => {
+                let rectButton = new OpenSeadragon.Button({
+                  tooltip: 'rect',
+                  srcRest: `./icons/openseadragon/rect.png`,
+                  srcGroup: `./icons/openseadragon/rect.png`,
+                  srcHover: `./icons/openseadragon/rect.png`,
+                  srcDown: `./icons/openseadragon/rect.png`,
+                  onClick: () => {console.log('rect'); ran_anno.setDrawingTool('rect'); ran_anno.setDrawingEnabled(true);},
+                });
+                viewer.addControl(rectButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            });
+            // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
 
             //     viewer.addControl(printButton, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
             // });
@@ -369,10 +428,14 @@ async function load_random(){
             // TODO: persist the rejected list with cookies @nischal
             rejectButton.addEventListener('click', function () { rejectedList.push(image_id); load_random() });
 
-            document.getElementById('toolbar').prepend(flagButton)
-            document.getElementById('toolbar').prepend(saveButton)
-            document.getElementById('toolbar').prepend(reloadButton)
-            document.getElementById('toolbar').prepend(rejectButton)
+            // document.getElementById('toolbar').prepend(flagButton)
+            // document.getElementById('toolbar').prepend(saveButton)
+            // document.getElementById('toolbar').prepend(reloadButton)
+            // document.getElementById('toolbar').prepend(rejectButton)
+
+            // document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
+            // document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
+            // document.getElementsByClassName('a9s-toolbar')[0].prepend(rejectButton);
             
             ran_anno.on('createSelection', async function(selection) {
                 selection.body = [{
@@ -400,7 +463,7 @@ async function load_random(){
                     </g>
                 </svg> `;
             rectButton.addEventListener('click', function () {  console.log('selected rect'); ran_anno.setDrawingTool('rect'); ran_anno.setDrawingEnabled(true)});
-            document.getElementById('toolbar').prepend(rectButton)
+            // document.getElementById('toolbar').prepend(rectButton)
             
             ran_anno.on('selectAnnotation', function(a) {
                 console.log('selectAnnotation', a);
