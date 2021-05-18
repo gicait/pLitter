@@ -95,7 +95,7 @@ a[aria-expanded=false] .glyphicon-chevron-down {
   background:#1d2125;
 }
 #headerBody {
-  width:800px;
+  width:1000px;
   height:80px;
   margin:10;
 }
@@ -110,12 +110,12 @@ a[aria-expanded=false] .glyphicon-chevron-down {
 #headerTabs {
   display:inline-block;
   vertical-align:top;
-  width:465px;
+  width:800px;
 }
 #headerEmail {
   display:inline-block;
   vertical-align:top;
-  width:465px;
+  width:800px;
   height:20px;
   color:white;
   font-size:13px;

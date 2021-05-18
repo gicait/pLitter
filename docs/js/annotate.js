@@ -611,14 +611,15 @@ function get_dataset_stats(){
         "body": null,
         "method": "GET",
         "mode": "cors",
-        "credentials": "include"
+        "credentials": \
+        
     })
     .then(response => response.json())
     .then(data => stats = data)
     .then(() => {
         console.log("Dataset stats are fecthed.")
         let totalImages = stats.total.Images;
-        let annotatedImages = stats.total["Annotated Images"];
+        let annotatedImages = stats.total["CS Annotated Images"];
         let percentage = (annotatedImages / totalImages )  * 100;
         document.getElementById("stats").innerHTML
         =
@@ -635,6 +636,9 @@ $(document).ready(function(){
     // load_buttons()
     load_random();
     get_dataset_stats()
+    // load_buttons()
+    // load_random();
+    // get_dataset_stats()
 })
 
 // window.onbeforeunload = function () {
