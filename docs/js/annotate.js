@@ -1,5 +1,5 @@
 const base_link = "https://bf2a9a00427a.ngrok.io"
-const dataset_id = 104
+const dataset_id = 105
 
 // const base_link = "https://annotator.ait.ac.th"
 // const dataset_id = 55
@@ -25,7 +25,6 @@ var dataset = {}
 var annotator_response = {}
 var deleted_ids = []
 var loading_status = false // to avoid calling loading function while its already executing, othetrwise skips unlacking image if image is reloading
-
 
 // move to try catch method for all fetch calls (better with async/await)
 // load category dict from dataset, not defining, ok? add to select list from dictionaly
@@ -338,7 +337,7 @@ async function load_random(){
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
                 <path d="M19 6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14.66h.01c.01.1.05.2.12.28a.5.5 0 0 0 .7.03l5.67-4.12 5.66 4.13a.5.5 0 0 0 .71-.03.5.5 0 0 0 .12-.29H19V6zm-6.84 9.97L7 19.64V6a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v13.64l-5.16-3.67a.49.49 0 0 0-.68 0z" fill-rule="evenodd"></path>
                 </svg>`;
-            flagButton.addEventListener('click', flag_image(image_id));
+            flagButton.addEventListener('click', function () { flag_image(image_id); });
 
 
             let reloadButton = document.createElement("button");
@@ -366,13 +365,13 @@ async function load_random(){
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
                     <path d="M18 3C9.71 3 3 9.71 3 18s6.71 15 15 15 15-6.71 15-15S26.29 3 18 3zm7.5 20.38l-2.12 2.12L18 20.12l-5.38 5.38-2.12-2.12L15.88 18l-5.38-5.38 2.12-2.12L18 15.88l5.38-5.38 2.12 2.12L20.12 18l5.38 5.38z"/>
                 </svg> `;
-            // TODO: persist the rejected list with cookies
-            rejectButton.addEventListener('click', function () { rejectedList.push(image_id) });
+            // TODO: persist the rejected list with cookies @nischal
+            rejectButton.addEventListener('click', function () { rejectedList.push(image_id); load_random() });
 
+            document.getElementById('toolbar').prepend(flagButton)
             document.getElementById('toolbar').prepend(saveButton)
             document.getElementById('toolbar').prepend(reloadButton)
             document.getElementById('toolbar').prepend(rejectButton)
-            document.getElementById('toolbar').prepend(flagButton)
 
             // document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
             // document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
@@ -403,7 +402,7 @@ async function load_random(){
                         <circle cx="58" cy="40" r="5" />
                     </g>
                 </svg> `;
-            rectButton.addEventListener('click', function () {  ran_anno.setDrawingTool('rect'); });
+            rectButton.addEventListener('click', function () {  console.log('selected rect'); ran_anno.setDrawingTool('rect'); ran_anno.setDrawingEnabled(true)});
             document.getElementById('toolbar').prepend(rectButton)
             
             ran_anno.on('selectAnnotation', function(a) {
@@ -601,6 +600,7 @@ async function save_annots_to_coco(im_id){
 }
 
 function get_dataset_stats(){
+    console.log("progress bar")
     fetch(base_link+"/api/dataset/"+String(dataset_id)+"/stats", {
         "headers": {
           "accept": "application/json",
@@ -617,23 +617,55 @@ function get_dataset_stats(){
     .then(() => {
         console.log("Dataset stats are fecthed.")
         let totalImages = stats.total.Images;
-        let annotatedImages = stats.total["CS Annotated Images"];
+        let nonAnnotatedImages = stats.total["CS Annotated Images"];
+        let annotatedImages = totalImages - nonAnnotatedImages
         let percentage = (annotatedImages / totalImages )  * 100;
-        document.getElementById("stats").innerHTML
+        document.getElementById("progress-bar").innerHTML
         =
         `
-         <label for="file">Annotation progress:</label> <br>
-<progress id="file" value="${annotatedImages}" max="${totalImages}"> ${percentage} </progress> 
+         <label for="file">Annotation progress: ${annotatedImages}/${totalImages}</label><br>
+        <progress id="file" value="${annotatedImages}" max="${totalImages}"> ${percentage} </progress> 
         `
-
         })
     .catch(error => console.log(error))
 }
 
+function make_live(){
+    console.log("live count")
+    api_key = getToken()
+    if(!!api_key){
+        console.log(api_key)
+        fetch("https://bf2a9a00427a.ngrok.io/api/user/live?api_key=60a36bf769483b000b501d9b", {
+            "headers": {
+                "accept": "application/json",
+                "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
+                "sec-ch-ua": "\" Not A;Brand\";v=\"99\", \"Chromium\";v=\"90\", \"Google Chrome\";v=\"90\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-fetch-dest": "empty",
+                "sec-fetch-mode": "cors",
+                "sec-fetch-site": "cross-site"
+            },
+            "referrer": "http://localhost:8000/",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors",
+            "credentials": "omit"
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            document.getElementById("live-count").innerHTML = `<b>Annotators live: </b> <br> ${data.live_count}  <img src="../icons/person-icon.png" height="24" width="24">`
+        })
+    }
+}
+
+
 $(document).ready(function(){
-    // load_buttons()
-    load_random();
-    get_dataset_stats()
+    // get_dataset_stats()
+    // make_live()
+    // setInterval(get_dataset_stats, 60*1000);
+    // setInterval(make_live, 60*1000);
     // load_buttons()
     // load_random();
     // get_dataset_stats()
