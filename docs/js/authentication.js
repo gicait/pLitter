@@ -3,7 +3,7 @@ function setUserCookie(user) {
 }
 
 function getUserCookie() {
-    let userString = Cookies.get('user', user);
+    let userString = Cookies.get('user');
     if (userString) return JSON.parse(userString);
 }
 
