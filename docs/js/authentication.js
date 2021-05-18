@@ -7,7 +7,7 @@ function getUserCookie() {
     if (userString) return JSON.parse(userString);
 }
 
-function getOid() {
+function getToken() {
     let user = getUserCookie();
     return user?.id?.$oid;
 }
