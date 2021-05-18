@@ -20,7 +20,9 @@
 
 <script>
 
-    const base_link = "https://bf2a9a00427a.ngrok.io"
+    if (!base_link) {
+        let base_link = "https://bf2a9a00427a.ngrok.io"
+    }
     // If user exists, sign out user and redirect to home
     if(getUserCookie()) {
         signOut();
