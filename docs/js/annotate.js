@@ -546,7 +546,7 @@ function get_dataset_stats(){
         document.getElementById("stats").innerHTML
         =
         `
-         <label for="file">Annotation progress:</label>
+         <label for="file">Annotation progress:</label> <br>
 <progress id="file" value="${annotatedImages}" max="${totalImages}"> ${percentage} </progress> 
         `
 
