@@ -1,19 +1,31 @@
-<div class="container">
+<br>
+<div class="container" style="background-color:cadetblue">
   <div class="row">
     <div class="col-sm-3">
-      <div id="progress-bar"></div>
+      <div id="progress-bar">
+        <label for="file">Annotation progress:</label><br>
+      </div>
     </div>
     <!-- to do @sriram -->
     <div class="col-sm-6">
-      <div id="annotator-progress-bar"></div>
+      <div id="annotator-progress-bar">
+        <b>Annotator Log:</b>
+        <div class="row">
+          <div class="col-sm-3"><b>Submitted:</b> <b id="submitted-count"></b></div>
+          <div class="col-sm-3"><b>Rejected:</b> <b id="rejected-count"></b></div>
+          <div class="col-sm-3"><b>Raised:</b> <b id="raised-count"></b></div>
+        </div>
+      </div>
     </div>
     <div class="col-sm-3">
-      <div id="live-count" style="float: right;" ></div>
+      <div id="live-count" style="float: right;" >
+        <b>Annotators live: </b> <br> <img src="../icons/person-icon.png" height="24" width="24">
+      </div>
     </div>
   </div>
 </div>
-<br>
-<div class="container">
+<!-- <br> -->
+<div class="container" style="background-color:cadetblue">
   <div class="row">
     <div class="col-sm-8">
       <div id="ann-page-container">

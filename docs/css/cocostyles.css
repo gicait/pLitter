@@ -91,6 +91,7 @@ a[aria-expanded=false] .glyphicon-chevron-down {
 /* HEADER ------------------------------------ */
 #header {
   height:80px;
+  /* width: 100%; */
   border-top:2px solid #e16c03;
   background:#1d2125;
 }
@@ -98,6 +99,7 @@ a[aria-expanded=false] .glyphicon-chevron-down {
   width:1000px;
   height:80px;
   margin:10;
+  align-items: right;
 }
 #headerImage {
   display:inline-block;

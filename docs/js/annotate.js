@@ -1,8 +1,8 @@
-const base_link = "https://bf2a9a00427a.ngrok.io"
-const dataset_id = 104
+// const base_link = "https://bf2a9a00427a.ngrok.io"
+// const dataset_id = 104
 
-// const base_link = "https://annotator.ait.ac.th"
-// const dataset_id = 55
+const base_link = "https://annotator.ait.ac.th"
+const dataset_id = 65
 
 // to do @nischal
 // user sigin
@@ -15,16 +15,22 @@ const dataset_id = 104
 
 // might need reject button (if user rejects, it should not load again, how? maintain reject record in user model or image model? @nischal)
 var rejectedList = [] // when rejected add image_id to this list, on load_random,, i will send this request
+var raisedList = []
+var submittedList = []
 var user = {}
 var user_name = 'Anonymous' // change it user_name after sign in, otherwise overrides as system, hard to maintain stats after
 var present_image_id
 var image_annotating_status = false // make it true after image loading, make it false when annotation saving 
-var new_image_id;
+// var new_image_id;
 var stats = {}
 var dataset = {}
 var annotator_response = {}
 var deleted_ids = []
 var loading_status = false // to avoid calling loading function while its already executing, othetrwise skips unlacking image if image is reloading
+
+var annotatorSubmitted = 0
+var annotatorRejected = 0
+var annotatorRaised = 0
 
 // move to try catch method for all fetch calls (better with async/await)
 // load category dict from dataset, not defining, ok? add to select list from dictionaly
@@ -228,10 +234,26 @@ async function get_annots_from_coco(ran_anno, im_id){
 // }
 
 
-function flag_image(image_id){
+function raise_image(image_id){
     alert("im working")
     console.log(image_id)
+    if(!raisedList.includes(image_id)){
+        raisedList.push(image_id)
+        annotatorRaised = raisedList.length
+        document.getElementById("raised-count").innerHTML=`${annotatorRaised}`        
+    }
+    // to do send request, check api/image/flag
 }
+
+function reject_image(image_id){
+    if(!rejectedList.includes(image_id)){
+        rejectedList.push(image_id)
+        annotatorRejected = rejectedList.length
+        document.getElementById("rejected-count").innerHTML=`${annotatorRejected}`        
+    }
+    load_random()
+}
+
 
 async function load_random(){
     if(loading_status === true){
@@ -307,7 +329,23 @@ async function load_random(){
                 },
                 maxZoomPixelRatio: 6
             });
-        
+            
+            // viewer.addHandler('open', () => {
+            //     let reloadButton = new OpenSeadragon.Button({
+            //       tooltip: 'Reload',
+            //       srcRest: `./icons/openseadragon/reload.png`,
+            //       srcGroup: `./icons/openseadragon/reload.png`,
+            //       srcHover: `./icons/openseadragon/reload.png`,
+            //       srcDown: `./icons/openseadragon/reload.png`,
+            //       onClick: () => {console.log('refresh'); load_random()},
+            //     //   onPress: console.log('refresh'),
+            //     //   onRelease: console.log('refresh'),
+            //     //   onEnter: console.log('refresh'),
+            //     });
+          
+            //     viewer.addControl(reloadButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+            // });
+
             ran_anno = OpenSeadragon.Annotorious(viewer, {
                 locale: 'auto',
                 allowEmpty: true,
@@ -337,7 +375,8 @@ async function load_random(){
                   srcGroup: `./icons/openseadragon/ignore.png`,
                   srcHover: `./icons/openseadragon/ignore.png`,
                   srcDown: `./icons/openseadragon/ignore.png`,
-                  onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
+                  onClick: () => {console.log('ignoring'); reject_image(image_id);},
+                //   onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
                 });
                 viewer.addControl(ignoreButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
             });
@@ -361,7 +400,7 @@ async function load_random(){
                   srcGroup: `./icons/openseadragon/bookmark.png`,
                   srcHover: `./icons/openseadragon/bookmark.png`,
                   srcDown: `./icons/openseadragon/bookmark.png`,
-                  onClick: () => {console.log('raising'); flag_image(image_id);},
+                  onClick: () => {console.log('raising'); raise_image(image_id);},
                 });
                 viewer.addControl(raiseButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
             });
@@ -383,7 +422,9 @@ async function load_random(){
             // });
 
             // load annoatations and append on image
-            get_annots_from_coco(ran_anno, image_id)
+            if(!!image_id){
+                get_annots_from_coco(ran_anno, image_id)
+            }
 
             // need to add reject button @nischal, 
             // is it better to keep the button, jsut disbale them, instead adding everytime
@@ -397,7 +438,7 @@ async function load_random(){
                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
                 <path d="M19 6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14.66h.01c.01.1.05.2.12.28a.5.5 0 0 0 .7.03l5.67-4.12 5.66 4.13a.5.5 0 0 0 .71-.03.5.5 0 0 0 .12-.29H19V6zm-6.84 9.97L7 19.64V6a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v13.64l-5.16-3.67a.49.49 0 0 0-.68 0z" fill-rule="evenodd"></path>
                 </svg>`;
-            flagButton.addEventListener('click', function () { flag_image(image_id); });
+            flagButton.addEventListener('click', function () { raise_image(image_id); });
 
 
             let reloadButton = document.createElement("button");
@@ -627,7 +668,12 @@ async function save_annots_to_coco(im_id){
     
     // to do (use sockets or normal put?)
     // image.cs_annotated.append(user), if user not signin: user,user_name = Anonymous
-    
+    if(!submittedList.includes(im_id)){
+        submittedList.push(im_id)
+        annotatorSubmitted = submittedList.length
+        document.getElementById("submitted-count").innerHTML=`${annotatorSubmitted}`        
+    }
+
     if(image_annotating_status === true){
         console.log("confirmed as image is complete annotation")
         await fetch(base_link+"/api/image/"+String(im_id), {
