@@ -1,19 +1,31 @@
-<div class="container">
+<br>
+<div class="container" style="background-color:cadetblue">
   <div class="row">
     <div class="col-sm-3">
-      <div id="progress-bar"></div>
+      <div id="progress-bar">
+        <label for="file">Annotation progress:</label><br>
+      </div>
     </div>
     <!-- to do @sriram -->
     <div class="col-sm-6">
-      <div id="annotator-progress-bar"></div>
+      <div id="annotator-progress-bar">
+        <b>Annotator Log:</b>
+        <div class="row">
+          <div class="col-sm-3"><b>Submitted:</b> <b id="submitted-count"></b></div>
+          <div class="col-sm-3"><b>Rejected:</b> <b id="rejected-count"></b></div>
+          <div class="col-sm-3"><b>Raised:</b> <b id="raised-count"></b></div>
+        </div>
+      </div>
     </div>
     <div class="col-sm-3">
-      <div id="live-count" style="float: right;" ></div>
+      <div id="live-count" style="float: right;" >
+        <b>Annotators live: </b> <br> <img src="../icons/person-icon.png" height="24" width="24">
+      </div>
     </div>
   </div>
 </div>
-<br>
-<div class="container">
+<!-- <br> -->
+<div class="container" style="background-color:cadetblue">
   <div class="row">
     <div class="col-sm-8">
       <div id="ann-page-container">
@@ -26,8 +38,8 @@
     <div class="col-sm-4">
       <div id="info">
         <div id='info-tab-container'>
-          <h2 id="task-tab" style="float:left">Task</h2>
-          <h2 id="tutorial-tab" style="float:right">Tutorial</h2>
+          <span id="task-tab" class="tab-header">Task</span>
+          <span id="tutorial-tab" class="tab-header">Tutorial</span>
         </div>
         <div id="info-content"></div>
       </div>  
@@ -99,26 +111,60 @@
 
   </script>
 
+  <script>
+    $("#task-tab").click(function(e){
+      $(".tab-header").css("color", "gray");
+      $("#task-tab").css("color", "black");
+    });
+    $("#tutorial-tab").click(function(e){
+      $(".tab-header").css("color", "gray");
+      $("#tutorial-tab").css("color", "black");
+    });
+    $(document).ready(
+      () => $("#task-tab").css("color", "black")
+    )
+  </script>
 
 <style>
+  .tab-header {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 20px 0;
+    color: gray;
+  }
+  .tab-header:hover {
+    color:burlywood;
+    cursor: pointer
+  }
+  .container {
+    padding-top: 10px;
+  }
   #info-tab-container {
     height: 100px;
     border-bottom: 2px solid #4CAF50;
     padding: 10px;
     margin: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
   }
+   
   #info {
     /* float: right; */
     /* width: 30%; */
         background-color: white;
         color: black;
-        border: 2px solid #4CAF50;
-        border-radius: 10%;
+        /* border: 2px solid #4CAF50; */
+        /* border-radius: 10%; */
         padding: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  /* box-shadow: 10px 10px 5px grey; */
   }
   #ann-container {
     float: left;
-    width: 60%;
+    width: 100%;
+  /* box-shadow: 10px 10px 5px grey; */
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   }
   #ann-page-container {
     min-height: 720px;
