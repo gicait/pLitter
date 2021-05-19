@@ -229,6 +229,7 @@ async function get_annots_from_coco(ran_anno, im_id){
 
 
 function flag_image(image_id){
+    // flat yet to do @sriram
     alert("im working")
     console.log(image_id)
 }
