@@ -19,6 +19,7 @@ function getUsername() {
 
 function signOut() {
     Cookies.set('user', null);
+    document.getElementById("signin-tab").innerHTML = "signin";
 }
 
 

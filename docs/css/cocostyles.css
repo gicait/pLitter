@@ -182,19 +182,20 @@ a[aria-expanded=false] .glyphicon-chevron-down {
 }
 .columnFeatures {
   display:table-cell;
-  width:340px;
+  /* width:340px; */
   padding-right:85px;
   padding-bottom:20px;
+  align-content: center;
 }
 .columnPeople {
   display:table-cell;
-  width:270px;
+  /* width:270px; */
   line-height:25px;
   font-size:12px;
 }
 .columnSponsors {
   display:table-cell;
-  width:180px;
+  width:200px;
   padding-right:20px;
 }
 .columnApi {

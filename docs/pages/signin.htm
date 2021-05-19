@@ -229,7 +229,7 @@
     // If user exists, sign out user and redirect to home
     if(getUserCookie()) {
         signOut();
-        window.location="/";
+        window.location="#home";
     }
 
     function signup() {
@@ -271,8 +271,11 @@
 
                     setUserCookie(user);
                     console.log('logged in', user);
-
-                    window.location = "/"
+                    
+                    if(getUserCookie())  {
+                        document.getElementById("signin-tab").innerHTML = "signout";
+                    }
+                    window.location = "#home"
                 }
                 else {
                     alert("Could not authenticate user")
@@ -315,8 +318,11 @@
 
                     setUserCookie(user);
                     console.log('logged in', user);
-
-                    window.location = "/"
+                    
+                    if(getUserCookie())  {
+                        document.getElementById("signin-tab").innerHTML = "signout";
+                    }
+                    window.location = "#home"
                 }
                 else {
                     alert("Could not authenticate user")

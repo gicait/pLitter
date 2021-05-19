@@ -49,50 +49,49 @@
 
   <script>
     let taskHTML = `
-        <strong>Tag any pieces of litter you see in this image</strong>
-  
-        Have a careful look, the + and - buttons might help you.
-  
-        <h4>Spotted something?</h4>
-        <ul>
-          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
-            using the rectangular drawing option, then select an option from the pop up list and press 'return'
-            or click <strong>OK</strong></li>
-        </ul>
-  
-        <h4>Can't find any litter?</h4>
-        <ul>
-          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
-          </li>
-        </ul>
-  
-        <h4>Spotted something?</h4>
-        <ul>
-          <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
-            using the rectangular drawing option, then select an option from the pop up list and press 'return'
-            or click <strong>OK</strong></li>
-        </ul>
-  
-        <h4>Can't find any litter?</h4>
-        <ul>
-          <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
-          </li>
-        </ul>
+        <h5><strong>Spot any pieces of plastic?  </strong><h5>
+        
+        We have already asked our AI to help you out with some suggestions. 
+        
+        <h5><strong>Not sure if it is plastic?  </strong></h5>
+        
+        Zoom in <img src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see more clearly.
+        
+        <h5><strong> Spotted something, what next? </strong></h5>
+
+        Excellent!!! Draw a rectangle over it using <img src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
+        Our AI suggestions could be wrong too. Afterall it’s a machine!!! 
+        Feel free to edit them or change the plastic category type or even delete them if they are not plastic. 
+
+        <h5><strong> Too hard to notice anything? </strong></h5>
+
+        You have 2 options!!! 
+        Sometimes the image could be blurry and hard to detect anything. Please flag it using <img src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you want a different image to annotate, please click <img src="./icons/openseadragon/ignore.png" alt="ignore" /> 
+        Oops!!! Mistakes? 
+
+        <h5><strong> Need a clean slate? </strong></h5>
+        
+        Click <img src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from zero. 
+        
+        <h5><strong> No more plastics? </strong></h5>
+
+        Great!!! That’s what we strive for. A world with less plastic. 
+        Click on the <img src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image. 
       `;
 
     let tutorialHTML = `
-        <strong>Tutorial</strong>
+        <h5><strong>Tutorial</strong></h5>
   
         Have a careful look, the + and - buttons might help you.
   
-        <h4>Spotted something?</h4>
+        <strong>Spotted something?</strong>
         <ul>
           <li>If it looks like litter or plastic, <strong>Tag it!</strong> by drawing a rectange
             using the rectangular drawing option, then select an option from the pop up list and press 'return'
             or click <strong>OK</strong></li>
         </ul>
   
-        <h4>Can't find any litter?</h4>
+        <strong>Can't find any litter?</strong>
         <ul>
           <li>No worries! This is also valuable to know, there may be a few of those. Just click <strong>done</strong>?.
           </li>
@@ -160,6 +159,12 @@
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   /* box-shadow: 10px 10px 5px grey; */
   }
+
+  #info-content {
+        height: 360px;
+        overflow-y: scroll;
+  }
+
   #ann-container {
     float: left;
     width: 100%;
