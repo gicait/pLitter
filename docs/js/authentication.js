@@ -19,7 +19,9 @@ function getUsername() {
 
 function signOut() {
     Cookies.set('user', null);
+    document.getElementById("sign-fun").removeAttribute("onclick");
     document.getElementById("signin-tab").innerHTML = "signin";
+    window.location.reload()
 }
 
 
@@ -28,6 +30,7 @@ $("#header").ready(
         document.getElementById("signin-tab").innerHTML = "signin";
         if(getUserCookie())  {
             document.getElementById("signin-tab").innerHTML = "signout";
+            document.getElementById("sign-fun").addEventListener('click', signOut, false);
         }
     }
 )

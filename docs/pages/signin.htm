@@ -228,8 +228,10 @@
     }
     // If user exists, sign out user and redirect to home
     if(getUserCookie()) {
-        signOut();
-        window.location="#home";
+        // signOut();
+        // alert("sign out")
+        // document.getElementById("signin-tab").innerHTML = "signin";
+        // window.location="/pLitter";
     }
 
     function signup() {
@@ -274,6 +276,7 @@
                     
                     if(getUserCookie())  {
                         document.getElementById("signin-tab").innerHTML = "signout";
+                        document.getElementById("sign-fun").addEventListener('click', signOut, false);
                     }
                     window.location = "#home"
                 }
@@ -321,6 +324,7 @@
                     
                     if(getUserCookie())  {
                         document.getElementById("signin-tab").innerHTML = "signout";
+                        document.getElementById("sign-fun").addEventListener('click', signOut, false);
                     }
                     window.location = "#home"
                 }
