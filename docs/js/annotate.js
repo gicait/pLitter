@@ -516,6 +516,7 @@ async function load_random(){
             
             ran_anno.on('createAnnotation', function(a) {
                 console.log('created', a);
+                ran_anno.selectAnnotation(a);
             })
             
             ran_anno.on('updateAnnotation', function(annotation, previous) {
