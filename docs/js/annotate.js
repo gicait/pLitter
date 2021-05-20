@@ -742,7 +742,7 @@ function make_live(){
     api_key = getToken()
     if(!!api_key){
         console.log(api_key)
-        fetch("https://bf2a9a00427a.ngrok.io/api/user/live?api_key=60a36bf769483b000b501d9b", {
+        fetch(base_link+"/api/user/live?api_key="+api_key, {
             "headers": {
                 "accept": "application/json",
                 "accept-language": "en-GB,en-US;q=0.9,en;q=0.8",
