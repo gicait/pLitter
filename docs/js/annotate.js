@@ -761,7 +761,7 @@ function make_live(){
         .then(response => response.json())
         .then(data => {
             console.log(data)
-            document.getElementById("live-count").innerHTML = `<b>Annotators live: </b> <br> ${data.live_count}  <img src="../icons/person-icon.png" height="24" width="24">`
+            document.getElementById("live-count").innerHTML = `${data.live_count} <img src="./icons/person-icon.png" height="24" width="24">`
         })
     }
 }
