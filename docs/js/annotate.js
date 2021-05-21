@@ -2,7 +2,7 @@
 // const dataset_id = 104
 
 const base_link = "https://annotator.ait.ac.th"
-const dataset_id = 65
+const dataset_id = 66
 
 // to do @nischal
 // user sigin
@@ -707,7 +707,7 @@ async function save_annots_to_coco(im_id){
 }
 
 function get_dataset_stats(){
-    console.log("progress bar")
+    // console.log("progress bar")
     fetch(base_link+"/api/dataset/"+String(dataset_id)+"/stats", {
         "headers": {
           "accept": "application/json",
@@ -741,7 +741,7 @@ function make_live(){
     console.log("live count")
     api_key = getToken()
     if(!!api_key){
-        console.log(api_key)
+        // console.log(api_key)
         fetch(base_link+"/api/user/live?api_key="+api_key, {
             "headers": {
                 "accept": "application/json",

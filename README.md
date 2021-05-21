@@ -61,18 +61,19 @@ Models that are trained separately for each of the datasets, as well as model th
 
 *Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
-## Usage
+<!-- ## Usage
 
-Please add some technical details about basic use of repository.
+Please add some technical details about basic use of repository. -->
 
 __Dependencies:__
 
 Refer to [requirements](/requirements.txt)
 
 ## Documentation
-Documentation is located in "docs" folder.
+To do
+<!-- Documentation is located in "docs" folder. -->
 
-## Citation
+<!-- ## Citation
 
 Use this bibtex to cite us.
 ```
@@ -84,15 +85,15 @@ Use this bibtex to cite us.
   journal={GitHub repository},
   howpublished={\url{https://github.com/gicait/pLitter/}},
 }
-```
+``` -->
 
 ## Developed by
 
 [Geoinformatics Center](www.geoinfo.ait.ac.th) of [Asian Institute of Technology](www.ait.ac.th) and [Google](https://about.google/).
 
-__Our Team__
+<!-- __Our Team__
 * To be added
-* ...
+* ... -->
 
 ## Funding
 
