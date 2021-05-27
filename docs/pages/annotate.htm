@@ -28,12 +28,35 @@
 <div class="container" style="background-color:cadetblue">
   <div class="row" id="ann-con">
     <div class="col-sm-8">
-      <div id="ann-page-container">
+
+      <div id="ann-page-container" style="display:none;">
         <!-- <div id="ann-container"> -->
           <!-- <div id="toolbar" /> -->
           <div id="openseadragon" />
         <!-- </div> -->
       </div>
+
+      <div id="splash-container">
+
+        <p>
+        <h1>What is pLitter?</h1>
+        
+        pLitter (Plastic litter) is a standardized, deep learning-friendly
+        image dataset and pre-trained model for roadside plastic litter
+        identification. The dataset includes images of plastic littered scenes
+        and annotations in COCO format.
+        <br />
+        <strong>The main features of the dataset are:</strong>
+        object detection
+        <br /> 10,000+ images
+        <br /> 50,000+ object instances
+        <br /> 4 object categories
+        
+        <button onclick="getStarted()">Get Started!</button>
+       </p>
+
+      </div>
+
     </div>
     <div class="col-sm-4">
       <div id="info">
@@ -46,6 +69,15 @@
     </div>
   </div>
 </div>
+
+<script>
+  function getStarted() {
+    load_random();
+    document.getElementById("ann-page-container").style.display = "";
+    document.getElementById("splash-container").style.display = "none";
+    console.log("getting started...");
+  }
+</script>
 
   <script>
     let taskHTML = `
@@ -141,9 +173,25 @@
     height: 20;
     width: 20;
   }
+
+  #splash-container {
+    float: left;
+    width: 100%;
+    box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
+    background-color: white;
+    height: 500px;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-content: space-around;
+    padding: 20px;
+    text-align: center;
+  }
+
   #ann-con{
     padding-bottom: 25px;
   }
+
   #info-tab-container {
     height: 60px;
     border-bottom: 2px solid #4CAF50;
@@ -176,28 +224,21 @@
   #ann-container {
     float: left;
     width: 100%;
-  /* box-shadow: 10px 10px 5px grey; */
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background-color: white;
   }
-  /* #ann-page-container {
-    min-height: 720px; 
-  } */
-    .button-reload {
+
+    button {
         background-color: white;
         color: black;
         border: 2px solid #4CAF50;
         margin: 10px;
     }
 
-    .button-reload:hover {
+    button:hover {
         background-color: #4CAF50;
+        transition: background-color 0.3s;
         color: white;
-    }
-    .button-save {
-        background-color: transparent;
-        color: black;
-        border: 2px solid #4CAF50;
-        margin: 10px;
     }
 
     .a9s-toolbar-btn svg path {
