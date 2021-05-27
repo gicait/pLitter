@@ -2,9 +2,9 @@
 <div class="container" style="background-color:cadetblue">
   <div class="row">
     <div class="col-sm-3">
-      <div id="progress-bar">
+      <!-- <div id="progress-bar">
         <label for="file">Annotation progress:</label><br>
-      </div>
+      </div> -->
     </div>
     <!-- to do @sriram -->
     <div class="col-sm-6">
@@ -18,9 +18,9 @@
       </div>
     </div>
     <div class="col-sm-3">
-      <div style="float: right;" >
+      <!-- <div style="float: right;" >
         <b>Annotators live: </b> <br> <div id="live-count"><img src="./icons/person-icon.png" height="24" width="24"></div>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
@@ -266,12 +266,12 @@ viewer.addHandler('open', () => {
     viewer.addControl(reloadButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
 });
 
-get_dataset_stats()
-make_live()
-setInterval(function(){ 
-  get_dataset_stats()
-  make_live()
- }, 15000);
+// get_dataset_stats()
+// make_live()
+// setInterval(function(){ 
+//   get_dataset_stats()
+//   make_live()
+//  }, 15000);
 
 
     let flagButton = document.createElement("button");
