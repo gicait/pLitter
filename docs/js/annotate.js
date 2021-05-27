@@ -4,7 +4,7 @@
 // const base_link = "https://bf2a9a00427a.ngrok.io"
 // const dataset_id = 104
 
-const base_link = "http://annotator.ait.ac.th"
+const base_link = "https://annotator.ait.ac.th"
 const dataset_id = 66
 
 // to do @nischal
