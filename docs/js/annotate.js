@@ -82,11 +82,19 @@ fetch(base_link+"/api/dataset/"+String(dataset_id)+"/cats", {
 //     "other":20
 //   };
 
-function popup_lebel(id, x, y, label){
-    let ele = $("[data-id=" + id + "]");
+function popup_label(ann){
+    console.log("mouse enter", ann)
+    let id = ann.id
+    let value = ann.target.selector.value
+    let format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+    let coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+    let [ x, y, w, h ] = coords.split(',').map(parseFloat)
+    let label = ann.body[0].value
+    // let ele = $("[data-id=" + id + "]");
+    let ele = document.getElementsByTagName('g')[0]
     console.log(ele)
     let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-    text.setAttribute('x', x);
+    text.setAttribute('x', x+w/2);
     text.setAttribute('y', y);
     text.setAttribute('dy', 1);
     text.setAttribute('dx', 1);
@@ -94,15 +102,17 @@ function popup_lebel(id, x, y, label){
     text.setAttribute('id', 'label');
     text.textContent = `${label}`;
 
-    let textBBox = text.getBBox();
-    let textRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    textRect.setAttribute('x', textBBox.x);
-    textRect.setAttribute('y', textBBox.y);
-    textRect.setAttribute('width', textBBox.width);
-    textRect.setAttribute('height', textBBox.height);
-    textRect.setAttribute('class', 'label-rect');
-    textRect.setAttribute('id', 'label-rect');
-    ele.append(textRect);
+    // let textBBox = text.getBBox();
+    // console.log(textBBox)
+    // let textRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    // textRect.setAttribute('x', x);
+    // textRect.setAttribute('y', y);
+    // textRect.setAttribute('width', 10);
+    // textRect.setAttribute('height', 5);
+    // textRect.setAttribute('class', 'label-rect');
+    // textRect.setAttribute('id', 'label-rect');
+    // ele.append(textRect);
+    // console.log(textRect)
     ele.append(text);
 }
 
@@ -434,7 +444,7 @@ async function load_random(){
 
             viewer.addHandler('open', () => {
                 let rectButton = new OpenSeadragon.Button({
-                  tooltip: 'rect',
+                  tooltip: 'Draw',
                   srcRest: `./icons/openseadragon/rect.png`,
                   srcGroup: `./icons/openseadragon/rect.png`,
                   srcHover: `./icons/openseadragon/rect.png`,
@@ -447,11 +457,6 @@ async function load_random(){
 
             //     viewer.addControl(printButton, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
             // });
-
-            // load annoatations and append on image
-            if(!!image_id){
-                get_annots_from_coco(ran_anno, image_id)
-            }
 
             // need to add reject button @nischal, 
             // is it better to keep the button, jsut disbale them, instead adding everytime
@@ -535,8 +540,8 @@ async function load_random(){
             
             ran_anno.on('selectAnnotation', function(a) {
                 console.log('selectAnnotation', a);
-                ran_anno.setDrawingTool('rect');
-                ran_anno.setDrawingEnabled(true);
+                // ran_anno.setDrawingTool('rect');
+                // ran_anno.setDrawingEnabled(true);
             })
             
             ran_anno.on('cancelSelected', function(a) {
@@ -564,6 +569,21 @@ async function load_random(){
                     deleted_ids.push(annotation.id)
                 }
             })
+
+            ran_anno.on('mouseEnterAnnotation', function(annotation, event) {
+                //
+                popup_label(annotation)
+            })
+
+            ran_anno.on('mouseLeaveAnnotation', function(annotation, event) {
+                //
+                document.getElementById('label').remove()
+            })
+
+            // load annoatations and append on image
+            if(!!image_id){
+                get_annots_from_coco(ran_anno, image_id)
+            }
         })
         .catch(error => console.log(error))
 
