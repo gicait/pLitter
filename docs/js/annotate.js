@@ -129,7 +129,12 @@ let TagSelectorWidget = function (args) {
 
         options.forEach(optionValue => {
             let optionElement = document.createElement('option');
-            optionElement.appendChild(document.createTextNode(optionValue));
+
+            function capitalize(word) {
+                const lower = word.toLowerCase();
+                return word.charAt(0).toUpperCase() + lower.slice(1);
+            }
+            optionElement.appendChild(document.createTextNode(capitalize(optionValue)));
             optionElement.value = optionValue;
             if (optionValue == tags[0]?.value) {
                 optionElement.selected = 'selected';
@@ -159,7 +164,7 @@ let TagSelectorWidget = function (args) {
     var container = document.createElement('div');
     container.className = 'tagselector-widget';
 
-    const VOCABULARY = ['Plastic', 'Pile', 'Trash Bin', 'Face mask', "wrapper/sachet", "container", "cup", "plate", "Cutleries", "Beverage bottle", "Other bottle", "Bag", "Foil", "Fishing gear", "Rope", "Diaper", "Textile", "Hand glove", "protective gears", "other"];
+    const VOCABULARY = Object.keys(cat_dict);
     container.appendChild(createDropDown(VOCABULARY));
 
     return container;
