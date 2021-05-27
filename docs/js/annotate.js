@@ -100,6 +100,7 @@ function popup_label(ann){
     text.setAttribute('dx', 1);
     text.setAttribute('class', 'label');
     text.setAttribute('id', 'label');
+    text.setAttribute('style', 'font-size: 20px; fill: white; text-anchor: middle;')
     text.textContent = `${label}`;
 
     // let textBBox = text.getBBox();
