@@ -82,6 +82,30 @@ fetch(base_link+"/api/dataset/"+String(dataset_id)+"/cats", {
 //     "other":20
 //   };
 
+function popup_lebel(id, x, y, label){
+    let ele = $("[data-id=" + id + "]");
+    console.log(ele)
+    let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', x);
+    text.setAttribute('y', y);
+    text.setAttribute('dy', 1);
+    text.setAttribute('dx', 1);
+    text.setAttribute('class', 'label');
+    text.setAttribute('id', 'label');
+    text.textContent = `${label}`;
+
+    let textBBox = text.getBBox();
+    let textRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    textRect.setAttribute('x', textBBox.x);
+    textRect.setAttribute('y', textBBox.y);
+    textRect.setAttribute('width', textBBox.width);
+    textRect.setAttribute('height', textBBox.height);
+    textRect.setAttribute('class', 'label-rect');
+    textRect.setAttribute('id', 'label-rect');
+    ele.append(textRect);
+    ele.append(text);
+}
+
 let TagSelectorWidget = function (args) {
 
     const tags = args.annotation ?
@@ -238,7 +262,7 @@ async function get_annots_from_coco(ran_anno, im_id){
 
 
 function raise_image(image_id){
-    alert("im working")
+    // alert("im working")
     console.log(image_id)
     if(!raisedList.includes(image_id)){
         raisedList.push(image_id)
@@ -511,10 +535,14 @@ async function load_random(){
             
             ran_anno.on('selectAnnotation', function(a) {
                 console.log('selectAnnotation', a);
+                ran_anno.setDrawingTool('rect');
+                ran_anno.setDrawingEnabled(true);
             })
             
             ran_anno.on('cancelSelected', function(a) {
                 console.log('cancelSelected', a);
+                ran_anno.setDrawingTool('rect');
+                ran_anno.setDrawingEnabled(true);
             })
             
             ran_anno.on('createAnnotation', function(a) {
@@ -548,7 +576,7 @@ async function load_random(){
 
 async function save_annots_to_coco(im_id){
     var anns = ran_anno.getAnnotations()
-    confirm("Are you sure that image completely annotated and confirm saving "+anns.length+" annotations? please submit only if image is completely annotated.")
+    // confirm("Are you sure that image completely annotated and confirm saving "+anns.length+" annotations? please submit only if image is completely annotated.")
     console.log(anns)
     var ann_id;
     var ann;
@@ -707,7 +735,7 @@ async function save_annots_to_coco(im_id){
     
         image_annotating_status = false
     }
-    alert("loading next image")
+    // alert("loading next image")
     load_random()
 }
 
