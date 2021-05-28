@@ -545,6 +545,7 @@ async function load_random(){
             // document.getElementById('toolbar').prepend(rectButton)
             
             ran_anno.on('selectAnnotation', function(a) {
+                document.getElementById('label').remove()
                 console.log('selectAnnotation', a);
                 // ran_anno.setDrawingTool('rect');
                 // ran_anno.setDrawingEnabled(true);

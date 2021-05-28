@@ -37,24 +37,22 @@
       </div>
 
       <div id="splash-container">
-
         <p>
-        <h1>What is pLitter?</h1>
-        
-        pLitter (Plastic litter) is a standardized, deep learning-friendly
-        image dataset and pre-trained model for roadside plastic litter
-        identification. The dataset includes images of plastic littered scenes
-        and annotations in COCO format.
-        <br />
-        <strong>The main features of the dataset are:</strong>
-        object detection
-        <br /> 10,000+ images
-        <br /> 50,000+ object instances
-        <br /> 4 object categories
-        
-        <button onclick="getStarted()">Get Started!</button>
-       </p>
-
+          <h1>What is pLitter?</h1>
+          pLitter (Plastic litter) is a standardized, deep learning-friendly
+          image dataset and pre-trained model for roadside plastic litter
+          identification. The dataset includes images of plastic littered scenes
+          and annotations in COCO format.
+          <br />
+          <strong>The main features of the dataset are:</strong>
+          object detection
+          <br /> 10,000+ images
+          <br /> 50,000+ object instances
+          <br /> 4 object categories
+        </p>
+        <div id="splash-body-container">
+          <button onclick="getStarted()">Get Started!</button> 
+        </div>
       </div>
 
     </div>
@@ -233,6 +231,8 @@
   }
 
     button {
+        /* left: 50%; */
+        width: 100px;
         background-color: white;
         color: black;
         border: 2px solid #4CAF50;
@@ -300,7 +300,7 @@
   </style>
 
 
-<script>
+<!-- <script>
 
 var viewer = OpenSeadragon({
     id: "openseadragon",
@@ -379,6 +379,6 @@ viewer.addHandler('open', () => {
             // document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
             // document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
             // document.getElementsByClassName('a9s-toolbar')[0].prepend(rejectButton);
-</script>
+</script> -->
 <!-- <iframe id="frame" src="http://203.159.29.187:8080" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:500px;width:150%;border:none;overflow:hidden;"></iframe> -->
 <!--<iframe id="frame" src="http://203.159.29.187:8002" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:500px;width:150%;border:none;overflow:hidden;"></iframe>-->
