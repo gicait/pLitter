@@ -438,7 +438,7 @@ async function load_random(){
 
             viewer.addHandler('open', () => {
                 let raiseButton = new OpenSeadragon.Button({
-                  tooltip: 'Raise',
+                  tooltip: 'Flag',
                   srcRest: `./icons/openseadragon/bookmark.png`,
                   srcGroup: `./icons/openseadragon/bookmark.png`,
                   srcHover: `./icons/openseadragon/bookmark.png`,
