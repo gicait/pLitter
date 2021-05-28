@@ -545,7 +545,9 @@ async function load_random(){
             // document.getElementById('toolbar').prepend(rectButton)
             
             ran_anno.on('selectAnnotation', function(a) {
-                document.getElementById('label').remove()
+                if (document.contains(document.getElementById('label'))) {
+                    document.getElementById('label').remove();
+                }
                 console.log('selectAnnotation', a);
                 // ran_anno.setDrawingTool('rect');
                 // ran_anno.setDrawingEnabled(true);
@@ -584,7 +586,9 @@ async function load_random(){
 
             ran_anno.on('mouseLeaveAnnotation', function(annotation, event) {
                 //
-                document.getElementById('label').remove()
+                if (document.contains(document.getElementById('label'))) {
+                    document.getElementById('label').remove();
+                }
             })
 
             // load annoatations and append on image
