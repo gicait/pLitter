@@ -18,7 +18,7 @@ _Note: This is a preliminary release and more data from more cities will be adde
 
 ## Motivation
 
-teest
+This section will be added soon.
 
 ## Our Approach
 
