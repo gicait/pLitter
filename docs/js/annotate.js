@@ -7,6 +7,9 @@
 const base_link = "https://annotator.ait.ac.th"
 const dataset_id = 66
 
+// const base_link = "http://34.93.224.190"
+// const dataset_id = 66
+
 // to do @nischal
 // user sigin
 // live count of users
