@@ -1,11 +1,8 @@
-// const base_link = "http://104.198.251.79"
-// const dataset_id = 1
-
-// const base_link = "https://bf2a9a00427a.ngrok.io"
-// const dataset_id = 104
-
 const base_link = "https://annotator.ait.ac.th"
 const dataset_id = 66
+
+// const base_link = "http://34.122.19.209"
+// const dataset_id = 1
 
 // const base_link = "http://34.93.224.190"
 // const dataset_id = 66
