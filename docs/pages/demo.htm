@@ -5,8 +5,11 @@
 <!-- <script src="https://unpkg.com/@tensorflow/tfjs-automl"></script> -->
 <!-- <script src="js/model.js"></script> -->
 
-  <p><input type="file"  accept="image/*" name="image" id="inputimage"  onchange="loadFile(event)" style="display: none;"></p>
-  <p><label for="inputimage" style="cursor: pointer;">Upload Image</label></p>
+  <div>
+    <label for="inputimage">Upload Image</label>
+    <input type="file"  accept="image/*" name="image" id="inputimage" onchange="loadFile(event)">
+  </div>
+  <br />
   <div id="imgDiv" style="position:relative;">
     <!-- <img id="salad" width="500" crossorigin="anonymous" src="https://storage.googleapis.com/tfjs-testing/tfjs-automl/object_detection/test_image.jpg" /> -->
     <img id="input" width=100% height="500px" crossorigin="anonymous"  />

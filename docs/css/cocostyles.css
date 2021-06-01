@@ -91,12 +91,13 @@ a[aria-expanded=false] .glyphicon-chevron-down {
 /* HEADER ------------------------------------ */
 #header {
   height:80px;
-  /* width: 100%; */
+  /* width: 1010px; */
   border-top:2px solid #e16c03;
   background:#1d2125;
 }
 #headerBody {
-  width:1000px;
+  /* width:1000px; */
+  /* width:100%; */
   height:80px;
   margin:10;
   align-items: right;
@@ -112,7 +113,7 @@ a[aria-expanded=false] .glyphicon-chevron-down {
 #headerTabs {
   display:inline-block;
   vertical-align:top;
-  width:800px;
+  /* width:800px; */
 }
 #headerEmail {
   display:inline-block;
