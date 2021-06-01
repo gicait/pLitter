@@ -70,7 +70,7 @@ __Dependencies:__
 Refer to [requirements](/requirements.txt)
 
 ## Documentation
-To do
+To be added soon!
 <!-- Documentation is located in "docs" folder. -->
 
 <!-- ## Citation
