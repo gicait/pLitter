@@ -54,7 +54,7 @@
               <br /> object detection
               <br /> 10,000+ images
               <br /> 50,000+ object instances
-              <br /> 4 object categories
+              <br /> 4 object categories (Face mask, Pile, Plastic, Trash bin)
             </div>
           </div>
           
@@ -88,33 +88,30 @@
 
   <script>
     let taskHTML = `
-        <h5><strong>Spot any pieces of plastic?</strong></h5>
+        <h5><strong>Can you spot any pieces of plastic?</strong></h5>
         
-        We have already asked our AI to help you out with some suggestions. 
+        We have already asked our AI to offer some suggestions. 
         
-        <h5><strong>Not sure if it is plastic?  </strong></h5>
+        <h5><strong>Are you sure it is plastic?  </strong></h5>
         
-        Zoom in <img class="text-icon" src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img class="text-icon" src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see more clearly.
+        Zoom in <img class="text-icon" src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img class="text-icon" src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see the object(s) more clearly.
         
         <h5><strong> Spotted something, what next? </strong></h5>
 
-        Excellent!!! Draw a rectangle over it using <img class="text-icon" src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
-        Our AI suggestions could be wrong too. Afterall it’s a machine!!! 
-        Feel free to edit them or change the plastic category type or even delete them if they are not plastic. 
+        Excellent! Draw a rectangle over it using <img class="text-icon" src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
+        Our AI suggestions could be wrong (after all it is a machine). Feel free to edit or change the plastic category type or even delete them if you do not believe the object(s) are plastic. 
 
-        <h5><strong> Too hard to notice anything? </strong></h5>
+        <h5><strong> is it too hard to notice anything? </strong></h5>
 
-        You have 2 options!!! 
-        Sometimes the image could be blurry and hard to detect anything. Please flag it using <img class="text-icon" src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you want a different image to annotate, please click <img class="text-icon" src="./icons/openseadragon/ignore.png" alt="ignore" />
+        You have 2 options! Sometimes the image could be blurry and it is hard to detect anything. Please flag the image using <img class="text-icon" src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you simply want a different image to annotate, please click <img class="text-icon" src="./icons/openseadragon/ignore.png" alt="ignore" /> to send the photo to another user.
 
-        <h5><strong> Need a clean slate? </strong></h5>
+        <h5><strong> Do you want to start with a clean slate? </strong></h5>
         
-        Click <img class="text-icon" src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from zero. 
+        Click <img class="text-icon" src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from initial landing image. 
         
-        <h5><strong> No more plastics? </strong></h5>
+        <h5><strong> Have you identified all plastics in the image? </strong></h5>
 
-        Great!!! That’s what we strive for. A world with less plastic. 
-        Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image. 
+        Great! That’s what we strive for — a world with less plastic. Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image. 
       `;
 
     let tutorialHTML = `
