@@ -18,7 +18,7 @@ _Note: This is a preliminary release and more data from more cities will be adde
 
 ## Motivation
 
-This section will be added soon.
+The Geoinformatics Center (GIC) of Asian Institute of Technology (AIT) partnered with the United Nations Environment Program (UNEP) for years, to form a network of volunteer cleanup teams to perform beach/river cleanup activities. Together UNEP and GIC worked for the CounterMEAUSRE project (https://countermeasure.asia/) in 2018, funded by the Government of Japan. The CounterMEASURE project works to identify sources and pathways of plastic pollution in river systems in Asia, particularly the Mekong and the Ganges. During the project implementation, project partners including local governments and universities collected thousands of images using GIC Mobile Application (Plastic Accumulation Hotspot Survey: https://arcg.is/1bDqbW) and it was not used to identify plastic litter. Therefore, our ultimate target is to build image recognition tools with modern machine learning techniques to quickly identify plastic litter in different scenes such as roadside, riverside, and beachside. We do believed that the outcome of this work can be used to inform policy decisions and actions to beat plastic pollution and ensure rivers are free of plastic waste.
 
 ## Our Approach
 
