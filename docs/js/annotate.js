@@ -396,6 +396,19 @@ async function load_random(){
             });
         
             viewer.addHandler('open', () => {
+                let ignoreButton = new OpenSeadragon.Button({
+                  tooltip: 'Pan',
+                  srcRest: `./icons/openseadragon/pan-tool.png`,
+                  srcGroup: `./icons/openseadragon/pan-tool.png`,
+                  srcHover: `./icons/openseadragon/pan-tool.png`,
+                  srcDown: `./icons/openseadragon/pan-tool.png`,
+                  onClick: () => {ran_anno.setDrawingEnabled(false);},
+                //   onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
+                });
+                viewer.addControl(ignoreButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+            });
+            
+            viewer.addHandler('open', () => {
                 let reloadButton = new OpenSeadragon.Button({
                   tooltip: 'Reload',
                   srcRest: `./icons/openseadragon/reload.png`,
