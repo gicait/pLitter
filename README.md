@@ -33,7 +33,7 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 The datasets used in this repository can be downloaded from following link. Dataset contains RGB images, plastic litter annotations (COCO format, and CSV).
 
-* [pLitter](#)
+* [pLitter](http://203.159.29.51:5005/data/pLitter-dataset.zip)
 
 pLitter dataset contains images from following areas,
 * Pathumthani
@@ -41,7 +41,7 @@ pLitter dataset contains images from following areas,
 * Ubon Ratchathani (ongoing)
 * Chiang Rai (ongoing)
 
-*Note: We have used [COCO Annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is a one option*
+*Note: We have used [Annotator tool](http://annotator.ait.ac.th) built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is a one option*
 
 ## Pre-trained models
 
