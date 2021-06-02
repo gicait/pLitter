@@ -65,8 +65,9 @@ Models that are trained separately for each of the datasets, as well as model th
 
 ## Usage
 
-Please visit [pLitter pages](https://gicait.github.io/pLitter)
-Refer to [pLitter demo](/docs/notebooks/pLitter_demo.ipynb)
+Please visit [pLitter pages](https://gicait.github.io/pLitter).
+and refer to [pLitter demo](/docs/notebooks/pLitter_demo.ipynb)
+
 __Dependencies:__
 
 Refer to [requirements](/tools/requirements.txt)
