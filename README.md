@@ -33,7 +33,7 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 The datasets used in this repository can be downloaded from following link. Dataset contains RGB images, plastic litter annotations (COCO format, and CSV).
 
-* [pLitter](http://203.159.29.51:5005/data/pLitter-dataset.zip)
+* [pLitter](http://203.159.29.51:5005/data/)
 
 pLitter dataset contains images from following areas,
 * Pathumthani
