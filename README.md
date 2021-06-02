@@ -31,14 +31,15 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 ## Datasets
 
-The datasets used in this repository can be downloaded from following links. Each link contains RGB images, plastic litter annotations (COCO format) and ReadMe file.
+The datasets used in this repository can be downloaded from following link. Dataset contains RGB images, plastic litter annotations (COCO format, and CSV).
 
-* [Talaad Thai](http://de0206d59054.ngrok.io/taladthai)
-* [Rangsit](#)
-* Ubon Ratchathani I (ongoing)
-* Chiang Rai I (ongoing)
-* Ubon Ratchathani II (ongoing)
-* Chiang Rai II (ongoing)
+* [pLitter](#)
+
+pLitter dataset contains images from following areas,
+* Pathumthani
+* Mekong river basin
+* Ubon Ratchathani (ongoing)
+* Chiang Rai (ongoing)
 
 *Note: We have used [COCO Annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is a one option*
 
@@ -54,10 +55,11 @@ Models that are trained separately for each of the datasets, as well as model th
 | mAP = xx | mAP = xx | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) | mAP = (ongoing) |
 -->
 
-| Model (trained on combined dataset) | Download | mAP |
-| --- | --- | --- |
-| Google AutoML\* | [Mobile High](/models/automl) | xx.xx |
-| Mask RCNN | (ongoing) | (ongoing) |
+| Model | mAP |
+| --- | --- |
+| Google AutoML\* [Mobile High](/models/automl) | 0.439 |
+| Google AutoML\* [Cloud] | 0.624 |
+<!-- | Mask RCNN | (ongoing) | (ongoing) | -->
 
 *Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
