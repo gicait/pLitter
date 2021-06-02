@@ -69,7 +69,7 @@ Please add some technical details about basic use of repository. -->
 
 __Dependencies:__
 
-Refer to [requirements](/requirements.txt)
+Refer to [requirements](/tools/requirements.txt)
 
 ## Documentation
 To be added soon!
