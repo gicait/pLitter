@@ -41,7 +41,7 @@ pLitter dataset contains images from following areas,
 * Ubon Ratchathani (ongoing)
 * Chiang Rai (ongoing)
 
-*Note: We have used [Annotator tool](http://annotator.ait.ac.th) built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations. If you are planning to generate your own training data, it is a one option*
+*Note: We have used [Annotator tool](http://annotator.ait.ac.th) built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
 
 ## Pre-trained models
 
