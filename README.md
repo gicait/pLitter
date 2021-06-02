@@ -63,16 +63,16 @@ Models that are trained separately for each of the datasets, as well as model th
 
 *Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
-<!-- ## Usage
+## Usage
 
-Please add some technical details about basic use of repository. -->
-
+Please visit [pLitter pages](https://gicait.github.io/pLitter)
+Refer to [pLitter demo](/docs/notebooks/pLitter_demo.ipynb)
 __Dependencies:__
 
 Refer to [requirements](/tools/requirements.txt)
 
-## Documentation
-To be added soon!
+<!-- ## Documentation
+To be added soon! -->
 <!-- Documentation is located in "docs" folder. -->
 
 <!-- ## Citation
