@@ -370,25 +370,10 @@ async function load_random(){
                 gestureSettingsTouch: {
                     pinchRotate: true
                 },
+                autoHideControls: false,
                 maxZoomPixelRatio: 6
             });
             
-            // viewer.addHandler('open', () => {
-            //     let reloadButton = new OpenSeadragon.Button({
-            //       tooltip: 'Reload',
-            //       srcRest: `./icons/openseadragon/reload.png`,
-            //       srcGroup: `./icons/openseadragon/reload.png`,
-            //       srcHover: `./icons/openseadragon/reload.png`,
-            //       srcDown: `./icons/openseadragon/reload.png`,
-            //       onClick: () => {console.log('refresh'); load_random()},
-            //     //   onPress: console.log('refresh'),
-            //     //   onRelease: console.log('refresh'),
-            //     //   onEnter: console.log('refresh'),
-            //     });
-          
-            //     viewer.addControl(reloadButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
-            // });
-
             ran_anno = OpenSeadragon.Annotorious(viewer, {
                 locale: 'auto',
                 allowEmpty: true,
