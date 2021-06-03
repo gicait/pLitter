@@ -1,16 +1,9 @@
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl/dist/tf-automl.min.js"></script> -->
-
-<!-- <script src="https://unpkg.com/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script> -->
-<!-- <script src="https://unpkg.com/@tensorflow/tfjs-automl"></script> -->
-<!-- <script src="js/model.js"></script> -->
-
-  <form action="#" class="dropzone" id="demo-dropzone">
-    <label for="inputimage">Upload Image</label>
+<div id="container" style="padding: 20px; text-align: center;">
+  <form style="height: 500px" action="UploadImages" class="dropzone" style="text-align: center;" id="demo-dropzone"
+    enctype="multipart/form-data">
   </form>
-    <input type="file" accept="image/*" name="image" id="inputimage" onchange="loadFile(event)">
-  <br />
-  <div id="imgDiv" style="position:relative;">
+
+  <div id="imgDiv" style="position:relative; display: none">
     <!-- <img id="salad" width="500" crossorigin="anonymous" src="https://storage.googleapis.com/tfjs-testing/tfjs-automl/object_detection/test_image.jpg" /> -->
     <img id="input" width=100% height="500px" crossorigin="anonymous"  />
     <svg width=100% height="500px" style="position: absolute;top:0;left:0;">
@@ -31,13 +24,13 @@
       </style>
     </svg>
   <br>
+  <button id="clear-image" style="padding: 10px; margin: 10px;"> Clear Image </button>
+  </div>
+</div>
+
   <strong>Note:</strong>
 
   <p>Interested in improving pLitter plastic predictions? </p>
-  </div>
-
-
-  <!-- visit upload section and upload and annotate the image. -->
 
   <div>
     <ul>
@@ -52,3 +45,31 @@
 <div style="display: flex; justify-content: center;">
     <iframe width=100% height="500px" src="https://www.youtube.com/embed/vKwIo96Tddg"></iframe>
 </div>
+
+  <script>
+    $("#clear-image").click(() => {
+      $('#demo-dropzone').css("display", "");
+      $('#imgDiv').css("display", "none");
+    });
+
+    $("#demo-dropzone").dropzone({
+      autoProcessQueue: false,
+      maxFiles: 1,
+      init: function() {
+        this.on("addedfile", (file) => {
+          $('.dz-progress').css("display", "none");
+
+          while (rect = document.getElementById("box") ) { rect.remove() }
+          while (label = document.getElementById("label")) { label.remove() }
+          while (label_rect = document.getElementById("label-rect")) { label_rect.remove() }
+
+          var image = document.getElementById('input');
+          image.src = URL.createObjectURL(file);
+          run();
+
+          this.removeAllFiles();
+          $('#demo-dropzone').css("display", "none");
+          $('#imgDiv').css("display", "");
+        })
+    }});
+  </script>

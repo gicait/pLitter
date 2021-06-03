@@ -58,23 +58,23 @@ function drawBoxes(predictions) {
 // run();
 
 
-var loadFile = function(event) {
-    // var svg = document.querySelector('svg');
-    while(rect = document.getElementById("box")){
-        rect.remove()
-      }
-    while(label = document.getElementById("label")){
-        label.remove()
-      }
-    while(label_rect = document.getElementById("label-rect")){
-        label_rect.remove()
-      }
-    var image = document.getElementById('input');
-    image.src = URL.createObjectURL(event.target.files[0]);
+var loadFile = function (event) {
+  // var svg = document.querySelector('svg');
+  while (rect = document.getElementById("box")) {
+    rect.remove()
+  }
+  while (label = document.getElementById("label")) {
+    label.remove()
+  }
+  while (label_rect = document.getElementById("label-rect")) {
+    label_rect.remove()
+  }
+  var image = document.getElementById('input');
+  image.src = URL.createObjectURL(event.target.files[0]);
 
-    // SavePhoto(event.target)
+  // SavePhoto(event.target)
 
 
-run();
+  run();
 
 };
