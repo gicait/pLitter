@@ -1,6 +1,7 @@
 <head>
   <meta charset="UTF-8">
   <title>pLItter - Plastic Litter Identification</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
@@ -74,12 +75,48 @@
 </head>
 
 <body>
-  <div id="header">
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>                        
+        </button>
+        <a class="navbar-brand" href="#"><img src="icons/plitter.png" width="100" height="40" class="d-inline-block" alt="pLitter"></a>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="#home">Home</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dataset <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#">Overview</a></li>
+              <li><a href="#download">Download</a></li>
+              <li><a href="#">Terms of Use</a></li>
+            </ul>
+          </li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#maps">Map</a></li>
+          <li class="dropdown">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Contribute <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#upload">Upload</a></li>
+              <li><a href="#annotate">Annotate</a></li>
+            </ul>
+          </li>
+        </ul>
+        <!-- <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+        </ul> -->
+      </div>
+    </div>
+  </nav>
+  <!-- <div id="header">
     <div id="headerBody">
-      <!-- <img id="headerImage" src="https://raw.githubusercontent.com/gicait/pLitter/main/graphics/plitter.png" alt="Logo" /> -->
       <img id="headerImage" src="icons/plitter.png" alt="Logo" />
       <div id="headerTabs">
-        <!-- <div id="headerEmail">pLitter@pLitter</div> -->
         <ul class="nav nav-tabs" style="float:right">
           <li class="active">
             <div class="nav-tab-header"></div>
@@ -90,7 +127,6 @@
             <a class="dropdown-toggle" data-toggle="dropdown">Dataset<b class="caret"></b></a>
             <ul class="dropdown-menu">
               <li><a data-toggle="tab" href="#overview"><i class="glyphicon glyphicon-info-sign"></i> Overview</a></li>
-              <!-- <li><a data-toggle="tab" href="#explore"><i class="glyphicon glyphicon-search"></i> Explore</a></li> -->
               <li><a data-toggle="tab" href="#download"><i class="glyphicon glyphicon-download"></i> Download</a></li>
               <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
             </ul>
@@ -111,18 +147,12 @@
               <li><a data-toggle="tab" href="#annotate"><i class="glyphicon glyphicon-pencil"></i> Annotate</a></li>
             </ul>
           </li>
-          <!-- <li>
-            <div class="nav-tab-header"></div>
-            <a data-toggle="tab" id="sign-fun" href="#signin">
-              <span  id="signin-tab">sign in</span>
-            </a>
-          </li> -->
         </ul>
       </div>
     </div>
-  </div>
+  </div> -->
   <div id="content" class="tab-content" >
-    <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
+      <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
   </div>
   <div id="footer"><div>
     <a href="https://github.com/gicait/pLitter.git" target="_blank">Find us on GitHub</a>

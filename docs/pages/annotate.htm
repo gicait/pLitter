@@ -1,5 +1,5 @@
 <div class="container" style="background-color:white" style="margin-top:10px"> 
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-md-6">
       <div id="annotator-progress-bar">
         <b>Annotator Log:</b>
@@ -11,16 +11,16 @@
       </div>
     </div>
     <div class="col-md-3">
-      <!-- <div id="progress-bar">
+      <div id="progress-bar">
         <label for="file">Annotation progress:</label><br>
-      </div> -->
+      </div> 
     </div>
     <div class="col-md-3">
-      <!-- <div style="float: right;" >
+      <div style="float: right;" >
         <b>Annotators live: </b> <br> <div id="live-count"><img src="./icons/person-icon.png" height="24" width="24"></div>
-      </div> -->
+      </div>
     </div>
-  </div>
+  </div> -->
   <div class="row" id="ann-con" style="margin-top:5px">
     <div class="col-md-8">
       <div id="openseadragon" style="display:none;" />
@@ -33,7 +33,7 @@
           identification. The dataset includes images of plastic littered scenes
           and annotations in <a href="https://cocodataset.org/">COCO</a> format.<br />
         </p>
-        <div class="container">
+        <div style="margin-bottom: 60;">
           <strong>The main features of the dataset are:</strong>
           <ul style="display: flow-root;">
             <li>Object detection</li>
@@ -62,8 +62,7 @@
             <li>Rope</li>
             <li>Trash bin</li>
             <li>Wrapper or Sachet</li>
-          </ul>Help us make it better. 
-          <button onclick="getStarted()">Get Started!</button>          
+          </ul>          
         </p>
       </div>
     </div>
@@ -89,9 +88,9 @@
           Great! That’s what we strive for — a world with less plastic. Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image.
         </div>
         <div id="tutorial-content">
-          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />
-          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />
-          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />  
+          <img style="text-align: center;" src="./graphics/plitter-ann-tutorial.gif" width="100%" /> <br />
+          Help us make it better. 
+          <button id="get-start" onclick="getStarted()">Get Started!</button>
         </div>
       </div>  
     </div>
@@ -103,7 +102,12 @@
     load_random();
     // document.getElementById("ann-page-container").style.display = "";
     document.getElementById("splash-container").style.display = "none";
+    document.getElementById("get-start").style.display = "none";
     document.getElementById("openseadragon").style.display = "";
+    document.getElementById("tutorial-content").style.display = "none";
+    document.getElementById("info-content").style.display = "";
+    $(".tab-header").css("color", "gray");
+    $("#task-tab").css("color", "black");
     console.log("getting started...");
   }
 </script>
@@ -249,7 +253,8 @@
 
   #tutorial-content {
         height: 400px;
-        overflow-y: scroll;
+        width: 100%;
+        /* overflow-y: scroll; */
   }
   
   #ann-container {
@@ -265,7 +270,7 @@
 
     button {
         /* left: 50%; */
-        width: 100px;
+        /* width: 100px; */
         background-color: white;
         color: black;
         border: 2px solid #4CAF50;
