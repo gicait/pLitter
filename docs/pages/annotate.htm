@@ -1,77 +1,98 @@
-<br>
-<div class="container" style="background-color:cadetblue"> 
+<div class="container" style="background-color:white" style="margin-top:10px"> 
   <div class="row">
-    <!-- to do @sriram -->
-    <div class="col-sm-6">
+    <div class="col-md-6">
       <div id="annotator-progress-bar">
         <b>Annotator Log:</b>
         <div class="row">
-          <div class="col-sm-3"><b>Submitted:</b> <b id="submitted-count"></b></div>
-          <div class="col-sm-3"><b>Rejected:</b> <b id="rejected-count"></b></div>
-          <div class="col-sm-3"><b>Raised:</b> <b id="raised-count"></b></div>
+          <div class="col-md-3"><b>Submitted:</b> <b id="submitted-count"></b></div>
+          <div class="col-md-3"><b>Rejected:</b> <b id="rejected-count"></b></div>
+          <div class="col-md-3"><b>Raised:</b> <b id="raised-count"></b></div>
         </div>
       </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-md-3">
       <!-- <div id="progress-bar">
         <label for="file">Annotation progress:</label><br>
       </div> -->
     </div>
-    <div class="col-sm-3">
+    <div class="col-md-3">
       <!-- <div style="float: right;" >
         <b>Annotators live: </b> <br> <div id="live-count"><img src="./icons/person-icon.png" height="24" width="24"></div>
       </div> -->
     </div>
   </div>
-</div>
-<!-- <br> -->
-<div class="container" style="background-color:cadetblue">
-  <!--  cadetblue -->
-  <div class="row" id="ann-con">
-    <div class="col-sm-8">
-
-      <div id="ann-page-container" style="display:none;">
-        <!-- <div id="ann-container"> -->
-          <!-- <div id="toolbar" /> -->
-          <div id="openseadragon" />
-        <!-- </div> -->
-      </div>
-
+  <div class="row" id="ann-con" style="margin-top:5px">
+    <div class="col-md-8">
+      <div id="openseadragon" style="display:none;" />
       <div id="splash-container">
-          <div class="row">
-            <div class="col-md-6">
-              <img src="./icons/favicon.png" height="300px">
-            </div>
-            <div class="col-md-6">
-              <br />
-              <h1><strong>What is pLitter?</strong></h1>
-              <br />
-              pLitter (Plastic litter) is a standardized, deep learning-friendly
-              image dataset and pre-trained model for roadside plastic litter
-              identification. The dataset includes images of plastic littered scenes
-              and annotations in <a href="https://cocodataset.org/">COCO</a> format.<br />
-              <br /> <strong>The main features of the dataset are:</strong>
-              <br /> object detection
-              <br /> 10,000+ images
-              <br /> 50,000+ object instances
-              <br /> 4 object categories (Face mask, Pile, Plastic, Trash bin)
-            </div>
-          </div>
-          
-          <br /> We are using the Citizen Science approach to expand the pLitter taxonomy to more categories. Help us make it better.
-        <div id="splash-body-container">
-          <button onclick="getStarted()">Get Started!</button> 
+        <img style="float: left; margin: 0px 30px 10px 30px;" src="./icons/favicon.png" width="200" />
+        <h1 style="text-align: center;"><strong>What is pLitter?</strong></h1>
+        <p>
+          pLitter (Plastic litter) is a standardized, deep learning-friendly
+          image dataset and pre-trained model for roadside plastic litter
+          identification. The dataset includes images of plastic littered scenes
+          and annotations in <a href="https://cocodataset.org/">COCO</a> format.<br />
+        </p>
+        <div class="container">
+          <strong>The main features of the dataset are:</strong>
+          <ul style="display: flow-root;">
+            <li>Object detection</li>
+            <li>10,000+ images</li>
+            <li>50,000+ object instances</li>
+            <li>4 object categories (Facial mask, Pile, Plastic, and Trash bin)</li>
+          </ul>
         </div>
+        <p style="display: flex;">
+          We are using the Citizen Science approach to expand the pLitter taxonomy to more categories as listed below. 
+          <ul class="grid-list">
+            <li>Bottle (Beverage)</li>
+            <li>Bottle (Other)</li>
+            <li>Carrier bag</li>
+            <li>Clothes or Textile</li>
+            <li>Container</li>
+            <li>Cup</li>
+            <li>Cutleries</li>
+            <li>Diaper</li>
+            <li>Facial mask</li>
+            <li>Fishing gear</li>
+            <li>Foil</li>
+            <li>Pile</li>
+            <li>Plastic (Other)</li>
+            <li>Plate</li>
+            <li>Rope</li>
+            <li>Trash bin</li>
+            <li>Wrapper or Sachet</li>
+          </ul>Help us make it better. 
+          <button onclick="getStarted()">Get Started!</button>          
+        </p>
       </div>
-
     </div>
-    <div class="col-sm-4">
+    <div class="col-md-4">          
       <div id="info">
         <div id='info-tab-container'>
           <span id="task-tab" class="tab-header">Task</span>
           <span id="tutorial-tab" class="tab-header">Tutorial</span>
         </div>
-        <div id="info-content"></div>
+        <div id="info-content" style="display: none;">
+          <h5><strong>Can you spot any pieces of plastic?</strong></h5>
+          We have already asked our AI to offer some suggestions. 
+          <h5><strong>Are you sure it is plastic?  </strong></h5>
+          Zoom in <img class="text-icon" src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img class="text-icon" src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see the object(s) more clearly.
+          <h5><strong> Did you spot something? What’s next? </strong></h5>
+          Excellent! Draw a rectangle over it using <img class="text-icon" src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
+          Our AI suggestions could be wrong (after all it is a machine). Feel free to edit or change the plastic category type or even delete them if you do not believe the object(s) are plastic. 
+          <h5><strong> Is it too hard to notice anything? </strong></h5>
+          You have 2 options! Sometimes the image could be blurry and it is hard to detect anything. Please flag the image using <img class="text-icon" src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you simply want a different image to annotate, please click <img class="text-icon" src="./icons/openseadragon/ignore.png" alt="ignore" /> to send the image to another user.
+          <h5><strong> Do you want to start with a clean slate? </strong></h5>
+          Click <img class="text-icon" src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from initial landing image. 
+          <h5><strong> Have you identified all plastics in the image? </strong></h5>
+          Great! That’s what we strive for — a world with less plastic. Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image.
+        </div>
+        <div id="tutorial-content">
+          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />
+          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />
+          <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />  
+        </div>
       </div>  
     </div>
   </div>
@@ -80,52 +101,44 @@
 <script>
   function getStarted() {
     load_random();
-    document.getElementById("ann-page-container").style.display = "";
+    // document.getElementById("ann-page-container").style.display = "";
     document.getElementById("splash-container").style.display = "none";
+    document.getElementById("openseadragon").style.display = "";
     console.log("getting started...");
   }
 </script>
 
   <script>
-    let taskHTML = `
-        <h5><strong>Can you spot any pieces of plastic?</strong></h5>
-        
-        We have already asked our AI to offer some suggestions. 
-        
-        <h5><strong>Are you sure it is plastic?  </strong></h5>
-        
-        Zoom in <img class="text-icon" src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img class="text-icon" src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see the object(s) more clearly.
-        
-        <h5><strong> Did you spot something? What’s next? </strong></h5>
-
-        Excellent! Draw a rectangle over it using <img class="text-icon" src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
-        Our AI suggestions could be wrong (after all it is a machine). Feel free to edit or change the plastic category type or even delete them if you do not believe the object(s) are plastic. 
-
-        <h5><strong> Is it too hard to notice anything? </strong></h5>
-
-        You have 2 options! Sometimes the image could be blurry and it is hard to detect anything. Please flag the image using <img class="text-icon" src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you simply want a different image to annotate, please click <img class="text-icon" src="./icons/openseadragon/ignore.png" alt="ignore" /> to send the image to another user.
-
-        <h5><strong> Do you want to start with a clean slate? </strong></h5>
-        
-        Click <img class="text-icon" src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from initial landing image. 
-        
-        <h5><strong> Have you identified all plastics in the image? </strong></h5>
-
-        Great! That’s what we strive for — a world with less plastic. Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image. 
-      `;
-
-    let tutorialHTML = `
-        We are updating the tutorial soon.
-      `;
-
-    document.getElementById("info-content").innerHTML = taskHTML;
+    // let taskHTML = `
+    //     <h5><strong>Can you spot any pieces of plastic?</strong></h5>
+    //     We have already asked our AI to offer some suggestions. 
+    //     <h5><strong>Are you sure it is plastic?  </strong></h5>
+    //     Zoom in <img class="text-icon" src="./icons/openseadragon/zoomin_rest.png" alt="+"/> and zoom out <img class="text-icon" src="./icons/openseadragon/zoomout_rest.png" alt="-"/> to see the object(s) more clearly.
+    //     <h5><strong> Did you spot something? What’s next? </strong></h5>
+    //     Excellent! Draw a rectangle over it using <img class="text-icon" src="./icons/openseadragon/rect.png" alt="ractangle"/> and see if you can identify the plastic type.
+    //     Our AI suggestions could be wrong (after all it is a machine). Feel free to edit or change the plastic category type or even delete them if you do not believe the object(s) are plastic. 
+    //     <h5><strong> Is it too hard to notice anything? </strong></h5>
+    //     You have 2 options! Sometimes the image could be blurry and it is hard to detect anything. Please flag the image using <img class="text-icon" src="./icons/openseadragon/bookmark.png" alt="raise"> so that our team can have a look. If you simply want a different image to annotate, please click <img class="text-icon" src="./icons/openseadragon/ignore.png" alt="ignore" /> to send the image to another user.
+    //     <h5><strong> Do you want to start with a clean slate? </strong></h5>
+    //     Click <img class="text-icon" src="./icons/openseadragon/reload.png" alt="refresh" /> to go back to the original image and start from initial landing image. 
+    //     <h5><strong> Have you identified all plastics in the image? </strong></h5>
+    //     Great! That’s what we strive for — a world with less plastic. Click on the <img class="text-icon" src="./icons/openseadragon/save.png" alt="save" /> to save the annotations and load a new image. 
+    //   `;
+    // let tutorialHTML = `
+    //   <img style="text-align: center;" src="./graphics/plitter-ann-gif.gif" width="300" />
+    //   `;
+    // document.getElementById("info-content").innerHTML = taskHTML;
 
     document.getElementById("task-tab").addEventListener("click", () => {
-      document.getElementById("info-content").innerHTML = taskHTML;
+      // document.getElementById("info-content").innerHTML = taskHTML;
+      document.getElementById("tutorial-content").style.display = "none";
+      document.getElementById("info-content").style.display = "";
     });
 
     document.getElementById("tutorial-tab").addEventListener("click", () => {
-      document.getElementById("info-content").innerHTML = tutorialHTML;
+      // document.getElementById("info-content").innerHTML = tutorialHTML;
+      document.getElementById("info-content").style.display = "none";
+      document.getElementById("tutorial-content").style.display = "";
     });
 
   </script>
@@ -140,12 +153,16 @@
       $("#tutorial-tab").css("color", "black");
     });
     $(document).ready(
-      () => $("#task-tab").css("color", "black")
+      () => $("#tutorial-tab").css("color", "black")
     )
   </script>
 
 <style>
 
+  .grid-list {
+    display: grid;
+    grid-template-columns: repeat(2, 3fr);
+  }
   .tab-header {
     font-size: 24px;
     font-weight: 800;
@@ -163,7 +180,7 @@
     width: 20;
   }
 
-  #splash-container {
+  /* #splash-container {
     float: left;
     width: 100%;
     box-shadow: 0 4px 8px 0 rgb(0 0 0 / 20%), 0 6px 20px 0 rgb(0 0 0 / 19%);
@@ -175,7 +192,27 @@
     align-content: space-around;
     padding: 20px;
     text-align: center;
+  } */
+
+  /* #splash-container {
+    background-color: white;
+    display: flex;
+    height: 500px;
   }
+  #splash-container__image {
+    margin: 20px 30px 0 0;
+    object-fit: contain;
+    align-self: flex-start;
+  }
+  #splash-container__text {
+    flex: 1 1 auto;
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+    align-content: space-around;
+    padding: 20px;
+    text-align: center;
+  } */
 
   #ann-con{
     padding-bottom: 25px;
@@ -200,7 +237,7 @@
         /* border-radius: 10%; */
         padding: 10px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        height: 500px;
+        /* height: 500px; */
   /* box-shadow: 10px 10px 5px grey; */
   }
 
@@ -210,6 +247,11 @@
         font-size: 12px;
   }
 
+  #tutorial-content {
+        height: 400px;
+        overflow-y: scroll;
+  }
+  
   #ann-container {
     float: left;
     width: 100%;
@@ -277,6 +319,7 @@
     }
 
     #openseadragon {
+      background-color:#f4f4f4 !important;
       height:500px;
       width:100%;
     }
