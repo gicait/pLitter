@@ -283,7 +283,7 @@ function raise_image(image_id){
     if(!raisedList.includes(image_id)){
         raisedList.push(image_id)
         annotatorRaised = raisedList.length
-        document.getElementById("raised-count").innerHTML=`${annotatorRaised}`        
+        // document.getElementById("raised-count").innerHTML=`${annotatorRaised}`        
     }
     // to do send request, check api/image/flag
 }
@@ -292,7 +292,7 @@ function reject_image(image_id){
     if(!rejectedList.includes(image_id)){
         rejectedList.push(image_id)
         annotatorRejected = rejectedList.length
-        document.getElementById("rejected-count").innerHTML=`${annotatorRejected}`        
+        // document.getElementById("rejected-count").innerHTML=`${annotatorRejected}`        
     }
     load_random()
 }
@@ -749,7 +749,7 @@ async function save_annots_to_coco(im_id){
     if(!submittedList.includes(im_id)){
         submittedList.push(im_id)
         annotatorSubmitted = submittedList.length
-        document.getElementById("submitted-count").innerHTML=`${annotatorSubmitted}`        
+        // document.getElementById("submitted-count").innerHTML=`${annotatorSubmitted}`        
     }
 
     if(image_annotating_status === true){
