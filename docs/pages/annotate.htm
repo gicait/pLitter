@@ -89,8 +89,10 @@
         </div>
         <div id="tutorial-content">
           <img style="text-align: center;" src="./graphics/plitter-ann-tutorial.gif" width="100%" /> <br />
-          Help us make it better. 
-          <button id="get-start" onclick="getStarted()">Get Started!</button>
+          <p style="text-align: center;">Help us make it better.</p>
+          <div class="getstart"> 
+            <button style="width: 80%; height: 50px;" id="get-start" onclick="getStarted()">Get Started!</button>
+          </div>
         </div>
       </div>  
     </div>
@@ -163,6 +165,13 @@
 
 <style>
 
+  .getstart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: 900;
+  }
   .grid-list {
     display: grid;
     grid-template-columns: repeat(2, 3fr);
@@ -223,10 +232,10 @@
   }
 
   #info-tab-container {
-    height: 60px;
+    height: 50px;
     border-bottom: 2px solid #4CAF50;
     padding: 10px;
-    margin: 10px;
+    margin: 0px 10px 10px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -241,7 +250,7 @@
         /* border-radius: 10%; */
         padding: 10px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        /* height: 500px; */
+        height: 500px;
   /* box-shadow: 10px 10px 5px grey; */
   }
 
@@ -269,7 +278,7 @@
   }
 
     button {
-        /* left: 50%; */
+        left: 50%;
         /* width: 100px; */
         background-color: white;
         color: black;
