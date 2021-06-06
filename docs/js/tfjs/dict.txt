@@ -1,2 +1,5 @@
 background
-b'Plastic'
+Pile
+Face mask
+Plastic
+Trash bin

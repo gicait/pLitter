@@ -39,7 +39,7 @@ function drawBoxes(predictions) {
     text.setAttribute('dx', 1);
     text.setAttribute('class', 'label');
     text.setAttribute('id', 'label');
-    text.textContent = `${label.substring(2, 9)}: ${score.toFixed(3)}`;
+    text.textContent = `${label.substring(0, 9)}: ${score.toFixed(2)}`;
     svg.appendChild(rect);
     svg.appendChild(text);
     const textBBox = text.getBBox();
