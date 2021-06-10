@@ -1,9 +1,15 @@
+<div class="container">
+    <div id="map"></div>
+    <div id="pano"></div>
+</div>
+
+
 <!--map layout
     Landmark (small) for each image, onclick image should display, also predictions
     Line for video (Later)
     Heatmap (source: csv file or table in database (?@nischal), fetch records dynamically, near to location)-->
 
-
+<!-- 
  <script>
     var mymap = L.map('map').setView([14.0823695,100.6126375], 13);
 
@@ -64,7 +70,7 @@
 //     accessToken: 'your.mapbox.access.token'
 // }).addTo(mymap);
 </script>
-<!-- <br>
+ <br>
 <div id="map" style="height: 500px; border: 1px solid #AAA;"></div>
 
 Use the map to visualize plastic litter according to pLitter’s predictions on the dataset’s user submitted images. The heatmap will help you to understand the plastic litter count and perform litter hotspot analysis. User submitted images are tagged as markers on map.
@@ -75,6 +81,85 @@ Want to map plastic waste in your city? Become a volunteer! -->
 <div>
     <p> Still in developing. Idea is to visualize plastic pollution along streets with heatmap. User can select on heatmap and see teh ground truth images used to generate the heatmap at corresponding locations.</p>
     <p> At present we are using leaflet for map. Please check out git repository to contribute.</p>
-</div> -->
+</div> 
 
-<h3 align="center">under MAINTENANCE</h3>
+<h3 align="center">under MAINTENANCE</h3> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- // tying with google map below -->
+
+<style>
+    /* html,
+body {
+height: 100%;
+margin: 0;
+padding: 0;
+} */
+
+#map,
+#pano {
+float: left;
+height: 100%;
+width: 50%;
+}
+</style>
+<!-- jsFiddle will insert css and js -->
+
+
+<script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script>
+        function initialize() {
+  const fenway = { lat: 14.0860644, lng: 100.6083957 };
+  const map = new google.maps.Map(document.getElementById("map"), {
+    center: fenway,
+    zoom: 14,
+  });
+  const panorama = new google.maps.StreetViewPanorama(  
+    document.getElementById("pano"),
+    {
+      position: fenway,
+      pov: {
+        heading: 34,
+        pitch: 10,
+      },
+    }
+  );
+  map.setStreetView(panorama);
+}
+    </script>
+
+
+
+
+
+<!-- Async script executes immediately and must be after any DOM elements used in callback. -->
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initialize&libraries=&v=weekly" async></script>  -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDl8bSk9AbXi92f2iAIe1RJvm5Q-OPdArQ&callback=initialize&libraries=&v=weekly" async></script>  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://openlittermap.com/global-points?zoom=18&bbox=%7B%22left%22:-1.7373807187108061,%22bottom%22:50.72742782024513,%22right%22:-1.7331662529545857,%22top%22:50.72923762113265%7D
+Request Method: GET
