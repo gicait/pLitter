@@ -1,7 +1,7 @@
 <div id="container" style="padding: 20px; text-align: center;">
   <form style="height: 500px" action="UploadImages" class="dropzone" style="text-align: center;" id="demo-dropzone"
     enctype="multipart/form-data">
-    <div class="dz-message" data-dz-message><span>Drop image to predict plastic litter.</span></div>
+    <div class="dz-message" data-dz-message><span>Select or drop image to predict plastic litter.</span></div>
   </form>
 
   <div id="imgDiv" style="position:relative; display: none">
@@ -65,8 +65,8 @@
           while (label_rect = document.getElementById("label-rect")) { label_rect.remove() }
 
           var image = document.getElementById('input');
+          image.onload = () => run();
           image.src = URL.createObjectURL(file);
-          run();
 
           this.removeAllFiles();
           $('#demo-dropzone').css("display", "none");

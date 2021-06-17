@@ -13,6 +13,7 @@ function datasetTabNav() {
                 "help",
                 "upload",
                 "annotate",
+                "leaderboard",
                 "zoom",
                 "signin"];
     for( var i=0; i<tabs.length; i++ ) {

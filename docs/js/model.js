@@ -5,11 +5,11 @@ async function run() {
     alert("Start predicting pLitter! it might take few seconds to make inefrences")
     const model = await tf.automl.loadObjectDetection(MODEL_URL);
     const image = document.getElementById('input');
-    // alert("model loaded")
+    alert("model loaded")
     // These are the default options.
     const options = {score: 0.2, iou: 0.5, topk: 20};
     const predictions = await model.detect(image, options);
-    // alert(predictions)
+    alert(predictions)
     // Show the resulting object on the page.
     const pre = document.createElement('pre');
     pre.textContent = JSON.stringify(predictions, null, 2);
@@ -70,11 +70,8 @@ var loadFile = function (event) {
     label_rect.remove()
   }
   var image = document.getElementById('input');
+  // image.onload = run()
   image.src = URL.createObjectURL(event.target.files[0]);
-
   // SavePhoto(event.target)
-
-
-  run();
-
+  // run();
 };
