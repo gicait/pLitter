@@ -4,7 +4,12 @@ function setUserCookie(user) {
 
 function getUserCookie() {
     let userString = Cookies.get('user');
-    if (userString) return JSON.parse(userString);
+    if (userString) {
+        return JSON.parse(userString);
+    }
+    else {
+        return false;
+    }
 }
 
 function getToken() {
@@ -19,18 +24,15 @@ function getUsername() {
 
 function signOut() {
     Cookies.set('user', null);
-    document.getElementById("sign-fun").removeAttribute("onclick");
-    document.getElementById("signin-tab").innerHTML = "signin";
     window.location.reload()
 }
 
 
-$("#header").ready(
+$("#navbar-header").ready(
     function() {
-        document.getElementById("signin-tab").innerHTML = "signin";
-        if(getUserCookie())  {
-            document.getElementById("signin-tab").innerHTML = "signout";
-            document.getElementById("sign-fun").addEventListener('click', signOut, false);
+        let user = getUserCookie();
+        if(user)  {
+            document.getElementById("signin").innerHTML = user.username;
         }
     }
 )

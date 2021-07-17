@@ -1,598 +1,405 @@
-<!-- <div class="photo-picker">
-    <input class="fileupload" type="file" name="image" data-url="http://203.159.29.51:5000/api/image/?dataset_id=65">
-    <div id="progress">
-        <div class="bar" style="width: 0%;"></div>
-    </div>
-</div> -->
-
+<!-- to do
+  1. get geo tags and upload along image
+-->
 <div class="container" id="upload-section">
-  <label for="images">Images (.png, .jpg, etc)</label>
-  <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple/>
-</div>
-<br>
-<div id="osd-annoatate-container" class="container" style="width: 100%; height: 500px;display: none;">
-  <div id="image-dummy-display" style="display: none;"></div>
-  <div id="osd-annoatate"></div>
-</div>
-<br>
-<div class="container">
-  <table role="presentation" class="table table-stripped" id="uploaded_images">
-    <tbody class="files"></tbody>
-  </table>
-</div>
-
-
-<div class="container" id="recent-uploads-container"> 
-  <h1>Recent uploads</h1>
-  <table role="presentation" class="table table-stripped" id="recenet-uploads-table">
-    <tbody></tbody>
-  </table>
-</div>
-
-
-<script>
-  // TO DO: cat_dict, wont always same as annoatte.js, change TagSelectorWidget accordingly
-  // make async all
-
-  const imageUploadbaseURL = 'http://203.159.29.51:5000/api/image';
-  let upload_dataset_id = 65;
-  let uploaded_images;
-  let images_annotations = {};
-  var selected_anno;
-
-  async function save_annotations_to_array(i){
-    annotations_in_osd = selected_anno.getAnnotations();
-    let annotations_in_osd_to_array = []
-    images_annotations[i] = annotations_in_osd
-    document.getElementById('labelcount_'+String(i)).innerHTML = images_annotations[i].length
-    document.getElementById('osd-annoatate').innerHTML = ''
-    document.getElementById("osd-annoatate-container").style.display = "none";
-    // annotations_in_osd.forEach(annotation => {
-    // })
-  }
-
-  async function run_on_selected(i, image) {
-    // console.log(uploaded_images.files[i].name) 
-    confirm("Do you prefer pLitter suggestions?")
-    const model = await tf.automl.loadObjectDetection(MODEL_URL)    
-    // console.log(image.width)
-    // console.log(image.height)
-    // console.log(image.complete)
-    // console.log(image)
-    const options = {score: 0.2, iou: 0.5, topk: 20};
-    const predictions = await model.detect(image, options);
-    console.log(predictions)
-    var annotations_format = []
-    predictions.forEach(prediction => {
-      const {box, label, score} = prediction;
-      const {left, top, width, height} = box;
-      var anno_dict = {}
-      anno_dict["type"] = "Annotation"
-      anno_dict["body"] = []
-      anno_dict_body = {}
-      anno_dict_body["type"] =  "TextualBody"
-      anno_dict_body["purpose"] = "tagging"
-      let label_string = label.replace(/(\r\n|\n|\r)/gm,"");
-      anno_dict_body["value"] = label_string
-      console.log(anno_dict_body["value"])
-      anno_dict["body"].push(anno_dict_body)
-      anno_dict["target"] = {}
-      anno_dict["target"]["source"] = image.src,
-      anno_dict["target"]["selector"] = {}
-      anno_dict["target"]["selector"]["type"] = "FragmentSelector"
-      anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
-      anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(left)+","+String(top)+","+String(width)+","+String(height)
-      anno_dict["@context"] = ""
-      anno_dict["id"] = '_' + Math.random().toString(36).substr(2, 9);
-      annotations_format.push(anno_dict)
-    })
-    selected_anno.setAnnotations(annotations_format)
-
-    console.log(image.width)
-    console.log(image.height)
-
-  }
-
-  function labelThis(i){
-    console.log(i)
-    document.getElementById('osd-annoatate').innerHTML = ''
-    document.getElementById("osd-annoatate-container").style.display = "";
-    const image_url = URL.createObjectURL(uploaded_images.files[i])
-    var viewer = OpenSeadragon({
-      id: "osd-annoatate",
-      prefixUrl: "./icons/openseadragon/",
-      tileSources: {
-        type: "image",
-        url: image_url
-      },
-      gestureSettingsTouch: {
-        pinchRotate: true
-      }
-    });
-
-    selected_anno = OpenSeadragon.Annotorious(viewer, {
-      locale: 'auto',
-      allowEmpty: true,
-      widgets: [ TagSelectorWidget ]
-    });
-
-    viewer.addHandler('open', () => {
-      let saveButton = new OpenSeadragon.Button({
-        tooltip: 'Save',
-        srcRest: `./icons/openseadragon/save.png`,
-        srcGroup: `./icons/openseadragon/save.png`,
-        srcHover: `./icons/openseadragon/save.png`,
-        srcDown: `./icons/openseadragon/save.png`,
-        onClick: () => {console.log('saving'); save_annotations_to_array(i);},
-      });
-      viewer.addControl(saveButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
-    });
-
-    const image = new Image();
-    image.id = "image-dummy"
-    image.onload = () => run_on_selected(i, image);
-    document.getElementById("image-dummy-display").append(image)
-    image.src = URL.createObjectURL(uploaded_images.files[i])
-    // document.getElementById("image-dummy-display").style.display = '';
-
-    // initialize osd-annotorius
-    // img src with i
-  }
-
-  function uploadThis(id){
-    let image_id = NaN;
-    console.log(id)
-    if(images_annotations[id].length == 0){
-      alert("Please add labels to the image")
-    }
-    else{
-      let imageFormData = new FormData();
-      imageFormData.append("image", uploaded_images.files[id]);
-      imageFormData.append("dataset_id", upload_dataset_id);
-
-      axios.post(`${imageUploadbaseURL}/`, imageFormData, {
-        headers: {
-          "Content-Type": "multipart/form-data"
-        },
-        onUploadProgress: function(progressEvent) {
-          var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-          // console.log(percentCompleted)
-          // progress_bar_${i}
-          document.getElementById('progress_bar_'+String(id)).style.width = percentCompleted;
-        }
-      })
-      .then(response => {
-        image_id = response.data
-        // let image_id = response.data.id;
-        // console.log(image_id);
-
-        if(typeof image_id === 'number'){
-          console.log("uploading annotations", image_id);
-          var annotations = images_annotations[id]
-          annotations.forEach(function(ann) {
-            if(ann.target.selector.type === 'FragmentSelector'){
-              var is_it_bbox = true
-              var value = ann.target.selector.value
-              var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
-              var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
-              var [ x, y, w, h ] = coords.split(',').map(parseFloat)
-              var cat_name = ann.body[0].value
-              var cat_id = cat_dict[cat_name]
-              console.log(x, y, w, h, cat_id, ann.id)
-              var box = [x, y, w, h]
-              var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
-            }
-            else if(ann.target.selector.type === "SvgSelector"){
-              var is_it_bbox = false
-              console.log("svg")
-              var value = ann.target.selector.value
-              var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
-              var cat_name = ann.body[0].value
-              var cat_id = cat_dict[cat_name]
-              var sep_coords = coords.split(' ')
-              var flat_coords = []
-              sep_coords.forEach(sep_coord => {
-                var temp_cord = sep_coord.split(',').map(i=>Number(i))
-                flat_coords = flat_coords.concat(temp_cord)
-              });
-              var xs = []
-              var ys = []
-              for (i = 0; i < flat_coords.length; i++) {
-                if(i%2 === 0){
-                  xs.push(flat_coords[i])
-                }
-                else{
-                  ys.push(flat_coords[i])
-                }
-              }
-              var min_x = Math.min(...xs), max_x = Math.max(...xs)
-              var min_y = Math.min(...ys), max_y = Math.max(...ys)
-              var w = max_x-min_x
-              var h = max_y-min_y
-              var box = [min_x, min_y, w, h]
-              var seg = [flat_coords]
-              console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
-            }
-            else{
-              console.log("type error")
-              return;
-            }
-            fetch(base_link+"/api/annotation/", {
-              "headers": {
-              "accept": "application/json, text/plain, */*",
-              "accept-language": "en-US,en;q=0.9",
-              "content-type": "application/json;charset=UTF-8"
-              },
-              "referrer": base_link+"/",
-              "referrerPolicy": "strict-origin-when-cross-origin",
-              "body": JSON.stringify({
-                image_id: image_id,
-                category_id: cat_id,
-                isbbox: is_it_bbox,
-                segmentation: seg,
-                bbox: box,
-              }),
-              "method": "POST",
-              "mode": "cors",
-              "credentials": "include"
-            })
-            .then(ann_response => ann_response.json())
-            .then(ann_data => console.log(ann_data))
-            .catch(ann_error => console.log(ann_error))
-          })
-          console.log("closing foreach");
-          document.getElementById("uploaded_images_"+String(id)).remove();
-          $("#recenet-uploads-table").find('tbody')
-          .append($(`
-            <tr class="template-upload fade image in" id="recent_image_${image_id}">
-              <td>
-                <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[id])}"/></span>
-              </td>
-              <td>
-                <p><span class="name">${uploaded_images.files[id].name}</span>
-                <span class="size">${(uploaded_images.files[id].size/(1024*1024)).toFixed(2)} MB</span>
-                <span class="size">Labels:<div>${annotations.length}</div></span></p>
-              </td>
-            </tr>`)
-          )
-        }
-      })
-      .catch(error => {
-        alert("Failed:", error.message);
-      });
-      // first upload the image, get the image image_id
-      // then upload annotations using image_id
-    }
-  }
-
-  function cancelThis(i){
-    console.log(i)
-  }
-
-function addFiles(){
-  alert("adding")
-  uploaded_images = document.getElementById("images");
-  uploaded_images_annotations = {};
-  $("#uploaded_images").find('tbody').empty();
-  for (var i = 0; i < uploaded_images.files.length; i++) {
-    images_annotations[i] = []
-    // console.log(uploaded_images.files[i].name)
-    $("#uploaded_images").find('tbody')
-      .append($(`
-        <tr class="template-upload fade image in" id="uploaded_images_${i}">
-          <td>
-            <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
-          </td>
-          <td>
-            <p><span class="name">${uploaded_images.files[i].name}</span>
-            <span class="size">${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
-            <span class="size">Labels:<div id="labelcount_${i}">0</div></span></p>
-            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
-          </td>
-          <td>
-            <button class="btn btn-success edit" data-index="0" onclick="labelThis(${i})">
-              <i class="glyphicon glyphicon-edit"></i>
-              <span>Label</span>
-            </button>
-            <button class="btn btn-primary start" onclick="uploadThis(${i})">
-              <i class="glyphicon glyphicon-upload"></i>
-              <span>Upload</span>
-            </button>
-            <button class="btn btn-warning cancel" onclick="cancelThis(${i})">
-              <i class="glyphicon glyphicon-ban-circle"></i>
-              <span>Cancel</span>
-            </button>
-          </td>
-        </tr>`)
-      )  
-    // .append($('<tr>')
-      //   .append($('<td>')
-      //     .append($('<img>')
-      //       .attr('src', URL.createObjectURL(uploaded_images.files[i]))
-      //       .attr('style', "width:150px")
-      //       .text('Image cell')
-      //     )
-      //   )
-      //   .append($('<td>')
-      //     .append($(`<span>${uploaded_images.files[i].name}</span>`))
-      //     .append($('<div>')
-      //       .attr('class', 'progressbar')
-      //     )
-      //   )
-      //   .append($('<td>')
-      //     .append('<button class="btn btn-success edit" data-index="0"> <i class="glyphicon glyphicon-edit"></i><span>Label</span></button>')
-      //     .append('<button class="btn btn-primary start"><i class="glyphicon glyphicon-upload"></i><span>Upload</span></button>')
-      //     .append('<button class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>Cancel</span></button>')
-      //   )
-
-    // );
-  }
-}
-
-
-  $('.fileupload').fileupload({
-             dataType: 'json',
-             add: function (e, data) {
-                 var picker = $(this).data('link');
-                 $(picker).children('span').html('check');
-                 data.submit();
-                 /*
-                 data.context = $('<button/>').text('Upload')
-                     .appendTo(document.body)
-                     .click(function () {
-                         data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-                         data.submit();
-                         });
-                  */
-             },
-             done: function (e, data) {
-                 //data.context.text('Upload finished.');            
-                 $.each(data.result.files, function (index, file) {
-                     $('<p/>').text(file.name).appendTo(document.body);
-                 });
-             },
-             progressall: function (e, data) {
-                 var progress = parseInt(data.loaded / data.total * 100, 10);
-                //  $('#progress .bar').css(
-                //      'width',
-                //      progress + '%'
-                //  );
-                 $('#progress .bar').progressbar({
-                      value: progress
-                 });
-                 $('#progress .bar').append(progress);
-             }   
-         });
-</script>
-
-
-
-
-
-<!-- var exifLong = data.exif.get("GPSLongitude");
-console.log(exifLong);
-var exifLongRef = data.exif.get("GPSLongitudeRef");
-console.log(exifLongRef);
-var exifLat = data.exif.get("GPSLatitude"); 
-console.log(exifLat);
-var exifLatRef = data.exif.get("GPSLatitudeRef"); 
-console.log(exifLatRef);
-
-if (exifLatRef == "S") {
-var latitude = (exifLat[0]*-1) + (( (exifLat[1]*-60) + (exifLat[2]*-1) ) / 3600);						
-} else {
-var latitude = exifLat[0] + (( (exifLat[1]*60) + exifLat[2] ) / 3600);
-}
-console.log(latitude);
-
-if (exifLongRef == "W") {
-var longitude = (exifLong[0]*-1) + (( (exifLong[1]*-60) + (exifLong[2]*-1) ) / 3600);						
-} else {
-var longitude = exifLong[0] + (( (exifLong[1]*60) + exifLong[2] ) / 3600);
-}
-console.log(longitude); -->
-
-
-
-<!--dropzone
-    recenet uploads
-    predict and push to annotator-->
-
-
-
-<!-- <p> Upload images to pLitter, we need more images captured plastic litter from all over the globe to achieve the best accuracy and hormonizing the model. </p> -->
-
-<!-- <p>You need to login with credidentials of coco-annotator of GIC. If not register from here <a href="http://203.159.29.187:8080">Coco-annotator.</a> </p> -->
-
-<!-- <div id="stats">Our next target is to crowd source 10k images.</div> -->
-
-<!-- <div id="login">
-  <input type = "text" id = "user"/>
-  <input type = "password" id = "pass"/>
-  <button onclick="login_from_coco()">Log in</button>
-</div> -->
-<!-- 
-<div>
-  <input type="text" id="name" placeholder="name">
-  <input type="text" id="email" placeholder="email"> 
-</div>
-<br>
-<div id="upload">
-  <input type="file" id="uploadFile" multiple size="50" onchange="upload_to_coco_backend()"> <br>
-  <div>
-    <div id="image-veiwer"><img id="ann-img" /></div>
-    <table id="imagelist" align="center">
-      <thead>
-        <tr><td>Id</td><td>File name</td><td>Annotated</td></tr>
-      </thead>
+    <label for="images">Images (.png, .jpg, etc)</label>
+    <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple/>
+  </div>
+  <br>
+  <div id="osd-annoatate-container" class="container" style="width: 100%; height: 500px;display: none;">
+    <div id="image-dummy-display" style="display: none;"></div>
+    <div id="osd-annoatate"></div>
+  </div>
+  <br>
+  <div class="container">
+    <table role="presentation" class="table table-stripped" id="uploaded_images">
+      <tbody class="files"></tbody>
+    </table>
+  </div>
+  
+  
+  <div class="container" id="recent-uploads-container"> 
+    <h1>Recent uploads</h1>
+    <table role="presentation" class="table table-stripped" id="recenet-uploads-table">
       <tbody></tbody>
     </table>
   </div>
-</div> -->
-
-<!-- <h3 align="center">under MAINTENANCE</h3> -->
-
-
-
-
-<!-- https://ae542e0cd461.ngrok.io -->
-
-<!-- <div id="anno-front" style="display:block; visibility:hidden"><iframe src="https://ae542e0cd461.ngrok.io" height="1px" width=" 100%" ></iframe></div> -->
-<!-- <div id="anno-front" style="display:block; visibility:hidden"><iframe src="http://203.159.29.187:8080" height="1px" width=" 100%" ></iframe></div> -->
-
-<!-- <iframe id="frame" src="http://203.159.29.187:8001" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:1000px;width:100%;border:none;overflow:hidden;"></iframe> -->
-
-
-<!-- <iframe src="http://203.159.29.187:8001" id="frame" scrolling="yes" frameborder="0" style="position: relative; height: 100%; width: 100%;"></iframe> -->
-
-
-<!-- <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="generator" content="Bootstrap Listr">
-  <link rel="stylesheet" href="assets/css/custom.css">
-  <link rel="stylesheet" href="assets/css/listr.pack.css">
-  <link rel="stylesheet" href="assets/css/jquery.filer.css">
-</head>
-<script type="text/javascript" src="assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="assets/js/tether.min.js"></script>
-<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="assets/js/listr.pack.js"></script>
-<script type="text/javascript" src="assets/js/jquery.filer.min.js"></script>
-<script type="text/javascript" src="assets/js/jquery.base64.min.js"></script>
-<script type="text/javascript" src="assets/js/custom.js"></script>
-
-
-<p>Upload images to pLitter, so they will be used to train the model to improve the accuracy. (Add note)</p>
-<div class="container">
-    <div class="row">
-      <!-- <div class="col-xs-12">
-        <ol class="breadcrumb" dir="ltr">
-            <li class="breadcrumb-item"><a href="{{url_for('path_view')}}"><i class="fa fa-fw fa-home fa-lg"></i> </a></li>
-            {% for part in path.strip('/').split('/') %}
-            <li class="breadcrumb-item"><a href="{{url_for('path_view', p='/'+path[:path.find(part)+part|length]+'/')}}"><strong>{{ part }}</strong></a></li>
-            {% endfor %}
-             <li class="login"><a data-toggle="modal" data-target="#login-modal" class="btn btn-secondary text-muted"><i class="fa fa-fw fa-user"></i><strong id="userlogin">Login</strong></a></li>
-        </ol>
-      </div> -->
-      <!-- <div class="col-xs-12 col-sm-5 col-md-4 col-sm-offset-7 col-md-offset-8 pull-sm-right">
-        <div class="form-group">
-            <label class="form-control-label sr-only" for="listr-search">Search</label>
-            <input type="text" id="listr-search" class="form-control" placeholder="Search">
-        </div>
-      </div>
-      <div class="pull-sm-right">
-        <div class="btn-group">
-          <a data-toggle="modal" data-target="#uploader-modal" class="btn btn-secondary text-muted">Upload</a> -->
-          <!-- {% if hide_dotfile == 'yes' %}
-          <a href="?hide-dotfile=no" class="btn btn-secondary text-muted">Show Dotfiles</a>
-          {% else %}
-          <a href="?hide-dotfile=yes" class="btn btn-secondary text-muted">Hide Dotfiles</a>
-          {% endif %} -->
-        <!-- </div>
-      </div>
-    </div>
-    <div class="table-responsive">
-          <h3>Recent uploads</h3>
-      <table id="listr-table" class="table table-hover">
-        <thead>
-          <tr>
-            <th class="text-xs-left " data-sort="string">Name</th>
-            <th class="text-xs-right " data-sort="int">Size</th>
-            <th class="text-xs-right " data-sort="int">Modified</th>
-          </tr>
-        </thead> -->
-        <!-- <tbody> -->
-          <!-- {% for entry in contents if entry.type == 'dir' %}
-          <tr>
-              <td class="text-xs-left " data-sort-value="dir-{{entry.name | lower}}"><i class="fa fa-fw fa-folder " aria-hidden="true"></i>&nbsp;<a href="{{entry.name}}/" ><strong>{{entry.name}}</strong></a></td>
-            <td class="text-xs-right " data-sort-value="-1">&mdash;</td>
-            <td class="text-xs-right " data-sort-value="{{entry.mtime}}" title="{{entry.mtime | time_fmt}}">{{entry.mtime | humanize}}</td>
-          </tr>
-          {% endfor %}
-          {% for entry in contents if entry.type == 'file' %}
-          <tr>
-              <td class="text-xs-left " data-sort-value="file-{{entry.name | lower}}"><i class="fa fa-fw {{entry.name | icon_fmt}} " aria-hidden="true"></i>&nbsp;
-              <a {% if entry.name | data_fmt not in ['unknown', 'archive'] %} data-toggle="modal" data-target="#viewer-modal" data-type="{{entry.name | data_fmt}}" {% endif %} href="{{entry.name}}" data-size="{{entry.size | size_fmt}}">{{entry.name}}</a>
-              </td>
-              <td class="text-xs-right " data-sort-value="{{entry.size}}" title="{{entry.size}} bytes">{{entry.size | size_fmt}}</td>
-              <td class="text-xs-right " data-sort-value="{{entry.mtime}}" title="{{entry.mtime | time_fmt}}">{{entry.mtime | humanize}}</td>
-          </tr>
-          {% endfor %} -->
-        <!-- </tbody>
-      </table>
-    </div>
-    <div class="modal fade" id="viewer-modal" tabindex="-1" role="dialog" aria-labelledby="file-name" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close pull-xs-right" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title text-left" id="file-name">&nbsp;</h4>
-            <small class="text-muted" id="file-meta"></small>
-          </div>
-          <div class="modal-body"></div>
-          <div class="modal-footer">
-            <div class="pull-xs-left">
-              <button type="button" class="btn btn-link highlight hidden-xs-up">Apply syntax highlighting</button>
-            </div>
-            <div class="pull-xs-right">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-
-              <div class="btn-group">
-                <a href="#" class="btn btn-primary fullview" download>Download</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="uploader-modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-body">
-            <form id="upload-files" method="post" enctype="multipart/form-data">
-                <input type="file" name="files[]" id="filer_input" multiple="multiple">
-            </form>
-          </div>
-          <div class="modal-footer">
-            <div class="pull-xs-right">
-              <button type="button" id="close-uploader" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <form id="login">
-            <div class="modal-body"> -->
-              <!-- <div class="md-form">
-                <i class="fa fa-envelope prefix grey-text"> </i><label>Username</label>
-                <input type="text" id="username" class="form-control">
-              </div>
-              <div class="md-form">
-                <i class="fa fa-lock prefix grey-text"> </i>
-                <label>Password</label>
-                <input type="password" id="password" class="form-control">
-              </div>
-            </div>
-            <div class="modal-footer">
-              <div class="pull-xs-right">
-                <button type="button" id="close-login" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="submit" id="send-login" class="btn btn-secondary">Login</button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div> -->
-
-
-
-
-
   
+  
+  <script>
+    // TO DO: cat_dict, wont always same as annoatte.js, change TagSelectorWidget accordingly
+    // make async all
+  
+    const imageUploadbaseURL = 'http://203.159.29.187:5000/api/image';
+    let upload_dataset_id = 105;
+    let uploaded_images;
+    let images_annotations = {};
+    var selected_anno;
+    const MODEL_URL = 'tfjs/model.json'
+  
+    async function save_annotations_to_array(i){
+      annotations_in_osd = selected_anno.getAnnotations();
+      let annotations_in_osd_to_array = []
+      images_annotations[i] = annotations_in_osd
+      document.getElementById('labelcount_'+String(i)).innerHTML = images_annotations[i].length
+      document.getElementById('osd-annoatate').innerHTML = ''
+      document.getElementById("osd-annoatate-container").style.display = "none";
+      // annotations_in_osd.forEach(annotation => {
+      // })
+    }
+  
+    async function run_on_selected(i, image) {
+      // console.log(uploaded_images.files[i].name) 
+      confirm("Do you prefer pLitter suggestions?")
+      const model = await tf.automl.loadObjectDetection(MODEL_URL)    
+      // console.log(image.width)
+      // console.log(image.height)
+      // console.log(image.complete)
+      // console.log(image)
+      const options = {score: 0.2, iou: 0.5, topk: 20};
+      const predictions = await model.detect(image, options);
+      console.log(predictions)
+      var annotations_format = []
+      predictions.forEach(prediction => {
+        const {box, label, score} = prediction;
+        const {left, top, width, height} = box;
+        var anno_dict = {}
+        anno_dict["type"] = "Annotation"
+        anno_dict["body"] = []
+        anno_dict_body = {}
+        anno_dict_body["type"] =  "TextualBody"
+        anno_dict_body["purpose"] = "tagging"
+        let label_string = label.replace(/(\r\n|\n|\r)/gm,"");
+        anno_dict_body["value"] = label_string
+        console.log(anno_dict_body["value"])
+        anno_dict["body"].push(anno_dict_body)
+        anno_dict["target"] = {}
+        anno_dict["target"]["source"] = image.src,
+        anno_dict["target"]["selector"] = {}
+        anno_dict["target"]["selector"]["type"] = "FragmentSelector"
+        anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
+        anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(left)+","+String(top)+","+String(width)+","+String(height)
+        anno_dict["@context"] = ""
+        anno_dict["id"] = '_' + Math.random().toString(36).substr(2, 9);
+        annotations_format.push(anno_dict)
+      })
+      selected_anno.setAnnotations(annotations_format)
+  
+      console.log(image.width)
+      console.log(image.height)
+  
+    }
+  
+    function labelThis(i){
+      console.log(i)
+      document.getElementById('osd-annoatate').innerHTML = ''
+      document.getElementById("osd-annoatate-container").style.display = "";
+      const image_url = URL.createObjectURL(uploaded_images.files[i])
+      var viewer = OpenSeadragon({
+        id: "osd-annoatate",
+        prefixUrl: "./icons/openseadragon/",
+        tileSources: {
+          type: "image",
+          url: image_url
+        },
+        gestureSettingsTouch: {
+          pinchRotate: true
+        }
+      });
+  
+      selected_anno = OpenSeadragon.Annotorious(viewer, {
+        locale: 'auto',
+        allowEmpty: true,
+        widgets: [ TagSelectorWidget ]
+      });
+  
+      viewer.addHandler('open', () => {
+        let saveButton = new OpenSeadragon.Button({
+          tooltip: 'Save',
+          srcRest: `./icons/openseadragon/save.png`,
+          srcGroup: `./icons/openseadragon/save.png`,
+          srcHover: `./icons/openseadragon/save.png`,
+          srcDown: `./icons/openseadragon/save.png`,
+          onClick: () => {console.log('saving'); save_annotations_to_array(i);},
+        });
+        viewer.addControl(saveButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+      });
+  
+      const image = new Image();
+      image.id = "image-dummy"
+      image.onload = () => run_on_selected(i, image);
+      document.getElementById("image-dummy-display").append(image)
+      image.src = URL.createObjectURL(uploaded_images.files[i])
+      // document.getElementById("image-dummy-display").style.display = '';
+  
+      // initialize osd-annotorius
+      // img src with i
+    }
+  
+    function uploadThis(id){
+      let image_id = NaN;
+      console.log(id)
+      if(images_annotations[id].length == 0){
+        alert("Please add labels to the image")
+      }
+      else{
+        let imageFormData = new FormData();
+        imageFormData.append("image", uploaded_images.files[id]);
+        imageFormData.append("dataset_id", upload_dataset_id);
+  
+        axios.post(`${imageUploadbaseURL}/`, imageFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          },
+          onUploadProgress: function(progressEvent) {
+            var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            // console.log(percentCompleted)
+            // progress_bar_${i}
+            document.getElementById('progress_bar_'+String(id)).style.width = percentCompleted;
+          }
+        })
+        .then(response => {
+          image_id = response.data
+          // let image_id = response.data.id;
+          // console.log(image_id);
+  
+          if(typeof image_id === 'number'){
+            console.log("uploading annotations", image_id);
+            var annotations = images_annotations[id]
+            annotations.forEach(function(ann) {
+              if(ann.target.selector.type === 'FragmentSelector'){
+                var is_it_bbox = true
+                var value = ann.target.selector.value
+                var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+                var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+                var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                console.log(x, y, w, h, cat_id, ann.id)
+                var box = [x, y, w, h]
+                var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+              }
+              else if(ann.target.selector.type === "SvgSelector"){
+                var is_it_bbox = false
+                console.log("svg")
+                var value = ann.target.selector.value
+                var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                var sep_coords = coords.split(' ')
+                var flat_coords = []
+                sep_coords.forEach(sep_coord => {
+                  var temp_cord = sep_coord.split(',').map(i=>Number(i))
+                  flat_coords = flat_coords.concat(temp_cord)
+                });
+                var xs = []
+                var ys = []
+                for (i = 0; i < flat_coords.length; i++) {
+                  if(i%2 === 0){
+                    xs.push(flat_coords[i])
+                  }
+                  else{
+                    ys.push(flat_coords[i])
+                  }
+                }
+                var min_x = Math.min(...xs), max_x = Math.max(...xs)
+                var min_y = Math.min(...ys), max_y = Math.max(...ys)
+                var w = max_x-min_x
+                var h = max_y-min_y
+                var box = [min_x, min_y, w, h]
+                var seg = [flat_coords]
+                console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
+              }
+              else{
+                console.log("type error")
+                return;
+              }
+              fetch(base_link+"/api/annotation/", {
+                "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-US,en;q=0.9",
+                "content-type": "application/json;charset=UTF-8"
+                },
+                "referrer": base_link+"/",
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": JSON.stringify({
+                  image_id: image_id,
+                  category_id: cat_id,
+                  isbbox: is_it_bbox,
+                  segmentation: seg,
+                  bbox: box,
+                }),
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+              })
+              .then(ann_response => ann_response.json())
+              .then(ann_data => console.log(ann_data))
+              .catch(ann_error => console.log(ann_error))
+            })
+            console.log("closing foreach");
+            document.getElementById("uploaded_images_"+String(id)).remove();
+            $("#recenet-uploads-table").find('tbody')
+            .append($(`
+              <tr class="template-upload" id="recent_image_${image_id}">
+                <td>
+                  <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[id])}"/></span>
+                </td>
+                <td>
+                  <p><span class="name">${uploaded_images.files[id].name}</span>
+                  <span class="size">${(uploaded_images.files[id].size/(1024*1024)).toFixed(2)} MB</span>
+                  <span class="size">Labels:<div>${annotations.length}</div></span></p>
+                </td>
+              </tr>`)
+            )
+          }
+        })
+        .catch(error => {
+          alert("Failed:", error.message);
+        });
+        // first upload the image, get the image image_id
+        // then upload annotations using image_id
+      }
+    }
+  
+    function cancelThis(i){
+      console.log(i)
+      $('#uploaded_images_'+String(i)).remove();
+    }
+  
+  function addFiles(){
+    alert("adding")
+    uploaded_images = document.getElementById("images");
+    uploaded_images_annotations = {};
+    $("#uploaded_images").find('tbody').empty();
+    for (var i = 0; i < uploaded_images.files.length; i++) {
+        console.log(i)
+      images_annotations[i] = []
+      // console.log(uploaded_images.files[i].name)
+      $("#uploaded_images").find('tbody')
+        .append($(`
+          <tr class="" id="uploaded_images_${i}">
+            <td>
+              <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
+            </td>
+            <td>
+              <span class="name">${uploaded_images.files[i].name}</span>
+              <span class="size">${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
+              <span class="size">Labels:<div style="inline" id="labelcount_${i}">0</div></span>
+              <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+            </td>
+            <td>
+              <button class="btn btn-primary edit" data-index="0" onclick="labelThis(${i})">
+                <i class="fa fa-edit"></i>
+                <span>Label</span>
+              </button>
+              <button class="btn btn-success start" onclick="uploadThis(${i})">
+                <i class="fa fa-upload"></i>
+                <span>Upload</span>
+              </button>
+              <button class="btn btn-danger delete" onclick="cancelThis(${i})">
+                <i class="fa fa-trash-alt"></i>
+                <span>Delete</span>
+              </button>
+            </td>
+          </tr>`)
+        )  
+      // .append($('<tr>')
+        //   .append($('<td>')
+        //     .append($('<img>')
+        //       .attr('src', URL.createObjectURL(uploaded_images.files[i]))
+        //       .attr('style', "width:150px")
+        //       .text('Image cell')
+        //     )
+        //   )
+        //   .append($('<td>')
+        //     .append($(`<span>${uploaded_images.files[i].name}</span>`))
+        //     .append($('<div>')
+        //       .attr('class', 'progressbar')
+        //     )
+        //   )
+        //   .append($('<td>')
+        //     .append('<button class="btn btn-success edit" data-index="0"> <i class="glyphicon glyphicon-edit"></i><span>Label</span></button>')
+        //     .append('<button class="btn btn-primary start"><i class="glyphicon glyphicon-upload"></i><span>Upload</span></button>')
+        //     .append('<button class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>Cancel</span></button>')
+        //   )
+  
+      // );
+    }
+  }
+  
+  
+    $('.fileupload').fileupload({
+               dataType: 'json',
+               add: function (e, data) {
+                   var picker = $(this).data('link');
+                   $(picker).children('span').html('check');
+                   data.submit();
+                   /*
+                   data.context = $('<button/>').text('Upload')
+                       .appendTo(document.body)
+                       .click(function () {
+                           data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+                           data.submit();
+                           });
+                    */
+               },
+               done: function (e, data) {
+                   //data.context.text('Upload finished.');            
+                   $.each(data.result.files, function (index, file) {
+                       $('<p/>').text(file.name).appendTo(document.body);
+                   });
+               },
+               progressall: function (e, data) {
+                   var progress = parseInt(data.loaded / data.total * 100, 10);
+                  //  $('#progress .bar').css(
+                  //      'width',
+                  //      progress + '%'
+                  //  );
+                   $('#progress .bar').progressbar({
+                        value: progress
+                   });
+                   $('#progress .bar').append(progress);
+               }   
+           });
+  
+      var loadFile = function(event) {
+      var reader = new FileReader();
+      reader.onload = function(){
+        var output = new Image();
+        output.src = reader.result;
+        EXIF.getData(output, function() {
+          // console.log("Aa");
+          // var make = EXIF.getTag(this, "Make");
+          // var model = EXIF.getTag(this, "Model");
+          // var data = EXIF.getAllTags(this);
+          // console.log(make, model, allMetaData);
+  
+          var exifLong = EXIF.getTag(this, "GPSLongitude");
+          // console.log(exifLong); 
+          var exifLongRef = EXIF.getTag(this, "GPSLongitudeRef");
+          // console.log(exifLongRef);
+          var exifLat = EXIF.getTag(this, "GPSLatitude"); 
+          // console.log(exifLat);
+          var exifLatRef = EXIF.getTag(this, "GPSLatitudeRef"); 
+          // console.log(exifLatRef);
+  
+          if (exifLatRef == "S") {
+          var latitude = (exifLat[0]*-1) + (( (exifLat[1]*-60) + (exifLat[2]*-1) ) / 3600);						
+          } else {
+          var latitude = exifLat[0] + (( (exifLat[1]*60) + exifLat[2] ) / 3600);
+          }
+          console.log(latitude);
+  
+          if (exifLongRef == "W") {
+          var longitude = (exifLong[0]*-1) + (( (exifLong[1]*-60) + (exifLong[2]*-1) ) / 3600);						
+          } else {
+          var longitude = exifLong[0] + (( (exifLong[1]*60) + exifLong[2] ) / 3600);
+          }
+          console.log(longitude);
+      });
+      };
+      reader.readAsDataURL(event.files[0]);
+    };
+  
+  </script>

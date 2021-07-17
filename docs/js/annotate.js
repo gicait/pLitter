@@ -1,22 +1,8 @@
+//to do: mobile friendly and full screen mode, youtube player example
+
 const base_link = "https://annotator.ait.ac.th"
 const dataset_id = 81
 
-// const base_link = "http://34.122.19.209"
-// const dataset_id = 1
-
-// const base_link = "http://34.93.224.190"
-// const dataset_id = 66
-
-// to do @nischal
-// user sigin
-// live count of users
-// progressbar (images annotated/total images(dataset size))
-// flag image
-// disable buttons when image is loading
-// exit button (if leaving, update documents)
-// before close, unlock image
-
-// might need reject button (if user rejects, it should not load again, how? maintain reject record in user model or image model? @nischal)
 var rejectedList = [] // when rejected add image_id to this list, on load_random,, i will send this request
 var raisedList = []
 var submittedList = []
@@ -35,8 +21,6 @@ var annotatorSubmitted = 0
 var annotatorRejected = 0
 var annotatorRaised = 0
 
-// move to try catch method for all fetch calls (better with async/await)
-// load category dict from dataset, not defining, ok? add to select list from dictionaly
 var cat_dict = {}
 
 fetch(base_link+"/api/dataset/"+String(dataset_id)+"/cats", {
@@ -59,29 +43,6 @@ fetch(base_link+"/api/dataset/"+String(dataset_id)+"/cats", {
 })
 .catch(error => console.log(error))
 
-//   var cat_dict = {
-//     "Plastic":1,
-//     "Pile":2,
-//     "Trash Bin":3,
-//     "Face Mask":4,
-//     "wrapper/sachet":5,
-//     "container":6,
-//     "cup":7,
-//     "plate":8,
-//     "cutleries":9,
-//     "beverage bottle":10,
-//     "other bottle":11,
-//     "bag":12,
-//     "foil":13,
-//     "fishing gear":14,
-//     "rope":15,
-//     "diaper":16,
-//     "textile":17, 
-//     "hand glove":18,
-//     "protective gears":19,
-//     "other":20
-//   };
-
 function popup_label(ann){
     console.log("mouse enter", ann)
     let id = ann.id
@@ -103,17 +64,6 @@ function popup_label(ann){
     text.setAttribute('style', 'font-size: 20px; fill: white; text-anchor: middle;')
     text.textContent = `${label}`;
 
-    // let textBBox = text.getBBox();
-    // console.log(textBBox)
-    // let textRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    // textRect.setAttribute('x', x);
-    // textRect.setAttribute('y', y);
-    // textRect.setAttribute('width', 10);
-    // textRect.setAttribute('height', 5);
-    // textRect.setAttribute('class', 'label-rect');
-    // textRect.setAttribute('id', 'label-rect');
-    // ele.append(textRect);
-    // console.log(textRect)
     ele.append(text);
 }
 
@@ -172,7 +122,6 @@ let TagSelectorWidget = function (args) {
 
 //   fetches annotations, converts to Annotorius format and sets
 async function get_annots_from_coco(ran_anno, im_id){
-    // alert("yeee")
     await fetch(base_link+"/api/annotator/data/"+String(im_id), {
         "headers": {
             "accept": "application/json",
@@ -239,43 +188,6 @@ async function get_annots_from_coco(ran_anno, im_id){
     })
     .catch(error => console.log(error))
 }
-
-// function load_buttons(){
-//     let reloadButton = document.createElement("button");
-//             reloadButton.id = 'button-reload';
-//             reloadButton.className = "a9s-toolbar-btn";
-//             reloadButton.innerHTML = `
-//                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-//                     <path d="M26.47 9.53C24.3 7.35 21.32 6 18 6 11.37 6 6 11.37 6 18s5.37 12 12 12c5.94 0 10.85-4.33 11.81-10h-3.04c-.91 4.01-4.49 7-8.77 7-4.97 0-9-4.03-9-9s4.03-9 9-9c2.49 0 4.71 1.03 6.34 2.66L20 16h10V6l-3.53 3.53z" />
-//                 </svg>`;
-//             reloadButton.addEventListener('click', load_random);
-
-//             let saveButton = document.createElement("button");
-//             saveButton.className = "a9s-toolbar-btn";
-//             saveButton.innerHTML = `
-//                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-//                     <path d="M13.5 24.26L7.24 18l-2.12 2.12 8.38 8.38 18-18-2.12-2.12z" />
-//                 </svg>`
-//             saveButton.addEventListener('click', function () { save_annots_to_coco(image_id); });
-
-//             let rejectButton = document.createElement("button");
-//             rejectButton.className = "a9s-toolbar-btn";
-//             rejectButton.innerHTML = `
-//                 <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
-//                     <path d="M18 3C9.71 3 3 9.71 3 18s6.71 15 15 15 15-6.71 15-15S26.29 3 18 3zm7.5 20.38l-2.12 2.12L18 20.12l-5.38 5.38-2.12-2.12L15.88 18l-5.38-5.38 2.12-2.12L18 15.88l5.38-5.38 2.12 2.12L20.12 18l5.38 5.38z"/>
-//                 </svg> `;
-//             // TODO: persist the rejected list with cookies
-//             rejectButton.addEventListener('click', function () { rejectedList.push(image_id) });
-
-//             document.getElementById('toolbar').prepend(saveButton)
-//             document.getElementById('toolbar').prepend(reloadButton)
-//             document.getElementById('toolbar').prepend(rejectButton)
-
-//             // document.getElementsByClassName('a9s-toolbar')[0].prepend(saveButton);
-//             // document.getElementsByClassName('a9s-toolbar')[0].prepend(reloadButton);
-//             // document.getElementsByClassName('a9s-toolbar')[0].prepend(rejectButton);
-// }
-
 
 function raise_image(image_id){
     // alert("im working")
@@ -661,6 +573,8 @@ async function save_annots_to_coco(im_id){
         // if annotatation is newly created
         // id is string, then send post
         // else id is int, send put
+
+        // "Authorization": "token from cookies"
         if (typeof ann.id === 'number'){
             fetch(base_link+"/api/annotation/"+String(ann.id), {
                 "headers": {
@@ -839,37 +753,3 @@ $(document).ready(function(){
     // load_random();
     // get_dataset_stats()
 })
-
-// window.onbeforeunload = function () {
-//     if(confirm("Are you sure that you want to leave this page?")){
-//         if( !!present_image_id & image_annotating_status === true){
-//             console.log("image skipping without annotating")
-//             fetch(base_link+"/api/image/"+String(present_image_id), {
-//                 "headers": {
-//                 "accept": "application/json, text/plain, */*",
-//                 "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
-//             },
-//             "referrer": base_link+"/",
-//             "referrerPolicy": "strict-origin-when-cross-origin",
-//             "body": JSON.stringify({
-//                 cs_annotating: false,
-//                 is_annoatations_added: false,
-//             }),
-//             "method": "PUT",
-//             "mode": "cors",
-//             "credentials": "include"
-//             })
-//             .then(response => response.json())
-//             .then(data => {
-//                 console.log(data)
-//                 present_image_id = null
-//             })
-//             .catch(error => console.log(error))
-//             image_annotating_status = false
-//         }
-//         return true
-//     }
-//     else{
-//         return false
-//     }
-// }

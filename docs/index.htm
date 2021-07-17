@@ -1,174 +1,101 @@
 <head>
-  <meta charset="UTF-8">
-  <title>pLItter - Plastic Litter Identification</title>
-  <link rel="icon" href="favicon.ico" type="image/gif" sizes="16x16">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-  <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/jquery.dataTables.min.css" />
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/dataTables.buttons.min.js"></script>
-  <script src="https://cdn.datatables.net/buttons/1.4.0/js/buttons.html5.min.js"></script>
-  <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-AMS_HTML'></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.32/build/pdfmake.min.js"></script>
-  <script src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.32/build/vfs_fonts.js"></script>
-  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.4.0/css/buttons.dataTables.min.css" />
+    <meta charset="UTF-8">
+    <title>pLItter - Plastic Litter Identification</title>
+    <link rel="icon" href="favicon.ico" type="image/gif" sizes="16x16">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_self">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">  
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet" type="text/css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl/dist/tf-automl.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type="text/javascript" src="js/annotorious.min.js"></script>
+    <script type="text/javascript" src="js/openseadragon/openseadragon.2.4.2.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@latest/dist/annotorious.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@latest/dist/openseadragon-annotorious.min.js"></script>
+    
+    <script src="js/annotate.js?v=81"></script>
 
-  <!-- <link rel="stylesheet" href="https://cocodataset.org/other/cocostyles.css" /> -->
-  <link rel="stylesheet" href="css/cocostyles.css" />
+    <link rel="stylesheet" href="css/blueimp-gallery.min.css"/>
+    <link rel="stylesheet" href="css/jquery.fileupload.css"/>
+    <link rel="stylesheet" href="css/jquery.fileupload-ui.css" />
+    <script src="js/jquery.ui.widget.js"></script>
+    <script src="js/jquery.fileupload.js"></script>
+    
+    <script src="js/navigation.js"></script>
+    <script src="js/authentication.js"></script>
 
-  <link rel="stylesheet" href="css/blueimp-gallery.min.css"/>
-  <link rel="stylesheet" href="css/jquery.fileupload.css"/>
-  <link rel="stylesheet" href="css/jquery.fileupload-ui.css" />
+    <!-- <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script> -->
+    <!-- <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script> -->
+    <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
 
-  <script src="js/scripts.js"></script>
-  <!-- <script src="js/authentication.js"></script> -->
-  <script src="js/annotate.js?v=81"></script>
-  <script src="js/upload.js"></script>
-  <script src="js/jquery.ui.widget.js"></script>
-  <script src="js/jquery.fileupload.js"></script>
-  <link href="css/annotorious.min.css" rel="stylesheet">
-  <script type="text/javascript" src="js/annotorious.min.js"></script>
-  <script type="text/javascript" src="js/svg-zoom.js"></script>
-
-
-
-<script type="text/javascript" src="js/openseadragon/openseadragon.2.4.2.min.js"></script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@latest/dist/annotorious.min.css">
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-openseadragon@latest/dist/openseadragon-annotorious.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@recogito/annotorious-toolbar@latest/dist/annotorious-toolbar.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  
-
-  <!-- <script>googleAnalytics();</script> -->
-
-  <!-- <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
-  crossorigin=""/>
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
-   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
-   crossorigin=""></script> -->
-   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-   <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/plugins/leaflet-heatmap/leaflet-heatmap.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
-
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl/dist/tf-automl.min.js"></script>
-
-<!-- <script src="https://unpkg.com/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script> -->
-<!-- <script src="https://unpkg.com/@tensorflow/tfjs-automl"></script> -->
-<script src="js/model.js?v=2222"></script>
-
-<!-- <script src="js/map.js"></script> -->
-
+    <link rel="stylesheet" href="css/plitterstyles.css" />
+    <style>.abs-center-x {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }</style>
   <script>$(function(){datasetTabNav()});</script>
 
-   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://unpkg.com/mapillary-js@4.0.0/dist/mapillary.js"></script>
+    <link
+        href="https://unpkg.com/mapillary-js@4.0.0/dist/mapillary.css"
+        rel="stylesheet"
+    />
 
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400&display=swap" rel="stylesheet">
-  <style>
-    html, body {
-      font-family: 'Open Sans', sans-serif;
-    }
-  </style>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet" type="text/css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
 </head>
-
 <body>
-  <nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>                        
-        </button>
-        <a class="navbar-brand" href="#"><img src="icons/plitter.png" width="100" height="40" class="d-inline-block" alt="pLitter"></a>
-      </div>
-      <div class="collapse navbar-collapse" id="myNavbar">
-        <ul class="nav navbar-nav">
-          <li class="active"><a href="#home">Home</a></li>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Dataset <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#">Overview</a></li>
-              <li><a href="#download">Download</a></li>
-              <li><a href="#">Terms of Use</a></li>
+    <nav class="navbar navbar-dark navbar-expand bg-primary justify-content-between">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#"><img src="icons/plitter.png" width="100" height="40" class="d-inline-block" alt="pLitter"></a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="nav-item text-center">
+                    <a href="#home" class="nav-link" data-toggle="tab"><span class="fa fa-home"></span><span class="d-none d-sm-inline d-xl-block px-1">Home</span></a>
+                </li>
+                <li class="nav-item text-center">
+                    <a href="#dataset" class="nav-link" data-toggle="tab"><span class="fa fa-database"></span><span class="d-xl-block d-none"></span><span class="d-none d-sm-inline px-1">Dataset</span> </a>
+                </li>
+                <li class="nav-item text-center">
+                    <a href="#tryit" class="nav-link" data-toggle="tab"><span class="fa fa-snowflake"></span><span class="d-none d-sm-inline d-xl-block px-1">Try demo</span></a>
+                </li>
+                <li class="nav-item text-center">
+                    <a href="#map" class="nav-link" data-toggle="tab"><span class="fa fa-map"></span><span class="d-none d-sm-inline d-xl-block px-1">Map</span></a>
+                </li>
+                <li class="nav-item dropdown text-center">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-hands-helping"></span><span class="d-xl-block d-none"></span><span class="d-none d-sm-inline px-1">Contribute</span> </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="#annotate">Annotate</a>
+                        <a class="dropdown-item" href="#upload">Upload</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#leaderboard">Leaderboard</a>
+                    </div>
+                </li>
             </ul>
-          </li>
-          <li><a href="#demo">Demo</a></li>
-          <li><a href="#maps">Map</a></li>
-          <li class="dropdown">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#">Contribute <span class="caret"></span></a>
-            <ul class="dropdown-menu">
-              <li><a href="#upload">Upload</a></li>
-              <li><a href="#annotate">Annotate</a></li>
-              <li><a href="#leaderboard">Leaderboard</a></li>
+            <ul class="nav navbar-nav">
+                <li class="nav-item text-center" id="signup-btn">
+                    <a href="#user" class="nav-link" data-toggle=""><span class="fa fa-user"></span><span id="signin" class="d-none d-sm-inline d-xl-block px-1">Sign Up or Log In</span></a>
+                </li>
+                <!-- <li class="nav-item text-center" id="login-btn">
+                    <a href="#" class="nav-link" data-toggle="modal" data-target="#"><span class="fa fa-sign-in"></span><span class="d-none d-sm-inline d-xl-block px-1">Log In</span></a>
+                </li> -->
             </ul>
-          </li>
-        </ul>
-        <!-- <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-        </ul> -->
-      </div>
+        </div>
+    </nav>
+    <div id="content" class="tab-content" >
+        <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
     </div>
-  </nav>
-  <!-- <div id="header">
-    <div id="headerBody">
-      <img id="headerImage" src="icons/plitter.png" alt="Logo" />
-      <div id="headerTabs">
-        <ul class="nav nav-tabs" style="float:right">
-          <li class="active">
-            <div class="nav-tab-header"></div>
-            <a data-toggle="tab" href="#home">Home</a>
-          </li>
-          <li class="dropdown">
-            <div class="nav-tab-header"></div>
-            <a class="dropdown-toggle" data-toggle="dropdown">Dataset<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a data-toggle="tab" href="#overview"><i class="glyphicon glyphicon-info-sign"></i> Overview</a></li>
-              <li><a data-toggle="tab" href="#download"><i class="glyphicon glyphicon-download"></i> Download</a></li>
-              <li><a data-toggle="tab" href="#termsofuse"><i class="glyphicon glyphicon-list-alt"></i> Terms of Use</a></li>
-            </ul>
-          </li>
-          <li>
-            <div class="nav-tab-header"></div>
-            <a data-toggle="tab" href="#demo">Demo</a>
-          </li>
-          <li>
-            <div class="nav-tab-header"></div>
-            <a data-toggle="tab" href="#maps">Map</a>
-          </li>
-          <li class="dropdown">
-            <div class="nav-tab-header"></div>
-            <a class="dropdown-toggle" data-toggle="dropdown">Contribute<b class="caret"></b></a>
-            <ul class="dropdown-menu">
-              <li><a data-toggle="tab" href="#upload"><i class="glyphicon glyphicon-picture"></i> Upload</a></li>
-              <li><a data-toggle="tab" href="#annotate"><i class="glyphicon glyphicon-pencil"></i> Annotate</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div> -->
-  <div id="content" class="tab-content" >
-      <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
-  </div>
-  <div id="footer"><div>
-    <a href="https://github.com/gicait/pLitter.git" target="_blank">Find us on GitHub</a>
-    <a href="#termsofuse">Terms of Use</a>
-  </div></div>
+    <!-- <div id="footer">
+        <div>
+            <a href="https://github.com/gicait/pLitter.git" target="_blank">Find us on GitHub</a>
+            <a href="#termsofuse">Terms of Use</a>
+        </div>
+    </div> -->
 </body>

@@ -1,0 +1,16 @@
+<!-- 
+  1. clustering, refer to openlittermap
+  2. we can use mapillary tool for display or can start with basic iamge viewer
+-->
+<div id="mly" style="width: 400px; height: 300px;"></div>
+
+<script>
+    var {Viewer} = mapillary;
+  
+    var viewer = new Viewer({
+      accessToken: 'MLY|4491566877530256|38d6d134f75238f5923e7d59878e36c9',
+      container: 'mly', // the ID of our container defined in the HTML body
+      imageId: '498763468214164',
+    });
+  </script>
+<!-- mapillary access token MLY|4491566877530256|38d6d134f75238f5923e7d59878e36c9 -->

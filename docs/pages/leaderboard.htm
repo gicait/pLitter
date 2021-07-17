@@ -1,25 +1,28 @@
-<h1>Contribution Dashboard</h1>
-<table>
-    <tr><td>Images</td><td>Annotations</td><td>Volunteers</td></tr>
-    <tr>
-        <td>Uploaded: -- <br> Annotations: -- <br></td>
-        <td>Images annotated: -- <br> New: -- <br> Edited: <br> Deleted: </td>
-        <td> Unique participators: </td>
-    </tr>
+<div class="container">
+    <h1>Total Contribution</h1>
+    <div class="row" style="background-color: rgb(130, 223, 223); padding: 10;">
+        <div class="col-md-4"><strong> Images: <span id="total_image_cont_count"></span></strong></div>
+        <div class="col-md-4"><strong> Annotations: <span id="total_annotation_cont_count"></span></strong></div>
+        <div class="col-md-4"><strong> Participants: <span id="total_participant_cont_count"></span></strong></div>
+    </div>
+</div>
 
-</table>
+<hr>
 
-
-<h2>
-    Leaderboard: Image Contribution from citizens
-</h2>
-
-<table>
-    <tr><td>participant</td><td>images</td><td>annotations</td><td>points</td></tr>
-</table>
-
-
-<h2>Leaderboard: Annotation contribution from participants</h2>
-<table>
-    <tr><td>participant</td><td>annotations <br> added <br> edited </td><td>images</td><td>points</td></tr>
-</table>
+<div class="container">
+    <h1>Leaderboards</h1>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-stripped">
+                <tr style="background-color: rgb(130, 223, 223);"> <th>Image Uploads</th></tr>
+                <tr style="background-color: rgb(130, 223, 223);"><th>Participant name</th><th>Images</th><th>Annotations</th><th>Points</th></tr>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <table class="table table-stripped">
+                <tr style="background-color: rgb(130, 223, 223);"> <th colspan="2">Annotation contribution</th></tr>
+                <tr style="background-color: rgb(130, 223, 223);"><th>Participant name</th><th>Annotations</th><th>Newly added</th><th>Edited</th><th>Images</th><th>points</th></tr>
+            </table>
+        </div>
+    </div>
+</div>

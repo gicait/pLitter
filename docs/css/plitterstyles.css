@@ -1,0 +1,21 @@
+#content {
+    margin:auto;
+    width:90%;
+    /* padding-left:20px; */
+}
+.wide {
+    width:100%;
+}
+ul.noBullet {
+    list-style-type:none;
+    padding:0;
+    margin:0;
+}
+li.checkBullet {
+    background:url(../icons/iconCheck.gif) no-repeat left top;
+    height:22px;
+    padding-left:38px;
+}
+.fontBold {
+    font-weight:700;
+}
