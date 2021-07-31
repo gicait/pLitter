@@ -127,7 +127,7 @@ class Video:
                 for row in reader:
                     gps_list.append(row)
         
-        if not len(gps_list >= 3):
+        if not len(gps_list) >= 3:
             return 'Not enough gps data'
 
         vidcap = cv2.VideoCapture(self.file_name)
