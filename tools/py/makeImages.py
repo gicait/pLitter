@@ -147,7 +147,7 @@ class Video:
                 print(error)
                 
             gps_tag_filename = os.path.join(abs_folder_name, folder_name+'.csv') 
-            with open(gps_tag_filename, 'w') as gps_tag_file:
+            with open(gps_tag_filename, 'w', newline='') as gps_tag_file:
                 gps_tag_writer = csv.writer(gps_tag_file, delimiter=',')
 
                 first_frame = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
@@ -163,6 +163,8 @@ class Video:
                 match_cnt1 = 100
                 match_cnt2 = 100
                 for row in gps_list[2:]:
+                    if count % (skip+1) != 0:
+                        continue
                     pts = float(row[0])
                     vidcap.set(cv2.CAP_PROP_POS_MSEC,(pts))
                     success, frame2 = vidcap.read()
