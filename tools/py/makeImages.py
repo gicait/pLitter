@@ -164,6 +164,7 @@ class Video:
                 match_cnt2 = 100
                 for row in gps_list[2:]:
                     if count % (skip+1) != 0:
+                        print("skipping near")
                         continue
                     pts = float(row[0])
                     vidcap.set(cv2.CAP_PROP_POS_MSEC,(pts))
