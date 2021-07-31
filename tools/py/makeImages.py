@@ -119,7 +119,7 @@ class Video:
 
         vidcap.release()
     
-    def byGps(self, cnt_th=1, qlt_th=0.7, out_path=''):
+    def byGps(self, cnt_th=1, qlt_th=0.7, out_path='', skip=0):
         gps_list = []
         if not self.gps_file == '':
             with open(self.gps_file, 'r') as csvfile:
@@ -205,7 +205,7 @@ class Video:
                         match_cnt2 = 100
 
                 vidcap.release()
-        return abs_folder_name
+            return abs_folder_name
 
 
 
