@@ -26,46 +26,68 @@
 
 var markersById = {};
 
-function addImageToMap(map, imageUrl, xCoordinate, yCoordinate, imageId, prevId, nextId) {
+mymap.on('moveend', function(e) {
+  var images = getImagesAndClusters(mymap.getBounds());
+  images.forEach((image, index) => {
+    // check if image of cluster
+    if (image.hasOwnProperty("size")) {
+      addClusterToMap(mymap, image.x, image.y, size);
+    } else {
+      let prevId = images[index == 0 ? images.length - 1 : index - 1].id;
+      let nextId = images[index == images.length - 1 ? 0 : index + 1].id;
+
+      addImageToMap(mymap, image.x, image.y, image.id, prevId, nextId);
+    }
+  });
+});
+
+function addClusterToMap(map, xCoordinate, yCoordinate, size) {
+  var circle = L.circle([51.508, -0.11], {
+    color: 'red',
+    fillColor: '#f03',
+    fillOpacity: 0.5,
+    radius: 500
+  }).addTo(mymap);
+}
+
+function addImageToMap(map, xCoordinate, yCoordinate, imageId, prevId, nextId) {
   let marker = L.marker([xCoordinate, yCoordinate]).addTo(map);
   let popupHtml = `
-  <img src="${imageUrl}" style="max-width: 200px; max-height: 200px">
-  <span onclick="markersById[${prevId}].openPopup()">prev</span>
-  <span onclick="markersById[${nextId}].openPopup()">next</span>
+  <img src="${imageIdToUrl(imageId)}" style="max-width: 200px; max-height: 200px">
+  <span onclick="markersById['${prevId}'].openPopup()">prev</span>
+  <span onclick="markersById['${nextId}'].openPopup()">next</span>
   `;
   marker.bindPopup(popupHtml);
   markersById[imageId] = marker;
+
+  function imageIdToUrl(id) {
+    const BASE_URL = "https://images.unsplash.com/";
+    return BASE_URL + id;
+  }
 }
 
-var images = [
-  {
-    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
-    x: 51.3,
-    y: -0.09,
-    id: 0,
-    nextId: 1,
-    prevId: 2
-  },
-  {
-    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
-    x: 51.5,
-    y: -0.09,
-    id: 1,
-    nextId: 2,
-    prevId: 0
-  },
-  {
-    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
-    x: 51.6,
-    y: -0.09,
-    id: 2,
-    nextId: 0,
-    prevId: 1
-  },
-]
+function getImagesAndClusters(bounds) {
+  console.log(bounds._northEast);
+  console.log(bounds._southWest);
 
-images.forEach(image => {
-  addImageToMap(mymap, image.url, image.x, image.y, image.id, image.prevId, image.nextId);
-});
+  // TODO: make request to get list of images and clusters and replace the dummy code
+  return [
+    {
+      id: "photo-1592890278983-18616401d4ed?ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8bGl0dGVyfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+      x: 51.3,
+      y: -0.09,
+    },
+    {
+      id: "photo-1602262442764-c14f8db98045?ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8bGl0dGVyfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+      x: 51.5,
+      y: -0.09
+    },
+    {
+      id: "photo-1530587191325-3db32d826c18?ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8bGl0dGVyfGVufDB8fDB8fA%3D%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60",
+      x: 51.6,
+      y: -0.09
+    },
+  ];
+}
 
 </script>
