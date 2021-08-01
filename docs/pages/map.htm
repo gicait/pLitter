@@ -24,9 +24,10 @@
     accessToken: 'pk.eyJ1IjoibmlzY2hhbGIiLCJhIjoiY2tydDN2OWJzMWQ5YTJ0cGZuZDU4cXptcCJ9.93a5e6uSq2ta0ATUyhBZTw'
 }).addTo(mymap);
 
-var markersById = {};
+const MARKERS = L.markerClusterGroup();
+const MARKERS_BY_ID = {};
 
-mymap.on('moveend', function(e) {
+// mymap.on('moveend', function(e) {
   var images = getImagesAndClusters(mymap.getBounds());
   images.forEach((image, index) => {
     // check if image of cluster
@@ -39,7 +40,9 @@ mymap.on('moveend', function(e) {
       addImageToMap(mymap, image.x, image.y, image.id, prevId, nextId);
     }
   });
-});
+// });
+
+mymap.addLayer(MARKERS);
 
 function addClusterToMap(map, xCoordinate, yCoordinate, size) {
   var circle = L.circle([51.508, -0.11], {
@@ -52,13 +55,16 @@ function addClusterToMap(map, xCoordinate, yCoordinate, size) {
 
 function addImageToMap(map, xCoordinate, yCoordinate, imageId, prevId, nextId) {
   let marker = L.marker([xCoordinate, yCoordinate]).addTo(map);
+
   let popupHtml = `
   <img src="${imageIdToUrl(imageId)}" style="max-width: 200px; max-height: 200px">
   <span onclick="markersById['${prevId}'].openPopup()">prev</span>
   <span onclick="markersById['${nextId}'].openPopup()">next</span>
   `;
   marker.bindPopup(popupHtml);
-  markersById[imageId] = marker;
+
+  MARKERS.addLayer(marker);
+  MARKERS_BY_ID[imageId] = marker;
 
   function imageIdToUrl(id) {
     const BASE_URL = "https://images.unsplash.com/";
