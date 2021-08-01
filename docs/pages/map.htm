@@ -1,16 +1,71 @@
-<!-- 
-  1. clustering, refer to openlittermap
-  2. we can use mapillary tool for display or can start with basic iamge viewer
--->
-<div id="mly" style="width: 400px; height: 300px;"></div>
+<div id="map_container">
+
+  <div id="leaflet_map"> </div>
+
+</div>
+
+<style>
+  #leaflet_map{ height: 500px; }
+
+
+  #map_container {
+    margin: 50px;
+  }
+</style>
 
 <script>
-    var {Viewer} = mapillary;
-  
-    var viewer = new Viewer({
-      accessToken: 'MLY|4491566877530256|38d6d134f75238f5923e7d59878e36c9',
-      container: 'mly', // the ID of our container defined in the HTML body
-      imageId: '498763468214164',
-    });
-  </script>
-<!-- mapillary access token MLY|4491566877530256|38d6d134f75238f5923e7d59878e36c9 -->
+  var mymap = L.map("leaflet_map").setView([51.505, -0.09], 13);
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoibmlzY2hhbGIiLCJhIjoiY2tydDN2OWJzMWQ5YTJ0cGZuZDU4cXptcCJ9.93a5e6uSq2ta0ATUyhBZTw'
+}).addTo(mymap);
+
+var markersById = {};
+
+function addImageToMap(map, imageUrl, xCoordinate, yCoordinate, imageId, prevId, nextId) {
+  let marker = L.marker([xCoordinate, yCoordinate]).addTo(map);
+  let popupHtml = `
+  <img src="${imageUrl}" style="max-width: 200px; max-height: 200px">
+  <span onclick="markersById[${prevId}].openPopup()">prev</span>
+  <span onclick="markersById[${nextId}].openPopup()">next</span>
+  `;
+  marker.bindPopup(popupHtml);
+  markersById[imageId] = marker;
+}
+
+var images = [
+  {
+    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
+    x: 51.3,
+    y: -0.09,
+    id: 0,
+    nextId: 1,
+    prevId: 2
+  },
+  {
+    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
+    x: 51.5,
+    y: -0.09,
+    id: 1,
+    nextId: 2,
+    prevId: 0
+  },
+  {
+    url: "https://merriam-webster.com/assets/mw/images/article/art-wap-article-main/alt-5a5d0e2b603d9-4747-66ee7da2c393f47a431fc35f9dc87e98@1x.jpg",
+    x: 51.6,
+    y: -0.09,
+    id: 2,
+    nextId: 0,
+    prevId: 1
+  },
+]
+
+images.forEach(image => {
+  addImageToMap(mymap, image.url, image.x, image.y, image.id, image.prevId, image.nextId);
+});
+
+</script>
