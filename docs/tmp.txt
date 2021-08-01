@@ -1,0 +1,23 @@
+- send (x1,y1), (x2,y2), zoomLevel to server.
+- if zoomLevel >= MaxZoom
+-- then server returns list of images.
+- else
+-- return list of clusters
+
+- each each image response is (imageId, lat, long)
+- if bbox size > X then cluster
+-- set cluster distance based on X
+-- if cluster size is 1, show image
+
+{
+	// if single image
+	imageId: <int>,
+	lat: <double>,
+	long: <double>
+},
+{
+	// if a cluster
+	size: <number of images>,
+	lat: <double>,
+	long: <double>,
+}
