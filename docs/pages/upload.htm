@@ -1,6 +1,9 @@
 <!-- to do
   1. get geo tags and upload along image
 -->
+
+
+
 <div class="container" id="upload-section">
     <label for="images">Images (.png, .jpg, etc)</label>
     <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple accept="image/*" />
@@ -305,11 +308,12 @@
         .append($(`
           <tr class="" id="uploaded_images_${i}">
             <td>
-              <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
+              <span class="preview"><img id="uploaded_image_${i}" width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
             </td>
             <td>
               <span class="name">${uploaded_images.files[i].name}</span>
               <span class="size">${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
+              <span id="uploaded_images_${i}_gps">${getExif(i) }</span>
               <span class="size">Labels:<div style="inline" id="labelcount_${i}">0</div></span>
               <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
             </td>
@@ -354,6 +358,14 @@
   }
   
   
+  async function getExif(i) {
+    file = uploaded_images.files[i]
+    let exifData = await exifr.parse(file)
+    document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
+    // return exifData.longitude, exifData.latitude
+  }
+
+
     $('.fileupload').fileupload({
                dataType: 'json',
                add: function (e, data) {
