@@ -460,7 +460,7 @@ async function load_random(){
                 }
                 console.log('selectAnnotation', a);
                 // ran_anno.setDrawingTool('rect');
-                // ran_anno.setDrawingEnabled(true);
+                ran_anno.setDrawingEnabled(false);
             })
             
             ran_anno.on('cancelSelected', function(a) {

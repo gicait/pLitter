@@ -3,7 +3,7 @@
 -->
 <div class="container" id="upload-section">
     <label for="images">Images (.png, .jpg, etc)</label>
-    <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple/>
+    <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple accept="image/*" />
   </div>
   <br>
   <div id="osd-annoatate-container" class="container" style="width: 100%; height: 500px;display: none;">
@@ -112,6 +112,19 @@
         allowEmpty: true,
         widgets: [ TagSelectorWidget ]
       });
+
+      viewer.addHandler('open', () => {
+        let ignoreButton = new OpenSeadragon.Button({
+          tooltip: 'Pan',
+          srcRest: `./icons/openseadragon/pan-tool.png`,
+          srcGroup: `./icons/openseadragon/pan-tool.png`,
+          srcHover: `./icons/openseadragon/pan-tool.png`,
+          srcDown: `./icons/openseadragon/pan-tool.png`,
+          onClick: () => {selected_anno.setDrawingEnabled(false);},
+        //   onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
+        });
+        viewer.addControl(ignoreButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+      });
   
       viewer.addHandler('open', () => {
         let saveButton = new OpenSeadragon.Button({
@@ -124,7 +137,19 @@
         });
         viewer.addControl(saveButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
       });
-  
+
+      viewer.addHandler('open', () => {
+        let rectButton = new OpenSeadragon.Button({
+          tooltip: 'Draw',
+          srcRest: `./icons/openseadragon/rect.png`,
+          srcGroup: `./icons/openseadragon/rect.png`,
+          srcHover: `./icons/openseadragon/rect.png`,
+          srcDown: `./icons/openseadragon/rect.png`,
+          onClick: () => {console.log('rect'); selected_anno.setDrawingTool('rect'); selected_anno.setDrawingEnabled(true);},
+        });
+        viewer.addControl(rectButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+      });
+
       const image = new Image();
       image.id = "image-dummy"
       image.onload = () => run_on_selected(i, image);
