@@ -361,6 +361,7 @@
   async function getExif(i) {
     file = uploaded_images.files[i]
     let exifData = await exifr.parse(file)
+    console.log(exifData)
     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
     // return exifData.longitude, exifData.latitude
   }
