@@ -33,10 +33,11 @@
     // TO DO: cat_dict, wont always same as annoatte.js, change TagSelectorWidget accordingly
     // make async all
   
-    const imageUploadbaseURL = 'http://203.159.29.187:5000/api/image';
-    let upload_dataset_id = 105;
+    const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
+    let upload_dataset_id = 65;
     let uploaded_images;
     let images_annotations = {};
+    let uploaded_images_gps = {};
     var selected_anno;
     const MODEL_URL = 'tfjs/model.json'
   
@@ -174,10 +175,15 @@
         let imageFormData = new FormData();
         imageFormData.append("image", uploaded_images.files[id]);
         imageFormData.append("dataset_id", upload_dataset_id);
+        if( uploaded_images_gps[id] ) {
+          imageFormData.append("latitude", uploaded_images_gps[id]['lat']);
+          imageFormData.append("longitude", uploaded_images_gps[id]['long']);
+        }
   
         axios.post(`${imageUploadbaseURL}/`, imageFormData, {
           headers: {
             "Content-Type": "multipart/form-data"
+            // "Access-Control-Allow-Origin": "*"
           },
           onUploadProgress: function(progressEvent) {
             var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -299,6 +305,7 @@
     alert("adding")
     uploaded_images = document.getElementById("images");
     uploaded_images_annotations = {};
+    uploaded_images_gps = {};
     $("#uploaded_images").find('tbody').empty();
     for (var i = 0; i < uploaded_images.files.length; i++) {
         console.log(i)
@@ -357,87 +364,123 @@
     }
   }
   
+  function ConvertDMSToDD(degrees, minutes, seconds, direction) {
+    var dd = degrees + (minutes/60) + (seconds/360000);
+    if (direction == "S" || direction == "W") {
+      dd = dd * -1;
+    }
+    return dd;
+  }
   
   async function getExif(i) {
     file = uploaded_images.files[i]
-    let exifData = await exifr.parse(file)
-    alert(exifData)
-    document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var exif = EXIF.readFromBinaryFile(this.result);
+      if (exif.GPSLatitude || exif.GPSLongitude) {
+        var latDegree = exif.GPSLatitude[0].numerator;
+        var latMinute = exif.GPSLatitude[1].numerator;
+        var latSecond = exif.GPSLatitude[2].numerator;
+        var latDirection = exif.GPSLatitudeRef;
+
+        var latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection);
+        //console.log(latFinal);
+
+        // get longitude from exif data and calculate longitude decimal
+        var lonDegree = exif.GPSLongitude[0].numerator;
+        var lonMinute = exif.GPSLongitude[1].numerator;
+        var lonSecond = exif.GPSLongitude[2].numerator;
+        var lonDirection = exif.GPSLongitudeRef;
+
+        var lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection);
+        //console.log(lonFinal);
+        // console.log(exif);
+        uploaded_images_gps[i] = {"lat": latFinal, "long": lonFinal}
+        document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
+      }
+      // else {
+        // uploaded_images_gps[i] = {}
+      // }
+    }
+    reader.readAsArrayBuffer(file);
+
+    // uploaded_images_gps[i] = {"lat": exifData.latitude, "long": exifData.longitude} 
+    // document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
     // return exifData.longitude, exifData.latitude
   }
 
 
-    $('.fileupload').fileupload({
-               dataType: 'json',
-               add: function (e, data) {
-                   var picker = $(this).data('link');
-                   $(picker).children('span').html('check');
-                   data.submit();
-                   /*
-                   data.context = $('<button/>').text('Upload')
-                       .appendTo(document.body)
-                       .click(function () {
-                           data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-                           data.submit();
-                           });
-                    */
-               },
-               done: function (e, data) {
-                   //data.context.text('Upload finished.');            
-                   $.each(data.result.files, function (index, file) {
-                       $('<p/>').text(file.name).appendTo(document.body);
-                   });
-               },
-               progressall: function (e, data) {
-                   var progress = parseInt(data.loaded / data.total * 100, 10);
-                  //  $('#progress .bar').css(
-                  //      'width',
-                  //      progress + '%'
-                  //  );
-                   $('#progress .bar').progressbar({
-                        value: progress
-                   });
-                   $('#progress .bar').append(progress);
-               }   
-           });
+    // $('.fileupload').fileupload({
+    //            dataType: 'json',
+    //            add: function (e, data) {
+    //                var picker = $(this).data('link');
+    //                $(picker).children('span').html('check');
+    //                data.submit();
+    //                /*
+    //                data.context = $('<button/>').text('Upload')
+    //                    .appendTo(document.body)
+    //                    .click(function () {
+    //                        data.context = $('<p/>').text('Uploading...').replaceAll($(this));
+    //                        data.submit();
+    //                        });
+    //                 */
+    //            },
+    //            done: function (e, data) {
+    //                //data.context.text('Upload finished.');            
+    //                $.each(data.result.files, function (index, file) {
+    //                    $('<p/>').text(file.name).appendTo(document.body);
+    //                });
+    //            },
+    //            progressall: function (e, data) {
+    //                var progress = parseInt(data.loaded / data.total * 100, 10);
+    //               //  $('#progress .bar').css(
+    //               //      'width',
+    //               //      progress + '%'
+    //               //  );
+    //                $('#progress .bar').progressbar({
+    //                     value: progress
+    //                });
+    //                $('#progress .bar').append(progress);
+    //            }   
+    //        });
   
-      var loadFile = function(event) {
-      var reader = new FileReader();
-      reader.onload = function(){
-        var output = new Image();
-        output.src = reader.result;
-        EXIF.getData(output, function() {
-          // console.log("Aa");
-          // var make = EXIF.getTag(this, "Make");
-          // var model = EXIF.getTag(this, "Model");
-          // var data = EXIF.getAllTags(this);
-          // console.log(make, model, allMetaData);
+    //   var loadFile = function(event) {
+    //   var reader = new FileReader();
+    //   reader.onload = function(){
+    //     var output = new Image();
+    //     output.src = reader.result;
+    //     EXIF.getData(output, function() {
+    //       // console.log("Aa");
+    //       // var make = EXIF.getTag(this, "Make");
+    //       // var model = EXIF.getTag(this, "Model");
+    //       // var data = EXIF.getAllTags(this);
+    //       // console.log(make, model, allMetaData);
   
-          var exifLong = EXIF.getTag(this, "GPSLongitude");
-          // console.log(exifLong); 
-          var exifLongRef = EXIF.getTag(this, "GPSLongitudeRef");
-          // console.log(exifLongRef);
-          var exifLat = EXIF.getTag(this, "GPSLatitude"); 
-          // console.log(exifLat);
-          var exifLatRef = EXIF.getTag(this, "GPSLatitudeRef"); 
-          // console.log(exifLatRef);
+    //       var exifLong = EXIF.getTag(this, "GPSLongitude");
+    //       // console.log(exifLong); 
+    //       var exifLongRef = EXIF.getTag(this, "GPSLongitudeRef");
+    //       // console.log(exifLongRef);
+    //       var exifLat = EXIF.getTag(this, "GPSLatitude"); 
+    //       // console.log(exifLat);
+    //       var exifLatRef = EXIF.getTag(this, "GPSLatitudeRef"); 
+    //       // console.log(exifLatRef);
   
-          if (exifLatRef == "S") {
-          var latitude = (exifLat[0]*-1) + (( (exifLat[1]*-60) + (exifLat[2]*-1) ) / 3600);						
-          } else {
-          var latitude = exifLat[0] + (( (exifLat[1]*60) + exifLat[2] ) / 3600);
-          }
-          console.log(latitude);
+    //       if (exifLatRef == "S") {
+    //       var latitude = (exifLat[0]*-1) + (( (exifLat[1]*-60) + (exifLat[2]*-1) ) / 3600);						
+    //       } else {
+    //       var latitude = exifLat[0] + (( (exifLat[1]*60) + exifLat[2] ) / 3600);
+    //       }
+    //       console.log(latitude);
   
-          if (exifLongRef == "W") {
-          var longitude = (exifLong[0]*-1) + (( (exifLong[1]*-60) + (exifLong[2]*-1) ) / 3600);						
-          } else {
-          var longitude = exifLong[0] + (( (exifLong[1]*60) + exifLong[2] ) / 3600);
-          }
-          console.log(longitude);
-      });
-      };
-      reader.readAsDataURL(event.files[0]);
-    };
+    //       if (exifLongRef == "W") {
+    //       var longitude = (exifLong[0]*-1) + (( (exifLong[1]*-60) + (exifLong[2]*-1) ) / 3600);						
+    //       } else {
+    //       var longitude = exifLong[0] + (( (exifLong[1]*60) + exifLong[2] ) / 3600);
+    //       }
+    //       console.log(longitude);
+    //   });
+    //   };
+    //   reader.readAsDataURL(event.files[0]);
+    // };
   
   </script>
