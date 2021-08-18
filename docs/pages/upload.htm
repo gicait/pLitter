@@ -182,8 +182,8 @@
   
         axios.post(`${imageUploadbaseURL}/`, imageFormData, {
           headers: {
-            "Content-Type": "multipart/form-data"
-            // "Access-Control-Allow-Origin": "*"
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*"
           },
           onUploadProgress: function(progressEvent) {
             var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
