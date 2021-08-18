@@ -364,45 +364,146 @@
     }
   }
   
-  function ConvertDMSToDD(degrees, minutes, seconds, direction) {
-    var dd = degrees + (minutes/60) + (seconds/360000);
-    if (direction == "S" || direction == "W") {
-      dd = dd * -1;
-    }
-    return dd;
-  }
+  // function ConvertDMSToDD(degrees, minutes, seconds, direction) {
+  //   var dd = degrees + (minutes/60) + (seconds/360000);
+  //   if (direction == "S" || direction == "W") {
+  //     dd = dd * -1;
+  //   }
+  //   return dd;
+  // }
+
+  function ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef) {
+
+    const latitudeMultiplier = latitudeRef == 'N' ? 1 : -1;
+    const decimalLatitude = latitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(latitude);
+    const longitudeMultiplier = longitudeRef == 'E' ? 1 : -1;
+    const decimalLongitude = longitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(longitude);
+    
+    const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
+    const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
+    // console.log("Original coordinates");
+    // console.log("--------------------");
+    // console.log(`Latitude: ${latitudeDegrees} ${latitudeRef}`);
+    // console.log(`Longitude: ${longitudeDegrees} ${longitudeRef}\n`);
+    return {'lat':latitudeDegrees, 'latRef': latitudeRef, 'lon': longitudeDegrees, 'lonRef': longitudeRef}
+}
   
   async function getExif(i) {
     file = uploaded_images.files[i]
     var reader = new FileReader();
+    // reader.onload = function(e) {
+    //   var exif = EXIF.readFromBinaryFile(this.result);
+    //   if (exif.GPSLatitude || exif.GPSLongitude) {
+    //     var latDegree = exif.GPSLatitude[0].numerator;
+    //     var latMinute = exif.GPSLatitude[1].numerator;
+    //     var latSecond = exif.GPSLatitude[2].numerator;
+    //     var latDirection = exif.GPSLatitudeRef;
+
+    //     var latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection);
+
+    //     var lonDegree = exif.GPSLongitude[0].numerator;
+    //     var lonMinute = exif.GPSLongitude[1].numerator;
+    //     var lonSecond = exif.GPSLongitude[2].numerator;
+    //     var lonDirection = exif.GPSLongitudeRef;
+
+    //     var lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection);
+    //     uploaded_images_gps[i] = {"lat": latFinal, "long": lonFinal}
+    //     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
+    //   }
     reader.onload = function(e) {
-      var exif = EXIF.readFromBinaryFile(this.result);
-      if (exif.GPSLatitude || exif.GPSLongitude) {
-        var latDegree = exif.GPSLatitude[0].numerator;
-        var latMinute = exif.GPSLatitude[1].numerator;
-        var latSecond = exif.GPSLatitude[2].numerator;
-        var latDirection = exif.GPSLatitudeRef;
-
-        var latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection);
-        //console.log(latFinal);
-
-        // get longitude from exif data and calculate longitude decimal
-        var lonDegree = exif.GPSLongitude[0].numerator;
-        var lonMinute = exif.GPSLongitude[1].numerator;
-        var lonSecond = exif.GPSLongitude[2].numerator;
-        var lonDirection = exif.GPSLongitudeRef;
-
-        var lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection);
-        //console.log(lonFinal);
-        // console.log(exif);
-        uploaded_images_gps[i] = {"lat": latFinal, "long": lonFinal}
-        document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
+      var exif = piexif.load(this.result)
+      // console.log(exif)
+      var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
+      var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+      var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
+      var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
+      var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
+      uploaded_images_gps[i] = {"lat": image_gps['lat'], "long": image_gps['lon']}
+      document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = image_gps['lat']+' '+image_gps['latRef']+','+image_gps['lon']+' '+image_gps['lonRef']
       }
+    reader.readAsBinaryString(file);
       // else {
         // uploaded_images_gps[i] = {}
       // }
-    }
-    reader.readAsArrayBuffer(file);
+    // }
+    // reader.readAsArrayBuffer(file);
+  // }
+
+
+
+
+
+
+//     function extractMetadata(data) {
+
+// if (data.getByteAt(0) != 0xFF || data.getByteAt(1) != 0xD8) {
+//     console.log("ERROR: not a valid jpeg");
+//     return []; // not a valid jpeg
+// }
+
+// var iOffset = 0;
+// var iLength = data.getLength();
+// var metaLength = 0;
+// var segLength;
+
+// while (iOffset < iLength) {
+//     if (data.getByteAt(iOffset) != 0xFF) {
+//         console.log("Not a valid marker at offset " + iOffset + ", found: 0x" + data.getByteAt(iOffset).toString(16));
+//         metaLength = iOffset;
+//         break;
+//     }
+
+//     var iMarker = data.getByteAt(iOffset+1);
+//     //console.log("read: " + data.getByteAt(iOffset) + ":" + data.getByteAt(iOffset+1));
+
+//     // from 0xE0 to 0xEE (app segments) - from 0xF0 to 0xFD (jpeg extensions) and 0xFE (jpeg comment) and 0xDB (DQT, define quantization tables).  Note that DQT is necessary for extractig metadata.  It is not clear why.
+//     if ((iMarker >= 0xE0 && iMarker <= 0xFF) || iMarker == 0xDB) {
+//         segLength = data.getShortAt(iOffset+2, true) - 2;
+//         console.log("Found marker 0xff" + iMarker.toString(16) + " at: " + iOffset);
+//         console.log("Segment length: " + segLength);
+
+//         iOffset += segLength+2;
+
+//         //padding
+//         while (data.getByteAt(iOffset) == 0x00 && data.getByteAt(iOffset+1) == 0x00) {
+//             console.log('skipping two bytes');
+//             iOffset += 2;
+//             continue;
+//         }
+//     } else {
+//         console.log('false alarm. found: 0xff' + iMarker.toString(16) + ' at: ' + iOffset);
+//         iOffset += 2;
+//     }
+// }
+
+// if( metaLength != 0 ) {
+//     var exifdata = data.getRawData().slice(0, metaLength);
+//     exifdata += data.getRawData().slice(iLength-3); // Add an EOI
+//     return exifdata;
+// } else {
+//     return [];
+// }
+// //return readEXIFData(data, iOffset + 4, data.getShortAt(iOffset+2, true)-2);
+// }
+
+    // reader.onload = (function() {
+    //     return function(event) {
+    //         //console.log(event.target.result);
+    //         data = event.target.result;
+    //         data = new BinaryFile(data, 0, data.length);
+    //         var exifdata = extractMetadata(data);
+    //         if( exifdata.length == 0 ) {
+    //             errorCb("Problems extracting exif data");
+    //         } else {
+    //             successCb(exifdata);
+    //         }
+    //     }
+    // })();
+
+    // // Read in the image file as a data url.
+    // //reader.readAsDataURL(file);
+    // reader.readAsBinaryString(file);
+    // //reader.readAsText(file);
 
     // uploaded_images_gps[i] = {"lat": exifData.latitude, "long": exifData.longitude} 
     // document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
