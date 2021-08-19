@@ -1,9 +1,3 @@
-<!-- to do
-  1. get geo tags and upload along image
--->
-
-
-
 <div class="container" id="upload-section">
     <label for="images">Images (.png, .jpg, etc)</label>
     <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple accept="image/*" />
@@ -318,9 +312,9 @@
               <span class="preview"><img id="uploaded_image_${i}" width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
             </td>
             <td>
-              <span class="name">${uploaded_images.files[i].name}</span>
-              <span class="size">${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
-              <span id="uploaded_images_${i}_gps">${getExif(i) }</span>
+              <span class="name">File name: ${uploaded_images.files[i].name}</span>
+              <span class="size">Size: ${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
+              <span id="uploaded_images_${i}_gps">GPS coordinates: ${getExif(i) }</span>
               <span class="size">Labels:<div style="inline" id="labelcount_${i}">0</div></span>
               <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
             </td>
@@ -340,27 +334,6 @@
             </td>
           </tr>`)
         )  
-      // .append($('<tr>')
-        //   .append($('<td>')
-        //     .append($('<img>')
-        //       .attr('src', URL.createObjectURL(uploaded_images.files[i]))
-        //       .attr('style', "width:150px")
-        //       .text('Image cell')
-        //     )
-        //   )
-        //   .append($('<td>')
-        //     .append($(`<span>${uploaded_images.files[i].name}</span>`))
-        //     .append($('<div>')
-        //       .attr('class', 'progressbar')
-        //     )
-        //   )
-        //   .append($('<td>')
-        //     .append('<button class="btn btn-success edit" data-index="0"> <i class="glyphicon glyphicon-edit"></i><span>Label</span></button>')
-        //     .append('<button class="btn btn-primary start"><i class="glyphicon glyphicon-upload"></i><span>Upload</span></button>')
-        //     .append('<button class="btn btn-warning cancel"><i class="glyphicon glyphicon-ban-circle"></i><span>Cancel</span></button>')
-        //   )
-  
-      // );
     }
   }
   
@@ -381,8 +354,6 @@
     
     const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
     const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
-    // console.log("Original coordinates");
-    // console.log("--------------------");
     // console.log(`Latitude: ${latitudeDegrees} ${latitudeRef}`);
     // console.log(`Longitude: ${longitudeDegrees} ${longitudeRef}\n`);
     return {'lat':latitudeDegrees, 'latRef': latitudeRef, 'lon': longitudeDegrees, 'lonRef': longitudeRef}
@@ -417,10 +388,16 @@
       var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
       var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
       var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
-      var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
-      uploaded_images_gps[i] = {"lat": image_gps['lat'], "long": image_gps['lon']}
-      document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = image_gps['lat']+' '+image_gps['latRef']+','+image_gps['lon']+' '+image_gps['lonRef']
+      // console.log(latitude, latitudeRef, longitude, longitudeRef)
+      if (latitude   && latitudeRef && longitude && longitudeRef) {
+        var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
+        uploaded_images_gps[i] = {"lat": image_gps['lat'], "long": image_gps['lon']}
+        document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = image_gps['lat']+' '+image_gps['latRef']+','+image_gps['lon']+' '+image_gps['lonRef']
       }
+      else {
+        document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = `GPS corordinates not found`;
+      }
+    }
     reader.readAsBinaryString(file);
       // else {
         // uploaded_images_gps[i] = {}
