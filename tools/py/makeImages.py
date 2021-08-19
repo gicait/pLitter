@@ -203,7 +203,7 @@ class Video:
                         print("saving image at", pts)
                         image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
                         cv2.imwrite(image_name, frame2)
-                        set_gps_location(image_name, gps_list[1][1], float(gps_list[1][2]), float(gps_list[1][3]), float(gps_list[1][4]))
+                        set_gps_location(image_name, row[1], float(row[2]), float(row[3]), float(row[4]))
                         gps_tag_row = [folder_name+'_'+str(image_count)+'.jpg', row[2], row[3]]
                         gps_tag_writer.writerow(gps_tag_row)
                         image_count += 1
