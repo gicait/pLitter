@@ -116,8 +116,8 @@ async function getImagesAndClusters(bounds) {
   var bottom = bounds._southWest.lat;
 
 
-  // let response = await fetch("https://annotator.ait.ac.th/api/image/map", {
-  let response = await fetch("http://203.159.29.187:5000/api/image/map", {
+  let response = await fetch("https://annotator.ait.ac.th/api/image/map", {
+  // let response = await fetch("http://203.159.29.187:5000/api/image/map", {
     "headers": {
       "accept": "application/json",
       "accept-language": "en-US,en;q=0.9",
