@@ -75,19 +75,21 @@ function addClusterToMap(map, xCoordinate, yCoordinate, count) {
 
 function addImageToMap(map, xCoordinate, yCoordinate, imageId, prevId, nextId) {
   let marker = L.circleMarker([xCoordinate, yCoordinate], {"radius":4, fill:true, "fillColor": "#007bff", fillOpacity:5, "color": "#007bff", "weight": 1, "opacity": 10}).addTo(map);
-
+  
   let popupHtml = `
-  <img src="${imageIdToUrl(imageId)}" style="max-width: 200px; max-height: 200px">
-  <span onclick="MARKERS_BY_ID['${prevId}'].openPopup()">prev</span>
-  <span onclick="MARKERS_BY_ID['${nextId}'].openPopup()">next</span>
+    <div class='container'> <div class='row'>
+      <span onclick="MARKERS_BY_ID['${prevId}'].openPopup()"><i class="fas fa-arrow-left"></i></span>
+      <img src="${imageIdToUrl(imageId)}" style="max-width: 200px; max-height: 200px">
+      <span onclick="MARKERS_BY_ID['${nextId}'].openPopup()"><i class="fas fa-arrow-right"></i></span>
+    </div></div>
   `;
   marker.bindPopup(popupHtml);
 
   MARKERS_BY_ID[imageId] = marker;
 
   function imageIdToUrl(id) {
-    // const BASE_URL = "https://annotator.ait.ac.th/api/image/";
-    const BASE_URL = "http://203.159.29.187:5000/api/image/";
+    const BASE_URL = "https://annotator.ait.ac.th/api/image/";
+    // const BASE_URL = "http://203.159.29.187:5000/api/image/";
     return BASE_URL + id;
   }
 }
