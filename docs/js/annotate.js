@@ -76,6 +76,7 @@ let TagSelectorWidget = function (args) {
 
     let createDropDown = function (options) {
         var dropDown = document.createElement('select');
+        dropDown.setAttribute('data-native-menu', 'false')
 
         options.forEach(optionValue => {
             let optionElement = document.createElement('option');
