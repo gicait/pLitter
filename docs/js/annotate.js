@@ -292,7 +292,7 @@ async function load_random(){
                 allowEmpty: true,
                 widgets: [ TagSelectorWidget ]
             });
-        
+                   
             viewer.addHandler('open', () => {
                 let ignoreButton = new OpenSeadragon.Button({
                   tooltip: 'Pan',
@@ -323,6 +323,7 @@ async function load_random(){
             });
 
             viewer.addHandler('open', () => {
+
                 let ignoreButton = new OpenSeadragon.Button({
                   tooltip: 'Ignore',
                   srcRest: `./icons/openseadragon/ignore.png`,
@@ -370,6 +371,7 @@ async function load_random(){
                 });
                 viewer.addControl(rectButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
             });
+            
             // Annotorious.Toolbar(ran_anno, document.getElementById('toolbar'));
 
             //     viewer.addControl(printButton, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
@@ -455,6 +457,24 @@ async function load_random(){
             rectButton.addEventListener('click', function () {  console.log('selected rect'); ran_anno.setDrawingTool('rect'); ran_anno.setDrawingEnabled(true)});
             // document.getElementById('toolbar').prepend(rectButton)
             
+            if(screen.width < 480) { 
+                // console.log('aa')
+                $('div[title="Zoom in"]').parent().parent().css('display', 'block') // document.querySelector('[title="Zoom in"]').setAttribute("style", "display:block")
+                $('div[title="Zoom in"]').css('display', 'block') // document.querySelector('[title="Zoom in"]').setAttribute("style", "display:block")
+                $('div[title="Zoom out"]').css('display', 'block') // document.querySelector('[title="Zoom out"]').setAttribute("style", "display:block")
+                $('div[title="Go home"]').css('display', 'block') // document.querySelector('[title="Go home"]').setAttribute("style", "display:block")
+                $('div[title="Toggle full page"]').css('display', 'block') // document.querySelector('[title="Toggle full page"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Pan"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Reload"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Ignore"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Save"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Draw"]').setAttribute("style", "display:block")
+                // document.querySelector('[title="Flag"]').setAttribute("style", "display:block")
+            }
+            else {
+                console.log('bbbb')
+            }
+
             ran_anno.on('selectAnnotation', function(a) {
                 if (document.contains(document.getElementById('label'))) {
                     document.getElementById('label').remove();
