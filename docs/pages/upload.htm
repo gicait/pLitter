@@ -134,6 +134,16 @@
                 pinchRotate: true
             }
         });
+        // please refer below links
+        // https://github.com/openseadragon/openseadragon/issues/899
+        // https://github.com/openseadragon/openseadragon/issues/91
+        // https://openseadragon.github.io/docs/OpenSeadragon.Viewer.html#.event:full-screen
+        viewer.fullPageButton.removeAllHandlers();
+        viewer.fullPageButton.addHandler("click", function () {
+            alert('testing full screen');
+            // code for toggle landscape goes here
+            viewer.setFullScreen(true)
+        });
 
         selected_anno = OpenSeadragon.Annotorious(viewer, {
             locale: 'auto',
