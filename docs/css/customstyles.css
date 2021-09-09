@@ -1,0 +1,96 @@
+tbody>:first-child {
+    margin-top: 0px!important;
+}
+
+.plitter-logo {
+    width: 70px;
+    height: 25px;
+}
+
+.navbar-brand {
+    margin-right: 0px;
+}
+
+.dropdown-menu {
+    min-width: auto;
+}
+
+.uploaded-actions>button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 90px;
+    height: 35px;
+}
+
+.uploaded-actions>button>i {
+    margin-right: 5px;
+}
+
+.openseadragon-container>div:nth-child(2) {
+    display: flex!important;
+    flex-direction: row!important;
+}
+
+.openseadragon-container>div:nth-child(2)>div:first-child>div {
+    display: flex!important;
+    flex-direction: row!important;
+}
+
+.openseadragon-container>div:nth-child(2)>div:first-child>div>div:hover {
+    cursor: pointer;
+}
+
+.openseadragon-container>div:nth-child(2)>div:last-child:hover {
+    cursor: pointer;
+}
+
+.openseadragon-container>div:nth-child(3) {
+    display: flex!important;
+    flex-direction: row!important;
+}
+
+.openseadragon-container>div:nth-child(3)>div {
+    padding: 0px 2px 0px 2px!important;
+    cursor: pointer;
+}
+
+.openseadragon-container>div:nth-child(3)>div>div>img {
+    width: 27px!important;
+    height: 27px!important;
+}
+
+@media (max-width: 1023px) {
+    .openseadragon-container>div:nth-child(2) {
+        display: flex!important;
+        flex-direction: column!important;
+    }
+    .openseadragon-container>div:nth-child(2)>div:first-child>div {
+        display: flex!important;
+        flex-direction: column!important;
+    }
+    .openseadragon-container>div:nth-child(3) {
+        display: flex!important;
+        flex-direction: column!important;
+    }
+    .openseadragon-container>div:nth-child(3)>div {
+        padding: 2px 5px 2px 0px!important;
+    }
+}
+
+@media (max-width: 767px) {
+    .dropdown-menu {
+        left: -40px;
+    }
+    .nav-item {
+        line-height: 0px !important;
+    }
+    .dropdown-item {
+        line-height: 1.5;
+    }
+    .uploaded-actions>button {
+        margin-right: 0.5rem;
+        font-size: 13px;
+    }
+}

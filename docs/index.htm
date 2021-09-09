@@ -12,7 +12,8 @@
     <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.css" rel="stylesheet" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/dropzone.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js">
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-automl/dist/tf-automl.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
@@ -23,8 +24,8 @@
 
     <script src="js/annotate.js?v=81"></script>
 
-    <link rel="stylesheet" href="css/blueimp-gallery.min.css"/>
-    <link rel="stylesheet" href="css/jquery.fileupload.css"/>
+    <link rel="stylesheet" href="css/blueimp-gallery.min.css" />
+    <link rel="stylesheet" href="css/jquery.fileupload.css" />
     <link rel="stylesheet" href="css/jquery.fileupload-ui.css" />
     <script src="js/jquery.ui.widget.js"></script>
     <script src="js/jquery.fileupload.js"></script>
@@ -38,60 +39,71 @@
     <script type="application/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js"></script>
 
     <link rel="stylesheet" href="css/plitterstyles.css" />
+    <link rel="stylesheet" href="css/customstyles.css" />
     <link rel="stylesheet" href="css/cluster.css" />
-    <style>.abs-center-x {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-    }</style>
-  <script>$(function(){datasetTabNav()});</script>
+    <style>
+        .abs-center-x {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+    <script>
+        $(function() {
+            datasetTabNav()
+        });
+    </script>
 
     <script src="https://unpkg.com/mapillary-js@4.0.0/dist/mapillary.js"></script>
-    <link
-        href="https://unpkg.com/mapillary-js@4.0.0/dist/mapillary.css"
-        rel="stylesheet"
-    />
+    <link href="https://unpkg.com/mapillary-js@4.0.0/dist/mapillary.css" rel="stylesheet" />
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
-  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
 
-  <script src="https://unpkg.com/exif-js@2.2.1"></script>
+    <script src="https://unpkg.com/exif-js@2.2.1"></script>
 
 
-  <!-- ES Module in modern browsers -->
-<!-- <script type="module">import exifr from 'node_modules/exifr/dist/lite.esm.js';</script> -->
-<!-- classic UMD script -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script> -->
-<!-- IE10 & old browsers. You also need Promise polyfill -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.legacy.umd.js"></script> -->
+    <!-- ES Module in modern browsers -->
+    <!-- <script type="module">import exifr from 'node_modules/exifr/dist/lite.esm.js';</script> -->
+    <!-- classic UMD script -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.umd.js"></script> -->
+    <!-- IE10 & old browsers. You also need Promise polyfill -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/exifr/dist/lite.legacy.umd.js"></script> -->
 
 
 </head>
+
 <body>
     <nav class="navbar navbar-dark navbar-expand bg-primary justify-content-between">
         <div class="container-fluid">
             <div class="navbar-header">
-                <a class="navbar-brand" href="#"><img src="icons/plitter.png" width="100" height="40" class="d-inline-block" alt="pLitter"></a>
+                <a class="navbar-brand" href="#"><img src="icons/plitter_cropped.png" class="plitter-logo d-inline-block" alt="pLitter"></a>
             </div>
             <ul class="nav navbar-nav">
                 <li class="nav-item text-center">
-                    <a href="#home" class="nav-link" data-toggle="tab"><span class="fa fa-home"></span><span class="d-none d-sm-inline d-xl-block px-1">Home</span></a>
+                    <a href="#home" class="nav-link" data-toggle="tab"><span class="fa fa-home"></span><span
+                            class="d-none d-md-inline d-xl-block px-1">Home</span></a>
                 </li>
                 <li class="nav-item text-center">
-                    <a href="#dataset" class="nav-link" data-toggle="tab"><span class="fa fa-database"></span><span class="d-xl-block d-none"></span><span class="d-none d-sm-inline px-1">Dataset</span> </a>
+                    <a href="#dataset" class="nav-link" data-toggle="tab"><span class="fa fa-database"></span><span
+                            class="d-xl-block d-none"></span><span class="d-none d-md-inline px-1">Dataset</span> </a>
                 </li>
                 <li class="nav-item text-center">
-                    <a href="#tryit" class="nav-link" data-toggle="tab"><span class="fa fa-snowflake"></span><span class="d-none d-sm-inline d-xl-block px-1">Try demo</span></a>
+                    <a href="#tryit" class="nav-link" data-toggle="tab"><span class="fa fa-snowflake"></span><span
+                            class="d-none d-md-inline d-xl-block px-1">Try demo</span></a>
                 </li>
                 <li class="nav-item text-center">
-                    <a href="#map" class="nav-link" data-toggle="tab"><span class="fa fa-map"></span><span class="d-none d-sm-inline d-xl-block px-1">Map</span></a>
+                    <a href="#map" class="nav-link" data-toggle="tab"><span class="fa fa-map"></span><span
+                            class="d-none d-md-inline d-xl-block px-1">Map</span></a>
                 </li>
                 <li class="nav-item dropdown text-center">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="fa fa-hands-helping"></span><span class="d-xl-block d-none"></span><span class="d-none d-sm-inline px-1">Contribute</span> </a>
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span
+                            class="fa fa-hands-helping"></span><span class="d-xl-block d-none"></span><span
+                            class="d-none d-md-inline px-1">Contribute</span> </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <a class="dropdown-item" href="#annotate">Annotate</a>
                         <a class="dropdown-item" href="#upload">Upload</a>
@@ -102,7 +114,8 @@
             </ul>
             <ul class="nav navbar-nav">
                 <li class="nav-item text-center" id="signup-btn">
-                    <a href="#user" class="nav-link" data-toggle=""><span class="fa fa-user"></span><span id="signin" class="d-none d-sm-inline d-xl-block px-1">Sign Up or Log In</span></a>
+                    <a href="#user" class="nav-link" data-toggle=""><span class="fa fa-user"></span><span id="signin"
+                            class="d-none d-md-inline d-xl-block px-1">Sign Up / Log In</span></a>
                 </li>
                 <!-- <li class="nav-item text-center" id="login-btn">
                     <a href="#" class="nav-link" data-toggle="modal" data-target="#"><span class="fa fa-sign-in"></span><span class="d-none d-sm-inline d-xl-block px-1">Log In</span></a>
@@ -110,10 +123,10 @@
             </ul>
         </div>
     </nav>
-    <div id="content" class="tab-content" >
+    <div id="content" class="tab-content">
         <div role="tabpanel" class="tab-pane fade active in" id="home"></div>
     </div>
-  <!-- <div id="leaflet_map"> </div> -->
+    <!-- <div id="leaflet_map"> </div> -->
 
     <!-- <div id="footer">
         <div>
