@@ -51,6 +51,7 @@
     let uploaded_images_gps = {};
     var selected_anno;
     const MODEL_URL = 'tfjs/model.json'
+    var isFullScreen = false;
 
     async function save_annotations_to_array(i) {
         annotations_in_osd = selected_anno.getAnnotations();
@@ -67,10 +68,10 @@
         // console.log(uploaded_images.files[i].name) 
         confirm("Do you prefer pLitter suggestions?")
         const model = await tf.automl.loadObjectDetection(MODEL_URL)
-            // console.log(image.width)
-            // console.log(image.height)
-            // console.log(image.complete)
-            // console.log(image)
+        // console.log(image.width)
+        // console.log(image.height)
+        // console.log(image.complete)
+        // console.log(image)
         const options = {
             score: 0.2,
             iou: 0.5,
@@ -134,15 +135,18 @@
                 pinchRotate: true
             }
         });
-        // please refer below links
-        // https://github.com/openseadragon/openseadragon/issues/899
-        // https://github.com/openseadragon/openseadragon/issues/91
-        // https://openseadragon.github.io/docs/OpenSeadragon.Viewer.html#.event:full-screen
+
         viewer.fullPageButton.removeAllHandlers();
         viewer.fullPageButton.addHandler("click", function () {
-            alert('testing full screen');
-            // code for toggle landscape goes here
-            viewer.setFullScreen(true)
+            if (isFullScreen === false) {
+                viewer.setFullScreen(true)
+                screen.orientation.lock("landscape-primary")
+                isFullScreen = true
+            } else if (isFullScreen === true) {
+                viewer.setFullScreen(false)
+                screen.orientation.unlock();
+                isFullScreen = false
+            }
         });
 
         selected_anno = OpenSeadragon.Annotorious(viewer, {
@@ -208,7 +212,7 @@
         image.onload = () => run_on_selected(i, image);
         document.getElementById("image-dummy-display").append(image)
         image.src = URL.createObjectURL(uploaded_images.files[i])
-            // document.getElementById("image-dummy-display").style.display = '';
+        // document.getElementById("image-dummy-display").style.display = '';
 
         // initialize osd-annotorius
         // img src with i
@@ -229,26 +233,26 @@
             }
 
             axios.post(`${imageUploadbaseURL}/`, imageFormData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data",
-                        "Access-Control-Allow-Origin": "*"
-                    },
-                    onUploadProgress: function(progressEvent) {
-                        var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-                            // console.log(percentCompleted)
-                            // progress_bar_${i}
-                        document.getElementById('progress_bar_' + String(id)).style.width = percentCompleted;
-                    }
-                })
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Access-Control-Allow-Origin": "*"
+                },
+                onUploadProgress: function (progressEvent) {
+                    var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+                    // console.log(percentCompleted)
+                    // progress_bar_${i}
+                    document.getElementById('progress_bar_' + String(id)).style.width = percentCompleted;
+                }
+            })
                 .then(response => {
                     image_id = response.data
-                        // let image_id = response.data.id;
-                        // console.log(image_id);
+                    // let image_id = response.data.id;
+                    // console.log(image_id);
 
                     if (typeof image_id === 'number') {
                         console.log("uploading annotations", image_id);
                         var annotations = images_annotations[id]
-                        annotations.forEach(function(ann) {
+                        annotations.forEach(function (ann) {
                             if (ann.target.selector.type === 'FragmentSelector') {
                                 var is_it_bbox = true
                                 var value = ann.target.selector.value
@@ -298,24 +302,24 @@
                                 return;
                             }
                             fetch(base_link + "/api/annotation/", {
-                                    "headers": {
-                                        "accept": "application/json, text/plain, */*",
-                                        "accept-language": "en-US,en;q=0.9",
-                                        "content-type": "application/json;charset=UTF-8"
-                                    },
-                                    "referrer": base_link + "/",
-                                    "referrerPolicy": "strict-origin-when-cross-origin",
-                                    "body": JSON.stringify({
-                                        image_id: image_id,
-                                        category_id: cat_id,
-                                        isbbox: is_it_bbox,
-                                        segmentation: seg,
-                                        bbox: box,
-                                    }),
-                                    "method": "POST",
-                                    "mode": "cors",
-                                    "credentials": "include"
-                                })
+                                "headers": {
+                                    "accept": "application/json, text/plain, */*",
+                                    "accept-language": "en-US,en;q=0.9",
+                                    "content-type": "application/json;charset=UTF-8"
+                                },
+                                "referrer": base_link + "/",
+                                "referrerPolicy": "strict-origin-when-cross-origin",
+                                "body": JSON.stringify({
+                                    image_id: image_id,
+                                    category_id: cat_id,
+                                    isbbox: is_it_bbox,
+                                    segmentation: seg,
+                                    bbox: box,
+                                }),
+                                "method": "POST",
+                                "mode": "cors",
+                                "credentials": "include"
+                            })
                                 .then(ann_response => ann_response.json())
                                 .then(ann_data => console.log(ann_data))
                                 .catch(ann_error => console.log(ann_error))
@@ -358,7 +362,7 @@
         for (var i = 0; i < uploaded_images.files.length; i++) {
             console.log(i)
             images_annotations[i] = []
-                // console.log(uploaded_images.files[i].name)
+            // console.log(uploaded_images.files[i].name)
             $("#uploaded_images").find('tbody')
                 .append($(`
         <tr class="d-flex flex-column flex-md-row border-top mt-4" id="uploaded_images_${i}">
@@ -456,9 +460,9 @@
         //     uploaded_images_gps[i] = {"lat": latFinal, "long": lonFinal}
         //     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
         //   }
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             var exif = piexif.load(this.result)
-                // console.log(exif)
+            // console.log(exif)
             var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
             var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
             var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
