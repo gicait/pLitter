@@ -61,6 +61,45 @@ tbody>:first-child {
     height: 27px!important;
 }
 
+.r6o-editor{
+    width: 250px!important;
+}
+
+.tagselector-widget{
+    padding: 8px!important;
+}
+
+.tagselector-widget>select{
+    width: 100%!important;
+}
+
+.r6o-footer{
+    display: flex!important;
+    justify-content: flex-start!important;
+    align-items: center!important;
+    padding: 8px!important;
+}
+
+.r6o-footer>button{
+    width: 70px!important;
+    height: 40px!important;
+    display: flex!important;
+    justify-content: center!important;
+    align-items: center!important;
+    margin-right: 8px!important;
+}
+
+.delete-annotation{
+    position: unset!important;
+    border-radius: 0px!important;
+    height: 100%!important;
+    border: 1px solid #4483c4!important;
+}
+
+.delete-annotation:hover{
+    border: 1px solid #ef352c!important;
+}
+
 @media (max-width: 1023px) {
     .openseadragon-container>div:nth-child(2) {
         display: flex!important;
