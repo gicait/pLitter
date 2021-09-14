@@ -326,16 +326,17 @@
                         })
                         console.log("closing foreach");
                         document.getElementById("uploaded_images_" + String(id)).remove();
+                        document.getElementById("uploaded_images_mobile_actions_" + String(id)).remove();
                         $("#recenet-uploads-table").find('tbody')
                             .append($(`
-              <tr class="template-upload" id="recent_image_${image_id}">
+              <tr class="template-upload d-flex" id="recent_image_${image_id}">
                 <td>
                   <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[id])}"/></span>
                 </td>
-                <td>
-                  <p><span class="name">${uploaded_images.files[id].name}</span>
-                  <span class="size">${(uploaded_images.files[id].size / (1024 * 1024)).toFixed(2)} MB</span>
-                  <span class="size">Labels:<div>${annotations.length}</div></span></p>
+                <td class="d-flex flex-column" style="flex:2;">
+                  <span class="name"><strong>File name: </strong>${uploaded_images.files[id].name}</span>
+                  <span class="size"><strong>Size: </strong>${(uploaded_images.files[id].size / (1024 * 1024)).toFixed(2)} MB</span>
+                  <span class="size"><strong>Labels: </strong>${annotations.length}</span>
                 </td>
               </tr>`))
                     }
