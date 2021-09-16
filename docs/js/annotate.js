@@ -24,6 +24,7 @@ var annotatorRaised = 0
 var cat_dict = {}
 
 var isFullScreen = false;
+var tags = [];
 
 fetch(base_link + "/api/dataset/" + String(dataset_id) + "/cats", {
     "headers": {
@@ -69,9 +70,12 @@ function popup_label(ann) {
     ele.append(text);
 }
 
-let TagSelectorWidget = function (args) {
+let TagSelectorWidget = (args) => {
+    var tempArgs;
+    tempArgs = args;
+    window.arguments = tempArgs;
 
-    const tags = args.annotation ?
+    tags = args.annotation ?
         args.annotation.bodies.filter(function (b) {
             return b.purpose == 'tagging' && b.type == 'TextualBody';
         }) : [];
@@ -79,9 +83,11 @@ let TagSelectorWidget = function (args) {
     let createDropDown = function (options) {
         var dropDown = document.createElement('select');
         dropDown.setAttribute('data-native-menu', 'false')
+        dropDown.setAttribute('id', 'object-type-select');
 
         options.forEach(optionValue => {
             let optionElement = document.createElement('option');
+            optionElement.setAttribute('class', 'select-option')
 
             function capitalize(word) {
                 const lower = word.toLowerCase();
@@ -109,6 +115,13 @@ let TagSelectorWidget = function (args) {
                     value: this.value
                 });
             }
+        });
+
+        dropDown.addEventListener('touchstart', function () {
+            var element = document.getElementById("object-type-select")
+            element.size = element.options.length;
+            element.style.position = 'absolute';
+            element.style.zIndex = 99999;
         });
 
         return dropDown;
@@ -788,4 +801,27 @@ $(document).ready(function () {
     // load_buttons()
     // load_random();
     // get_dataset_stats()
+
+    $('body').on('click touchstart', '#object-type-select option.select-option', function () {
+
+        var element = document.getElementById("object-type-select")
+        element.value = $(this).val();
+        element.size = 0;
+        element.style.position = 'relative';
+        element.style.zIndex = 0;
+
+        if (tags.length > 0) {
+            window.arguments.onUpdateBody(tags[0], {
+                type: 'TextualBody',
+                purpose: 'tagging',
+                value: $(this).val()
+            });
+        } else {
+            window.arguments.onAppendBody({
+                type: 'TextualBody',
+                purpose: 'tagging',
+                value: $(this).val()
+            });
+        }
+    });
 })

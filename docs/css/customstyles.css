@@ -116,6 +116,15 @@ tbody>:first-child {
     .openseadragon-container>div:nth-child(3)>div {
         padding: 2px 5px 2px 0px!important;
     }
+    /* .r6o-editor{
+        left: 0!important;
+        right: 0!important;
+        margin-left: auto!important;
+        margin-right: auto!important;
+    }
+    .r6o-arrow{
+        display: none!important;
+    } */
 }
 
 @media (max-width: 767px) {
