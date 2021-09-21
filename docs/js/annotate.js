@@ -81,13 +81,24 @@ let TagSelectorWidget = (args) => {
         }) : [];
 
     let createDropDown = function (options) {
-        var dropDown = document.createElement('select');
-        dropDown.setAttribute('data-native-menu', 'false')
-        dropDown.setAttribute('id', 'object-type-select');
+
+        var dropDownDiv = document.createElement('div');
+        dropDownDiv.setAttribute('class', 'cselect');
+
+        var input = document.createElement('input')
+        input.setAttribute('id', 'custom-select');
+        input.setAttribute('type', 'text');
+        input.setAttribute('placeholder', 'Please select');
+        input.setAttribute('value', options[0]);
+        input.disabled = true;
+
+        var ul = document.createElement('ul');
+        ul.setAttribute('id', 'custom-select-list');
 
         options.forEach(optionValue => {
-            let optionElement = document.createElement('option');
-            optionElement.setAttribute('class', 'select-option')
+            let optionElement = document.createElement('li');
+            optionElement.setAttribute('class', 'select-options');
+            optionElement.setAttribute('data-option', optionValue);
 
             function capitalize(word) {
                 const lower = word.toLowerCase();
@@ -95,36 +106,20 @@ let TagSelectorWidget = (args) => {
             }
             optionElement.appendChild(document.createTextNode(capitalize(optionValue)));
             optionElement.value = optionValue;
+            optionElement.setAttribute('value', optionValue);
             if (optionValue == tags[0]?.value) {
-                optionElement.selected = 'selected';
+                input.setAttribute('value', optionValue);
             }
-            dropDown.appendChild(optionElement);
+            ul.appendChild(optionElement);
+        });
+        dropDownDiv.append(input)
+        dropDownDiv.append(ul);
+
+        dropDownDiv.addEventListener('click', function () {
+            $('.cselect ul').css('display', 'block');
         });
 
-        dropDown.addEventListener('change', function () {
-            if (tags.length > 0) {
-                args.onUpdateBody(tags[0], {
-                    type: 'TextualBody',
-                    purpose: 'tagging',
-                    value: this.value
-                });
-            } else {
-                args.onAppendBody({
-                    type: 'TextualBody',
-                    purpose: 'tagging',
-                    value: this.value
-                });
-            }
-        });
-
-        dropDown.addEventListener('touchstart', function () {
-            var element = document.getElementById("object-type-select")
-            element.size = element.options.length;
-            element.style.position = 'absolute';
-            element.style.zIndex = 99999;
-        });
-
-        return dropDown;
+        return dropDownDiv;
     }
 
     var container = document.createElement('div');
@@ -802,26 +797,25 @@ $(document).ready(function () {
     // load_random();
     // get_dataset_stats()
 
-    $('body').on('click touchstart', '#object-type-select option.select-option', function () {
-
-        var element = document.getElementById("object-type-select")
-        element.value = $(this).val();
-        element.size = 0;
-        element.style.position = 'relative';
-        element.style.zIndex = 0;
+    $('body').on('click touchstart', '#custom-select-list li.select-options', function (e) {
+        e.preventDefault();
+        $('.cselect ul').css('display', 'none');
+        var dataValue = $(this).attr('data-option');
 
         if (tags.length > 0) {
             window.arguments.onUpdateBody(tags[0], {
                 type: 'TextualBody',
                 purpose: 'tagging',
-                value: $(this).val()
+                value: dataValue
             });
         } else {
             window.arguments.onAppendBody({
                 type: 'TextualBody',
                 purpose: 'tagging',
-                value: $(this).val()
+                value: dataValue
             });
         }
+
+        $('.cselect input').val($(this).text());
     });
 })

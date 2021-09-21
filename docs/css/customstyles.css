@@ -142,3 +142,39 @@ tbody>:first-child {
         font-size: 13px;
     }
 }
+
+.cselect {
+    position: relative;
+}
+
+.cselect input{
+    background: #fff;
+    height: 23px;
+    width: 100%;
+    color: black;
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.cselect ul{
+    display: none;
+    padding: 0;
+    position: absolute;
+    z-index:999;
+    margin:0;
+    width: 100%;
+    background: #fff;
+    border: 1px solid #d6d6d6;
+}
+
+.cselect li {
+    color: black;
+    font-size: 14px;
+    height: 23px;
+    list-style:none;
+    padding-left: 5px;
+}
+
+.cselect li:hover, .cselect li:active {
+    background: rgba(41, 128, 185, 0.5);
+}

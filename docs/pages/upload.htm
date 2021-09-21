@@ -155,6 +155,17 @@
             widgets: [TagSelectorWidget]
         });
 
+        selected_anno.on('createSelection', async function (selection) {
+            selection.body = [{
+                type: 'TextualBody',
+                purpose: 'tagging',
+                value: 'Plastic'
+            }];
+
+            await selected_anno.updateSelected(selection);
+            selected_anno.updateSelected(selection, true);
+        })
+
         viewer.addHandler('open', () => {
             let ignoreButton = new OpenSeadragon.Button({
                 tooltip: 'Pan',
