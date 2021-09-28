@@ -65,20 +65,15 @@
     }
 
     async function run_on_selected(i, image) {
-        // console.log(uploaded_images.files[i].name) 
+        
         confirm("Do you prefer pLitter suggestions?")
-        const model = await tf.automl.loadObjectDetection(MODEL_URL)
-        // console.log(image.width)
-        // console.log(image.height)
-        // console.log(image.complete)
-        // console.log(image)
+        const model = await tf.automl.loadObjectDetection(MODEL_URL);        
         const options = {
             score: 0.2,
             iou: 0.5,
             topk: 20
         };
         const predictions = await model.detect(image, options);
-        console.log(predictions)
         var annotations_format = []
         predictions.forEach(prediction => {
             const {
@@ -100,7 +95,6 @@
             anno_dict_body["purpose"] = "tagging"
             let label_string = label.replace(/(\r\n|\n|\r)/gm, "");
             anno_dict_body["value"] = label_string
-            console.log(anno_dict_body["value"])
             anno_dict["body"].push(anno_dict_body)
             anno_dict["target"] = {}
             anno_dict["target"]["source"] = image.src,
@@ -114,13 +108,9 @@
         })
         selected_anno.setAnnotations(annotations_format)
 
-        console.log(image.width)
-        console.log(image.height)
-
     }
 
     function labelThis(i) {
-        console.log(i)
         document.getElementById('osd-annoatate').innerHTML = ''
         document.getElementById("osd-annoatate-container").style.display = "";
         const image_url = URL.createObjectURL(uploaded_images.files[i])
@@ -191,7 +181,6 @@
                 srcHover: `./icons/openseadragon/save.png`,
                 srcDown: `./icons/openseadragon/save.png`,
                 onClick: () => {
-                    console.log('saving');
                     save_annotations_to_array(i);
                 },
             });
@@ -208,7 +197,6 @@
                 srcHover: `./icons/openseadragon/rect.png`,
                 srcDown: `./icons/openseadragon/rect.png`,
                 onClick: () => {
-                    console.log('rect');
                     selected_anno.setDrawingTool('rect');
                     selected_anno.setDrawingEnabled(true);
                 },
@@ -231,7 +219,6 @@
 
     function uploadThis(id) {
         let image_id = NaN;
-        console.log(id)
         if (images_annotations[id].length == 0) {
             alert("Please add labels to the image")
         } else {
@@ -250,7 +237,6 @@
                 },
                 onUploadProgress: function (progressEvent) {
                     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-                    // console.log(percentCompleted)
                     // progress_bar_${i}
                     document.getElementById('progress_bar_' + String(id)).style.width = percentCompleted;
                 }
@@ -258,7 +244,6 @@
                 .then(response => {
                     image_id = response.data
                     // let image_id = response.data.id;
-                    // console.log(image_id);
 
                     if (typeof image_id === 'number') {
                         console.log("uploading annotations", image_id);
@@ -272,14 +257,12 @@
                                 var [x, y, w, h] = coords.split(',').map(parseFloat)
                                 var cat_name = ann.body[0].value
                                 var cat_id = cat_dict[cat_name]
-                                console.log(x, y, w, h, cat_id, ann.id)
                                 var box = [x, y, w, h]
                                 var seg = [
                                     [x, y, x + w, y, x + w, y + h, x, y + h]
                                 ]
                             } else if (ann.target.selector.type === "SvgSelector") {
                                 var is_it_bbox = false
-                                console.log("svg")
                                 var value = ann.target.selector.value
                                 var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
                                 var cat_name = ann.body[0].value
@@ -307,7 +290,6 @@
                                 var h = max_y - min_y
                                 var box = [min_x, min_y, w, h]
                                 var seg = [flat_coords]
-                                console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
                             } else {
                                 console.log("type error")
                                 return;
@@ -335,7 +317,6 @@
                                 .then(ann_data => console.log(ann_data))
                                 .catch(ann_error => console.log(ann_error))
                         })
-                        console.log("closing foreach");
                         document.getElementById("uploaded_images_" + String(id)).remove();
                         document.getElementById("uploaded_images_mobile_actions_" + String(id)).remove();
                         $("#recenet-uploads-table").find('tbody')
@@ -372,9 +353,7 @@
         uploaded_images_gps = {};
         $("#uploaded_images").find('tbody').empty();
         for (var i = 0; i < uploaded_images.files.length; i++) {
-            console.log(i)
             images_annotations[i] = []
-            // console.log(uploaded_images.files[i].name)
             $("#uploaded_images").find('tbody')
                 .append($(`
         <tr class="d-flex flex-column flex-md-row border-top mt-4" id="uploaded_images_${i}">
@@ -440,8 +419,6 @@
 
         const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
         const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
-        // console.log(`Latitude: ${latitudeDegrees} ${latitudeRef}`);
-        // console.log(`Longitude: ${longitudeDegrees} ${longitudeRef}\n`);
         return {
             'lat': latitudeDegrees,
             'latRef': latitudeRef,
@@ -473,13 +450,39 @@
         //     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
         //   }
         reader.onload = function (e) {
-            var exif = piexif.load(this.result)
-            // console.log(exif)
-            var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
-            var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
-            var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
-            var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
-            // console.log(latitude, latitudeRef, longitude, longitudeRef)
+            var exif;
+            var latitudeRef;
+            var longitudeRef;
+            var latitude = [];
+            var longitude = [];
+
+            if (file.name.toLowerCase().endsWith(".heic")) {
+                exif = findEXIFinHEIC(this.result);
+
+                if (exif !== null) {
+                    latitudeRef = exif["GPSLatitudeRef"];
+                    longitudeRef = exif["GPSLongitudeRef"];
+
+                    var originalLat = exif["GPSLatitude"];
+                    var originalLong = exif["GPSLongitude"];
+
+                    originalLat.forEach(number => {
+                        latitude.push(Object.values(number))
+                    });
+
+                    originalLong.forEach(number => {
+                        longitude.push(Object.values(number))
+                    });
+                };
+            } else {
+                exif = piexif.load(this.result)
+
+                latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
+                latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+                longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
+                longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
+            };
+
             if (latitude && latitudeRef && longitude && longitudeRef) {
                 var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
                 uploaded_images_gps[i] = {
@@ -491,7 +494,12 @@
                 document.getElementById("uploaded_images_" + String(i) + "_gps").innerHTML = `not found`;
             }
         }
-        reader.readAsBinaryString(file);
+
+        if (file.name.toLowerCase().endsWith(".heic")) {
+            reader.readAsArrayBuffer(file);
+        } else {
+            reader.readAsBinaryString(file);
+        }
         // else {
         // uploaded_images_gps[i] = {}
         // }
