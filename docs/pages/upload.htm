@@ -65,9 +65,9 @@
     }
 
     async function run_on_selected(i, image) {
-        
+
         confirm("Do you prefer pLitter suggestions?")
-        const model = await tf.automl.loadObjectDetection(MODEL_URL);        
+        const model = await tf.automl.loadObjectDetection(MODEL_URL);
         const options = {
             score: 0.2,
             iou: 0.5,
@@ -450,38 +450,12 @@
         //     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
         //   }
         reader.onload = function (e) {
-            var exif;
-            var latitudeRef;
-            var longitudeRef;
-            var latitude = [];
-            var longitude = [];
-
-            if (file.name.toLowerCase().endsWith(".heic")) {
-                exif = findEXIFinHEIC(this.result);
-
-                if (exif !== null) {
-                    latitudeRef = exif["GPSLatitudeRef"];
-                    longitudeRef = exif["GPSLongitudeRef"];
-
-                    var originalLat = exif["GPSLatitude"];
-                    var originalLong = exif["GPSLongitude"];
-
-                    originalLat.forEach(number => {
-                        latitude.push(Object.values(number))
-                    });
-
-                    originalLong.forEach(number => {
-                        longitude.push(Object.values(number))
-                    });
-                };
-            } else {
-                exif = piexif.load(this.result)
-
-                latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
-                latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
-                longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
-                longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
-            };
+            var exif = piexif.load(this.result)
+            // console.log(exif)
+            var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
+            var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+            var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
+            var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
 
             if (latitude && latitudeRef && longitude && longitudeRef) {
                 var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
@@ -494,12 +468,7 @@
                 document.getElementById("uploaded_images_" + String(i) + "_gps").innerHTML = `not found`;
             }
         }
-
-        if (file.name.toLowerCase().endsWith(".heic")) {
-            reader.readAsArrayBuffer(file);
-        } else {
-            reader.readAsBinaryString(file);
-        }
+        reader.readAsBinaryString(file);
         // else {
         // uploaded_images_gps[i] = {}
         // }
