@@ -797,7 +797,7 @@ $(document).ready(function () {
     // load_random();
     // get_dataset_stats()
 
-    $('body').on('click touchstart', '#custom-select-list li.select-options', function (e) {
+    $('body').on('click', '#custom-select-list li.select-options', function (e) {
         e.preventDefault();
         $('.cselect ul').css('display', 'none');
         var dataValue = $(this).attr('data-option');
