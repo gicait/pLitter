@@ -1,6 +1,7 @@
 <div class="container" id="upload-section">
-    <label for="images">Images (.png, .jpg, etc)</label>
-    <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple />
+    <label for="images">Image:</label>
+    <input type="file" class="form-control-file" id="images" onchange="addFiles()" accept="image/*" capture/>
+    <!-- <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple /> -->
     <!-- <input type="file" class="form-control-file" id="images" onchange="addFiles()" accept="image/*" /> -->
   </div>
   <br>

@@ -165,25 +165,52 @@ async function uploadThis(id){
       imageFormData.append("longitude", uploaded_images_gps[id]['long']);
     }
 
-    axios.post(`${imageUploadbaseURL}/`, imageFormData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        "Access-Control-Allow-Origin": "*"
-      },
-      onUploadProgress: function(progressEvent) {
-        var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        // console.log(percentCompleted)
-        // progress_bar_${i}
-        document.getElementById('progress_bar_'+String(id)).style.width = percentCompleted;
-      }
-    })
-    .then(response => {
-      image_id = response.data.image_id
-      //alert(`success:${image_id}`)
-      // let image_id = response.data.id;
-      //console.log(image_id);
+    // axios.post(`${imageUploadbaseURL}/`, imageFormData, {
+    //  headers: {
+    //    "Content-Type": "multipart/form-data",
+    //    "Access-Control-Allow-Origin": "*"
+    //   },
+    //   onUploadProgress: function(progressEvent) {
+    //     var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+    //     // console.log(percentCompleted)
+    //    // progress_bar_${i}
+    //     document.getElementById('progress_bar_'+String(id)).style.width = percentCompleted;
+    //    }
+    //  })
+    //  .then(response => {
+    //    image_id = response.data.image_id
+    //    //alert(`success:${image_id}`)
+    //    // let image_id = response.data.id;
+    //    //console.log(image_id);
 
+    //    if(typeof image_id === 'number'){
+    //  fetch("https://annotator.ait.ac.th/api/image/?dataset_id=65", {
+    fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=65", { 
+       "headers": {
+         "accept": "application/json",
+         "Access-Control-Allow-Origin": "*",
+         "accept-language": "en-US,en;q=0.9",
+         //"cache-control": "no-cache",
+         //"content-type": "multipart/form-data",
+         //"pragma": "no-cache",
+         //"sec-gpc": "1"
+      },
+      "referrer": "http://203.159.29.51:5000/api/",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "body": imageFormData,
+      "method": "POST",
+      "mode": "cors",
+      "credentials": "include"
+    })
+    .then(response => response.json())
+    .then(data => image_id = data.image_id)
+    .then( () => {
       if(typeof image_id === 'number'){
+        alert(image_id)
+        // console.log(image_id);
+        // }
+        // })
+        //.catch(error => {console.log(error)});
         //console.log("uploading annotations", image_id);
         var annotations = images_annotations[id];
         console.log(annotations);
@@ -233,7 +260,7 @@ async function uploadThis(id){
           }
           else{
             //console.log("type error")
-            alert('wrong');
+            alert('Annotations Error!');
              return;
           }
 	  //alert(cat_id);
