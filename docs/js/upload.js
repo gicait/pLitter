@@ -2,8 +2,8 @@
 // TO DO: cat_dict, wont always same as annoatte.js, change TagSelectorWidget accordingly
 // make async all
 
-//const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
-const imageUploadbaseURL = 'http://203.159.29.51:5000/api/image';
+const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
+//const imageUploadbaseURL = 'http://203.159.29.51:5000/api/image';
 let upload_dataset_id = 65;
 let uploaded_images;
 let images_annotations = {};
@@ -238,7 +238,8 @@ async function uploadThis(id){
           }
 	  //alert(cat_id);
           //alert(box);
-          fetch("http://203.159.29.51:5000/api/annotation/", {
+          fetch("https://annotator.ait.ac.th/api/annotation/",{
+	  //fetch("http://203.159.29.51:5000/api/annotation/", {
             "headers": {
             "accept": "application/json, text/plain, */*",
             "accept-language": "en-US,en;q=0.9",
