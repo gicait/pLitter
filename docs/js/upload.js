@@ -160,7 +160,7 @@ async function uploadThis(id){
     let imageFormData = new FormData();
     imageFormData.append("image", uploaded_images.files[id]);
     imageFormData.append("dataset_id", upload_dataset_id);
-    if(!uploaded_images.files[id].filename){
+    if(uploaded_images.files[id].filename){
       imageFormData.append("filename", uploaded_images.files[id].filename);
     }
     if( uploaded_images_gps[id] ) {
