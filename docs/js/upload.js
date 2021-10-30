@@ -160,6 +160,9 @@ async function uploadThis(id){
     let imageFormData = new FormData();
     imageFormData.append("image", uploaded_images.files[id]);
     imageFormData.append("dataset_id", upload_dataset_id);
+    if(!uploaded_images.files[id].filename){
+      imageFormData.append("filename", uploaded_images.files[id].filename);
+    }
     if( uploaded_images_gps[id] ) {
       imageFormData.append("latitude", uploaded_images_gps[id]['lat']);
       imageFormData.append("longitude", uploaded_images_gps[id]['long']);
@@ -329,7 +332,10 @@ uploaded_images_annotations = {};
 uploaded_images_gps = {};
 $("#uploaded_images").find('tbody').empty();
 for (var i = 0; i < uploaded_images.files.length; i++) {
-    console.log(i)
+  //console.log(i)
+  if(!uploaded_images.files[i].filename){
+    uploaded_images.files[i].filename = uuid()+'.jpg';
+  }
   images_annotations[i] = []
   // console.log(uploaded_images.files[i].name)
   $("#uploaded_images").find('tbody')
