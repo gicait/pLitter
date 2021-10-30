@@ -334,7 +334,7 @@ $("#uploaded_images").find('tbody').empty();
 for (var i = 0; i < uploaded_images.files.length; i++) {
   //console.log(i)
   if(!uploaded_images.files[i].filename){
-    uploaded_images.files[i].filename = uuid()+'.jpg';
+    uploaded_images.files[i].filename = uuid()+'.'+uploaded_images.files[0].name.split('.').pop();;
   }
   images_annotations[i] = []
   // console.log(uploaded_images.files[i].name)
