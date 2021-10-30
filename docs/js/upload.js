@@ -281,6 +281,9 @@ async function uploadThis(id){
     })
     .catch(error => {
       alert("Failed:", error);
+      alert(error);
+      alert(error.message);
+      alert(error.response);
     });
     // first upload the image, get the image image_id
     // then upload annotations using image_id
