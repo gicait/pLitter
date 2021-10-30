@@ -94,7 +94,7 @@ function addImageToMap(map, xCoordinate, yCoordinate, imageId, prevId, nextId) {
 
   function imageIdToUrl(id) {
     // const BASE_URL = "https://annotator.ait.ac.th/api/image/";
-    const BASE_URL = "http://203.159.29.187:5000/api/image/";
+    const BASE_URL = "http://203.159.29.51:5000/api/image/";
     return BASE_URL + id;
   }
 }
@@ -122,7 +122,7 @@ async function getImagesAndClusters(bounds) {
 
 
   // let response = await fetch("https://annotator.ait.ac.th/api/image/map", {
-  let response = await fetch("http://203.159.29.187:5000/api/image/map", {
+  let response = await fetch("http://203.159.29.51:5000/api/image/map", {
     "headers": {
       "accept": "application/json",
       "accept-language": "en-US,en;q=0.9",

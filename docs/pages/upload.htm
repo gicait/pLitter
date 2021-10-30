@@ -1,373 +1,334 @@
-<!-- to do @ root code
-  "mobile friendly"
-  
-  1. "upload and annotate pages", if we open in mobile, "annotator tool" is not properly displaying toolbar properly, 
-    since devicxe width is less than the required, so making it vertcal aligned would be mobile friendly and it should 
-    be also aligned with screen orientation.
-  2. "upload and annotate pages", if we open in mobile, "annotator tool" is not functionaing properly, dropdown for label
-    categories is not working, need to solve this issue.
-  3. "upload page", when using ios and some of the android mobiles, when upload a image, GPS information is being stripped
-    in the exif data, GPS information is must and needed, as we are plotting the images on map.
-
-  additionally, little adjustments in nav bar are needed, as you see buttons are not perfectly aligned (minor issue)
-
--->
-
-
 <div class="container" id="upload-section">
     <label for="images">Images (.png, .jpg, etc)</label>
     <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple />
-    <!-- <input type="file" class="form-control-file" id="images" onchange="addFiles()" multiple accept="image/*" /> -->
-</div>
-<br>
-<div id="osd-annoatate-container" class="container" style="width: 100%; height: 500px;display: none;">
+    <!-- <input type="file" class="form-control-file" id="images" onchange="addFiles()" accept="image/*" /> -->
+  </div>
+  <br>
+  <div id="osd-annoatate-container" class="container" style="width: 100%; height: 500px;display: none;">
     <div id="image-dummy-display" style="display: none;"></div>
     <div id="osd-annoatate"></div>
-</div>
-<br>
-<div class="container">
+  </div>
+  <br>
+  <div class="container">
     <table role="presentation" class="table table-stripped" id="uploaded_images">
-        <tbody class="files"></tbody>
+      <tbody class="files"></tbody>
     </table>
-</div>
+  </div>
 
-
-<div class="container" id="recent-uploads-container">
+<div id="geop"></div>  
+  
+  <div class="container" id="recent-uploads-container"> 
     <h1>Recent uploads</h1>
     <table role="presentation" class="table table-stripped" id="recenet-uploads-table">
-        <tbody></tbody>
+      <tbody></tbody>
     </table>
-</div>
+  </div>
+  
+  
 
+<!--
 
-<script>
+  <script>
     // TO DO: cat_dict, wont always same as annoatte.js, change TagSelectorWidget accordingly
     // make async all
-
-    const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
+  
+    //const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
+    const imageUploadbaseURL = 'http://203.159.29.51:5000/api/image';
     let upload_dataset_id = 65;
     let uploaded_images;
     let images_annotations = {};
     let uploaded_images_gps = {};
     var selected_anno;
     const MODEL_URL = 'tfjs/model.json'
-    var isFullScreen = false;
-
-    async function save_annotations_to_array(i) {
-        annotations_in_osd = selected_anno.getAnnotations();
-        let annotations_in_osd_to_array = []
-        images_annotations[i] = annotations_in_osd
-        document.getElementById('labelcount_' + String(i)).innerHTML = images_annotations[i].length
-        document.getElementById('osd-annoatate').innerHTML = ''
-        document.getElementById("osd-annoatate-container").style.display = "none";
-        // annotations_in_osd.forEach(annotation => {
-        // })
+  
+    async function save_annotations_to_array(i){
+      annotations_in_osd = selected_anno.getAnnotations();
+      let annotations_in_osd_to_array = []
+      images_annotations[i] = annotations_in_osd
+      document.getElementById('labelcount_'+String(i)).innerHTML = images_annotations[i].length
+      document.getElementById('osd-annoatate').innerHTML = ''
+      document.getElementById("osd-annoatate-container").style.display = "none";
+      // annotations_in_osd.forEach(annotation => {
+      // })
     }
-
+  
     async function run_on_selected(i, image) {
-
-        confirm("Do you prefer pLitter suggestions?")
-        const model = await tf.automl.loadObjectDetection(MODEL_URL);
-        const options = {
-            score: 0.2,
-            iou: 0.5,
-            topk: 20
-        };
-        const predictions = await model.detect(image, options);
-        var annotations_format = []
-        predictions.forEach(prediction => {
-            const {
-                box,
-                label,
-                score
-            } = prediction;
-            const {
-                left,
-                top,
-                width,
-                height
-            } = box;
-            var anno_dict = {}
-            anno_dict["type"] = "Annotation"
-            anno_dict["body"] = []
-            anno_dict_body = {}
-            anno_dict_body["type"] = "TextualBody"
-            anno_dict_body["purpose"] = "tagging"
-            let label_string = label.replace(/(\r\n|\n|\r)/gm, "");
-            anno_dict_body["value"] = label_string
-            anno_dict["body"].push(anno_dict_body)
-            anno_dict["target"] = {}
-            anno_dict["target"]["source"] = image.src,
-                anno_dict["target"]["selector"] = {}
-            anno_dict["target"]["selector"]["type"] = "FragmentSelector"
-            anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
-            anno_dict["target"]["selector"]["value"] = "xywh=pixel:" + String(left) + "," + String(top) + "," + String(width) + "," + String(height)
-            anno_dict["@context"] = ""
-            anno_dict["id"] = '_' + Math.random().toString(36).substr(2, 9);
-            annotations_format.push(anno_dict)
-        })
-        selected_anno.setAnnotations(annotations_format)
-
+      // console.log(uploaded_images.files[i].name) 
+      confirm("Do you prefer pLitter suggestions?")
+      const model = await tf.automl.loadObjectDetection(MODEL_URL)    
+      // console.log(image.width)
+      // console.log(image.height)
+      // console.log(image.complete)
+      // console.log(image)
+      const options = {score: 0.2, iou: 0.5, topk: 20};
+      const predictions = await model.detect(image, options);
+      console.log(predictions)
+      var annotations_format = []
+      predictions.forEach(prediction => {
+        const {box, label, score} = prediction;
+        const {left, top, width, height} = box;
+        var anno_dict = {}
+        anno_dict["type"] = "Annotation"
+        anno_dict["body"] = []
+        anno_dict_body = {}
+        anno_dict_body["type"] =  "TextualBody"
+        anno_dict_body["purpose"] = "tagging"
+        let label_string = label.replace(/(\r\n|\n|\r)/gm,"");
+        anno_dict_body["value"] = label_string
+        console.log(anno_dict_body["value"])
+        anno_dict["body"].push(anno_dict_body)
+        anno_dict["target"] = {}
+        anno_dict["target"]["source"] = image.src,
+        anno_dict["target"]["selector"] = {}
+        anno_dict["target"]["selector"]["type"] = "FragmentSelector"
+        anno_dict["target"]["selector"]["conformsTo"] = "http://www.w3.org/TR/media-frags/"
+        anno_dict["target"]["selector"]["value"] = "xywh=pixel:"+String(left)+","+String(top)+","+String(width)+","+String(height)
+        anno_dict["@context"] = ""
+        anno_dict["id"] = '_' + Math.random().toString(36).substr(2, 9);
+        annotations_format.push(anno_dict)
+      })
+      selected_anno.setAnnotations(annotations_format)
+  
+      console.log(image.width)
+      console.log(image.height)
+  
     }
+  
+    function labelThis(i){
+      console.log(i)
+      document.getElementById('osd-annoatate').innerHTML = ''
+      document.getElementById("osd-annoatate-container").style.display = "";
+      const image_url = URL.createObjectURL(uploaded_images.files[i])
+      var viewer = OpenSeadragon({
+        id: "osd-annoatate",
+        prefixUrl: "./icons/openseadragon/",
+        tileSources: {
+          type: "image",
+          url: image_url
+        },
+        gestureSettingsTouch: {
+          pinchRotate: true
+        }
+      });
+  
+      selected_anno = OpenSeadragon.Annotorious(viewer, {
+        locale: 'auto',
+        allowEmpty: true,
+        widgets: [ TagSelectorWidget ]
+      });
 
-    function labelThis(i) {
-        document.getElementById('osd-annoatate').innerHTML = ''
-        document.getElementById("osd-annoatate-container").style.display = "";
-        const image_url = URL.createObjectURL(uploaded_images.files[i])
-        var viewer = OpenSeadragon({
-            id: "osd-annoatate",
-            prefixUrl: "./icons/openseadragon/",
-            tileSources: {
-                type: "image",
-                url: image_url
-            },
-            gestureSettingsTouch: {
-                pinchRotate: true
-            }
+      viewer.addHandler('open', () => {
+        let ignoreButton = new OpenSeadragon.Button({
+          tooltip: 'Pan',
+          srcRest: `./icons/openseadragon/pan-tool.png`,
+          srcGroup: `./icons/openseadragon/pan-tool.png`,
+          srcHover: `./icons/openseadragon/pan-tool.png`,
+          srcDown: `./icons/openseadragon/pan-tool.png`,
+          onClick: () => {selected_anno.setDrawingEnabled(false);},
+        //   onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
         });
-
-        viewer.fullPageButton.removeAllHandlers();
-        viewer.fullPageButton.addHandler("click", function () {
-            if (isFullScreen === false) {
-                viewer.setFullScreen(true)
-                screen.orientation.lock("landscape-primary")
-                isFullScreen = true
-            } else if (isFullScreen === true) {
-                viewer.setFullScreen(false)
-                screen.orientation.unlock();
-                isFullScreen = false
-            }
+        viewer.addControl(ignoreButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_LEFT });
+      });
+  
+      viewer.addHandler('open', () => {
+        let saveButton = new OpenSeadragon.Button({
+          tooltip: 'Save',
+          srcRest: `./icons/openseadragon/save.png`,
+          srcGroup: `./icons/openseadragon/save.png`,
+          srcHover: `./icons/openseadragon/save.png`,
+          srcDown: `./icons/openseadragon/save.png`,
+          onClick: () => {console.log('saving'); save_annotations_to_array(i);},
         });
+        viewer.addControl(saveButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+      });
 
-        selected_anno = OpenSeadragon.Annotorious(viewer, {
-            locale: 'auto',
-            allowEmpty: true,
-            widgets: [TagSelectorWidget]
+      viewer.addHandler('open', () => {
+        let rectButton = new OpenSeadragon.Button({
+          tooltip: 'Draw',
+          srcRest: `./icons/openseadragon/rect.png`,
+          srcGroup: `./icons/openseadragon/rect.png`,
+          srcHover: `./icons/openseadragon/rect.png`,
+          srcDown: `./icons/openseadragon/rect.png`,
+          onClick: () => {console.log('rect'); selected_anno.setDrawingTool('rect'); selected_anno.setDrawingEnabled(true);},
         });
+        viewer.addControl(rectButton.element, { anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT });
+      });
 
-        selected_anno.on('createSelection', async function (selection) {
-            selection.body = [{
-                type: 'TextualBody',
-                purpose: 'tagging',
-                value: 'Plastic'
-            }];
-
-            await selected_anno.updateSelected(selection);
-            selected_anno.updateSelected(selection, true);
-        })
-
-        viewer.addHandler('open', () => {
-            let ignoreButton = new OpenSeadragon.Button({
-                tooltip: 'Pan',
-                srcRest: `./icons/openseadragon/pan-tool.png`,
-                srcGroup: `./icons/openseadragon/pan-tool.png`,
-                srcHover: `./icons/openseadragon/pan-tool.png`,
-                srcDown: `./icons/openseadragon/pan-tool.png`,
-                onClick: () => {
-                    selected_anno.setDrawingEnabled(false);
-                },
-                //   onClick: () => {console.log('ignoring'); rejectedList.push(image_id); load_random()},
-            });
-            viewer.addControl(ignoreButton.element, {
-                anchor: OpenSeadragon.ControlAnchor.TOP_LEFT
-            });
-        });
-
-        viewer.addHandler('open', () => {
-            let saveButton = new OpenSeadragon.Button({
-                tooltip: 'Save',
-                srcRest: `./icons/openseadragon/save.png`,
-                srcGroup: `./icons/openseadragon/save.png`,
-                srcHover: `./icons/openseadragon/save.png`,
-                srcDown: `./icons/openseadragon/save.png`,
-                onClick: () => {
-                    save_annotations_to_array(i);
-                },
-            });
-            viewer.addControl(saveButton.element, {
-                anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT
-            });
-        });
-
-        viewer.addHandler('open', () => {
-            let rectButton = new OpenSeadragon.Button({
-                tooltip: 'Draw',
-                srcRest: `./icons/openseadragon/rect.png`,
-                srcGroup: `./icons/openseadragon/rect.png`,
-                srcHover: `./icons/openseadragon/rect.png`,
-                srcDown: `./icons/openseadragon/rect.png`,
-                onClick: () => {
-                    selected_anno.setDrawingTool('rect');
-                    selected_anno.setDrawingEnabled(true);
-                },
-            });
-            viewer.addControl(rectButton.element, {
-                anchor: OpenSeadragon.ControlAnchor.TOP_RIGHT
-            });
-        });
-
-        const image = new Image();
-        image.id = "image-dummy"
-        image.onload = () => run_on_selected(i, image);
-        document.getElementById("image-dummy-display").append(image)
-        image.src = URL.createObjectURL(uploaded_images.files[i])
-        // document.getElementById("image-dummy-display").style.display = '';
-
-        // initialize osd-annotorius
-        // img src with i
+      const image = new Image();
+      image.id = "image-dummy"
+      image.onload = () => run_on_selected(i, image);
+      document.getElementById("image-dummy-display").append(image)
+      image.src = URL.createObjectURL(uploaded_images.files[i])
+      // document.getElementById("image-dummy-display").style.display = '';
+  
+      // initialize osd-annotorius
+      // img src with i
     }
-
-    function uploadThis(id) {
-        let image_id = NaN;
-        if (images_annotations[id].length == 0) {
-            alert("Please add labels to the image")
-        } else {
-            let imageFormData = new FormData();
-            imageFormData.append("image", uploaded_images.files[id]);
-            imageFormData.append("dataset_id", upload_dataset_id);
-            if (uploaded_images_gps[id]) {
-                imageFormData.append("latitude", uploaded_images_gps[id]['lat']);
-                imageFormData.append("longitude", uploaded_images_gps[id]['long']);
-            }
-
-            axios.post(`${imageUploadbaseURL}/`, imageFormData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    "Access-Control-Allow-Origin": "*"
-                },
-                onUploadProgress: function (progressEvent) {
-                    var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
-                    // progress_bar_${i}
-                    document.getElementById('progress_bar_' + String(id)).style.width = percentCompleted;
+  
+    async function uploadThis(id){
+      let image_id = NaN;
+      console.log(id)
+      if(images_annotations[id].length == 0){
+        alert("Please add labels to the image")
+      }
+      else{
+        let imageFormData = new FormData();
+        imageFormData.append("image", uploaded_images.files[id]);
+        imageFormData.append("dataset_id", upload_dataset_id);
+        if( uploaded_images_gps[id] ) {
+          imageFormData.append("latitude", uploaded_images_gps[id]['lat']);
+          imageFormData.append("longitude", uploaded_images_gps[id]['long']);
+        }
+  
+        await axios.post(`${imageUploadbaseURL}/`, imageFormData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Access-Control-Allow-Origin": "*"
+          },
+          onUploadProgress: function(progressEvent) {
+            var percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            // console.log(percentCompleted)
+            // progress_bar_${i}
+            document.getElementById('progress_bar_'+String(id)).style.width = percentCompleted;
+          }
+        })
+        .then(response => {
+          image_id = response.data;
+	  alert(image_id);
+          // let image_id = response.data.id;
+          // console.log(image_id);
+	})
+	.catch(error => {
+	  alert(error)
+	})
+          if(typeof image_id === 'number'){
+            console.log("uploading annotations", image_id);
+            var annotations = images_annotations[id]
+            annotations.forEach(function(ann) {
+              if(ann.target.selector.type === 'FragmentSelector'){
+                var is_it_bbox = true
+                var value = ann.target.selector.value
+                var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
+                var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
+                var [ x, y, w, h ] = coords.split(',').map(parseFloat)
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                console.log(x, y, w, h, cat_id, ann.id)
+                var box = [x, y, w, h]
+                var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]]
+              }
+              else if(ann.target.selector.type === "SvgSelector"){
+                var is_it_bbox = false
+                console.log("svg")
+                var value = ann.target.selector.value
+                var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
+                var cat_name = ann.body[0].value
+                var cat_id = cat_dict[cat_name]
+                var sep_coords = coords.split(' ')
+                var flat_coords = []
+                sep_coords.forEach(sep_coord => {
+                  var temp_cord = sep_coord.split(',').map(i=>Number(i))
+                  flat_coords = flat_coords.concat(temp_cord)
+                });
+                var xs = []
+                var ys = []
+                for (i = 0; i < flat_coords.length; i++) {
+                  if(i%2 === 0){
+                    xs.push(flat_coords[i])
+                  }
+                  else{
+                    ys.push(flat_coords[i])
+                  }
                 }
+                var min_x = Math.min(...xs), max_x = Math.max(...xs)
+                var min_y = Math.min(...ys), max_y = Math.max(...ys)
+                var w = max_x-min_x
+                var h = max_y-min_y
+                var box = [min_x, min_y, w, h]
+                var seg = [flat_coords]
+                console.log(xs, ys, min_x, min_y, w, h, seg, cat_id)
+              }
+              else{
+                console.log("type error")
+                return;
+              }
+              fetch(base_link+"/api/annotation/", {
+                "headers": {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "en-US,en;q=0.9",
+                "content-type": "application/json;charset=UTF-8"
+                },
+                "referrer": base_link+"/",
+                "referrerPolicy": "strict-origin-when-cross-origin",
+                "body": JSON.stringify({
+                  image_id: image_id,
+                  category_id: cat_id,
+                  isbbox: is_it_bbox,
+                  segmentation: seg,
+                  bbox: box,
+                }),
+                "method": "POST",
+                "mode": "cors",
+                "credentials": "include"
+              })
+              .then(ann_response => ann_response.json())
+              .then(ann_data => console.log(ann_data))
+              .catch(ann_error => console.log(ann_error))
             })
-                .then(response => {
-                    image_id = response.data
-                    // let image_id = response.data.id;
-
-                    if (typeof image_id === 'number') {
-                        console.log("uploading annotations", image_id);
-                        var annotations = images_annotations[id]
-                        annotations.forEach(function (ann) {
-                            if (ann.target.selector.type === 'FragmentSelector') {
-                                var is_it_bbox = true
-                                var value = ann.target.selector.value
-                                var format = value.includes(':') ? value.substring(value.indexOf('=') + 1, value.indexOf(':')) : 'pixel';
-                                var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1);
-                                var [x, y, w, h] = coords.split(',').map(parseFloat)
-                                var cat_name = ann.body[0].value
-                                var cat_id = cat_dict[cat_name]
-                                var box = [x, y, w, h]
-                                var seg = [
-                                    [x, y, x + w, y, x + w, y + h, x, y + h]
-                                ]
-                            } else if (ann.target.selector.type === "SvgSelector") {
-                                var is_it_bbox = false
-                                var value = ann.target.selector.value
-                                var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : ""
-                                var cat_name = ann.body[0].value
-                                var cat_id = cat_dict[cat_name]
-                                var sep_coords = coords.split(' ')
-                                var flat_coords = []
-                                sep_coords.forEach(sep_coord => {
-                                    var temp_cord = sep_coord.split(',').map(i => Number(i))
-                                    flat_coords = flat_coords.concat(temp_cord)
-                                });
-                                var xs = []
-                                var ys = []
-                                for (i = 0; i < flat_coords.length; i++) {
-                                    if (i % 2 === 0) {
-                                        xs.push(flat_coords[i])
-                                    } else {
-                                        ys.push(flat_coords[i])
-                                    }
-                                }
-                                var min_x = Math.min(...xs),
-                                    max_x = Math.max(...xs)
-                                var min_y = Math.min(...ys),
-                                    max_y = Math.max(...ys)
-                                var w = max_x - min_x
-                                var h = max_y - min_y
-                                var box = [min_x, min_y, w, h]
-                                var seg = [flat_coords]
-                            } else {
-                                console.log("type error")
-                                return;
-                            }
-                            fetch(base_link + "/api/annotation/", {
-                                "headers": {
-                                    "accept": "application/json, text/plain, */*",
-                                    "accept-language": "en-US,en;q=0.9",
-                                    "content-type": "application/json;charset=UTF-8"
-                                },
-                                "referrer": base_link + "/",
-                                "referrerPolicy": "strict-origin-when-cross-origin",
-                                "body": JSON.stringify({
-                                    image_id: image_id,
-                                    category_id: cat_id,
-                                    isbbox: is_it_bbox,
-                                    segmentation: seg,
-                                    bbox: box,
-                                }),
-                                "method": "POST",
-                                "mode": "cors",
-                                "credentials": "include"
-                            })
-                                .then(ann_response => ann_response.json())
-                                .then(ann_data => console.log(ann_data))
-                                .catch(ann_error => console.log(ann_error))
-                        })
-                        document.getElementById("uploaded_images_" + String(id)).remove();
-                        document.getElementById("uploaded_images_mobile_actions_" + String(id)).remove();
-                        $("#recenet-uploads-table").find('tbody')
-                            .append($(`
-              <tr class="template-upload d-flex" id="recent_image_${image_id}">
+            console.log("closing foreach");
+            document.getElementById("uploaded_images_"+String(id)).remove();
+            $("#recenet-uploads-table").find('tbody')
+            .append($(`
+              <tr class="template-upload" id="recent_image_${image_id}">
                 <td>
                   <span class="preview"><img width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[id])}"/></span>
                 </td>
-                <td class="d-flex flex-column" style="flex:2;">
-                  <span class="name"><strong>File name: </strong>${uploaded_images.files[id].name}</span>
-                  <span class="size"><strong>Size: </strong>${(uploaded_images.files[id].size / (1024 * 1024)).toFixed(2)} MB</span>
-                  <span class="size"><strong>Labels: </strong>${annotations.length}</span>
+                <td>
+                  <p><span class="name">${uploaded_images.files[id].name}</span>
+                  <span class="size">${(uploaded_images.files[id].size/(1024*1024)).toFixed(2)} MB</span>
+                  <span class="size">Labels:<div>${annotations.length}</div></span></p>
                 </td>
-              </tr>`))
-                    }
-                })
-                .catch(error => {
-                    alert("Failed:", error.message);
-                });
-            // first upload the image, get the image image_id
-            // then upload annotations using image_id
-        }
+              </tr>`)
+            )
+          }
+        //})
+        //.catch(error => {
+        //  alert("Failed:", error.message);
+        //});
+        // // first upload the image, get the image image_id
+        // // then upload annotations using image_id
+      }
     }
-
-    function cancelThis(i) {
-        $('#uploaded_images_' + String(i)).remove();
-        $('#uploaded_images_mobile_actions_' + String(i)).remove();
+  
+    function cancelThis(i){
+      console.log(i)
+      $('#uploaded_images_'+String(i)).remove();
     }
-
-    function addFiles() {
-        alert("adding")
-        uploaded_images = document.getElementById("images");
-        uploaded_images_annotations = {};
-        uploaded_images_gps = {};
-        $("#uploaded_images").find('tbody').empty();
-        for (var i = 0; i < uploaded_images.files.length; i++) {
-            images_annotations[i] = []
-            $("#uploaded_images").find('tbody')
-                .append($(`
-        <tr class="d-flex flex-column flex-md-row border-top mt-4" id="uploaded_images_${i}">
-            <td class="border-0">
+  
+  function addFiles(){
+    alert("adding")
+    uploaded_images = document.getElementById("images");
+    uploaded_images_annotations = {};
+    uploaded_images_gps = {};
+    $("#uploaded_images").find('tbody').empty();
+    for (var i = 0; i < uploaded_images.files.length; i++) {
+        console.log(i)
+      images_annotations[i] = []
+      // console.log(uploaded_images.files[i].name)
+      $("#uploaded_images").find('tbody')
+        .append($(`
+          <tr class="" id="uploaded_images_${i}">
+            <td>
               <span class="preview"><img id="uploaded_image_${i}" width="80" height="60" src="${URL.createObjectURL(uploaded_images.files[i])}"/></span>
             </td>
-            <td class="d-flex flex-column border-0" style="flex:2;">
-              <span class="name"><strong>File name: </strong>${uploaded_images.files[i].name}</span>
-              <span class="size"><strong>Size: </strong>${(uploaded_images.files[i].size / (1024 * 1024)).toFixed(2)} MB</span>
-              <span><strong>GPS coordinates: </strong><span id="uploaded_images_${i}_gps">${getExif(i)}</span></span>
-              <span class="size"><strong>Labels: </strong><span id="labelcount_${i}">0</span></span>
-              <div style="margin-top: 1rem" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
+            <td>
+              <span class="name">File name: ${uploaded_images.files[i].name}</span>
+              <span class="size">Size: ${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
+              <span id="uploaded_images_${i}_gps">GPS coordinates: ${getExif(i) }</span>
+              <span class="size">Labels:<div style="inline" id="labelcount_${i}">0</div></span>
+              <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
             </td>
-            <td class="uploaded-actions border-0 d-none d-md-block">
+            <td>
               <button class="btn btn-primary edit" data-index="0" onclick="labelThis(${i})">
                 <i class="fa fa-edit"></i>
                 <span>Label</span>
@@ -381,253 +342,47 @@
                 <span>Delete</span>
               </button>
             </td>
-          </tr>
-          <tr id="uploaded_images_mobile_actions_${i}">
-            <td class="uploaded-actions d-flex d-md-none w-100 border-top-0">
-              <button class="btn btn-primary edit" data-index="0" onclick="labelThis(${i})">
-                <i class="fa fa-edit"></i>
-                <span class="d-block">Label</span>
-              </button>
-              <button class="btn btn-success start" onclick="uploadThis(${i})">
-                <i class="fa fa-upload"></i>
-                <span class="d-block">Upload</span>
-              </button>
-              <button class="btn btn-danger delete" onclick="cancelThis(${i})">
-                <i class="fa fa-trash-alt"></i>
-                <span class="d-block">Delete</span>
-              </button>
-            </td>
-          </tr>
-          `))
-        }
+          </tr>`)
+        )  
     }
+  }
 
-    // function ConvertDMSToDD(degrees, minutes, seconds, direction) {
-    //   var dd = degrees + (minutes/60) + (seconds/360000);
-    //   if (direction == "S" || direction == "W") {
-    //     dd = dd * -1;
-    //   }
-    //   return dd;
-    // }
+  function ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef) {
 
-    function ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef) {
+    const latitudeMultiplier = latitudeRef == 'N' ? 1 : -1;
+    const decimalLatitude = latitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(latitude);
+    const longitudeMultiplier = longitudeRef == 'E' ? 1 : -1;
+    const decimalLongitude = longitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(longitude);
+    
+    const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
+    const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
+    return {'lat':latitudeDegrees, 'latRef': latitudeRef, 'lon': longitudeDegrees, 'lonRef': longitudeRef}
+}
 
-        const latitudeMultiplier = latitudeRef == 'N' ? 1 : -1;
-        const decimalLatitude = latitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(latitude);
-        const longitudeMultiplier = longitudeRef == 'E' ? 1 : -1;
-        const decimalLongitude = longitudeMultiplier * piexif.GPSHelper.dmsRationalToDeg(longitude);
-
-        const latitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(latitude);
-        const longitudeDegrees = piexif.GPSHelper.dmsRationalToDeg(longitude);
-        return {
-            'lat': latitudeDegrees,
-            'latRef': latitudeRef,
-            'lon': longitudeDegrees,
-            'lonRef': longitudeRef
-        }
+  async function getExif(i) {
+    file = uploaded_images.files[i]
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var exif = piexif.load(this.result)
+      var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
+      var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
+      var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
+      var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
+      if (latitude   && latitudeRef && longitude && longitudeRef) {
+        var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
+        uploaded_images_gps[i] = {"lat": image_gps['lat'], "long": image_gps['lon']}
+        document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = image_gps['lat']+' '+image_gps['latRef']+','+image_gps['lon']+' '+image_gps['lonRef']
+      }
+      else {
+        navigator.geolocation.getCurrentPosition(function(position){
+          uploaded_images_gps[i] = {"lat": position.coords.latitude, "long": position.coords.longitude};
+          document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = position.coords.latitude+','+position.coords.longitude;
+        }, function(error){
+          document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = "Geolocation not found!";
+        }, {enableHighAccuracy: true, timeout: 5000, maximumAge: 0 });
+      }
     }
-
-    async function getExif(i) {
-        file = uploaded_images.files[i]
-        var reader = new FileReader();
-        // reader.onload = function(e) {
-        //   var exif = EXIF.readFromBinaryFile(this.result);
-        //   if (exif.GPSLatitude || exif.GPSLongitude) {
-        //     var latDegree = exif.GPSLatitude[0].numerator;
-        //     var latMinute = exif.GPSLatitude[1].numerator;
-        //     var latSecond = exif.GPSLatitude[2].numerator;
-        //     var latDirection = exif.GPSLatitudeRef;
-
-        //     var latFinal = ConvertDMSToDD(latDegree, latMinute, latSecond, latDirection);
-
-        //     var lonDegree = exif.GPSLongitude[0].numerator;
-        //     var lonMinute = exif.GPSLongitude[1].numerator;
-        //     var lonSecond = exif.GPSLongitude[2].numerator;
-        //     var lonDirection = exif.GPSLongitudeRef;
-
-        //     var lonFinal = ConvertDMSToDD(lonDegree, lonMinute, lonSecond, lonDirection);
-        //     uploaded_images_gps[i] = {"lat": latFinal, "long": lonFinal}
-        //     document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = latFinal+','+lonFinal
-        //   }
-        reader.onload = function (e) {
-            var exif = piexif.load(this.result)
-            // console.log(exif)
-            var latitude = exif['GPS'][piexif.GPSIFD.GPSLatitude];
-            var latitudeRef = exif['GPS'][piexif.GPSIFD.GPSLatitudeRef];
-            var longitude = exif['GPS'][piexif.GPSIFD.GPSLongitude];
-            var longitudeRef = exif['GPS'][piexif.GPSIFD.GPSLongitudeRef];
-
-            if (latitude && latitudeRef && longitude && longitudeRef) {
-                var image_gps = ConvertDMSToDD(latitude, latitudeRef, longitude, longitudeRef);
-                uploaded_images_gps[i] = {
-                    "lat": image_gps['lat'],
-                    "long": image_gps['lon']
-                }
-                document.getElementById("uploaded_images_" + String(i) + "_gps").innerHTML = image_gps['lat'] + ' ' + image_gps['latRef'] + ',' + image_gps['lon'] + ' ' + image_gps['lonRef']
-            } else {
-                document.getElementById("uploaded_images_" + String(i) + "_gps").innerHTML = `not found`;
-            }
-        }
-        reader.readAsBinaryString(file);
-        // else {
-        // uploaded_images_gps[i] = {}
-        // }
-        // }
-        // reader.readAsArrayBuffer(file);
-        // }
-
-
-
-
-
-
-        //     function extractMetadata(data) {
-
-        // if (data.getByteAt(0) != 0xFF || data.getByteAt(1) != 0xD8) {
-        //     console.log("ERROR: not a valid jpeg");
-        //     return []; // not a valid jpeg
-        // }
-
-        // var iOffset = 0;
-        // var iLength = data.getLength();
-        // var metaLength = 0;
-        // var segLength;
-
-        // while (iOffset < iLength) {
-        //     if (data.getByteAt(iOffset) != 0xFF) {
-        //         console.log("Not a valid marker at offset " + iOffset + ", found: 0x" + data.getByteAt(iOffset).toString(16));
-        //         metaLength = iOffset;
-        //         break;
-        //     }
-
-        //     var iMarker = data.getByteAt(iOffset+1);
-        //     //console.log("read: " + data.getByteAt(iOffset) + ":" + data.getByteAt(iOffset+1));
-
-        //     // from 0xE0 to 0xEE (app segments) - from 0xF0 to 0xFD (jpeg extensions) and 0xFE (jpeg comment) and 0xDB (DQT, define quantization tables).  Note that DQT is necessary for extractig metadata.  It is not clear why.
-        //     if ((iMarker >= 0xE0 && iMarker <= 0xFF) || iMarker == 0xDB) {
-        //         segLength = data.getShortAt(iOffset+2, true) - 2;
-        //         console.log("Found marker 0xff" + iMarker.toString(16) + " at: " + iOffset);
-        //         console.log("Segment length: " + segLength);
-
-        //         iOffset += segLength+2;
-
-        //         //padding
-        //         while (data.getByteAt(iOffset) == 0x00 && data.getByteAt(iOffset+1) == 0x00) {
-        //             console.log('skipping two bytes');
-        //             iOffset += 2;
-        //             continue;
-        //         }
-        //     } else {
-        //         console.log('false alarm. found: 0xff' + iMarker.toString(16) + ' at: ' + iOffset);
-        //         iOffset += 2;
-        //     }
-        // }
-
-        // if( metaLength != 0 ) {
-        //     var exifdata = data.getRawData().slice(0, metaLength);
-        //     exifdata += data.getRawData().slice(iLength-3); // Add an EOI
-        //     return exifdata;
-        // } else {
-        //     return [];
-        // }
-        // //return readEXIFData(data, iOffset + 4, data.getShortAt(iOffset+2, true)-2);
-        // }
-
-        // reader.onload = (function() {
-        //     return function(event) {
-        //         //console.log(event.target.result);
-        //         data = event.target.result;
-        //         data = new BinaryFile(data, 0, data.length);
-        //         var exifdata = extractMetadata(data);
-        //         if( exifdata.length == 0 ) {
-        //             errorCb("Problems extracting exif data");
-        //         } else {
-        //             successCb(exifdata);
-        //         }
-        //     }
-        // })();
-
-        // // Read in the image file as a data url.
-        // //reader.readAsDataURL(file);
-        // reader.readAsBinaryString(file);
-        // //reader.readAsText(file);
-
-        // uploaded_images_gps[i] = {"lat": exifData.latitude, "long": exifData.longitude} 
-        // document.getElementById("uploaded_images_"+String(i)+"_gps").innerHTML = exifData.longitude+','+exifData.latitude
-        // return exifData.longitude, exifData.latitude
-    }
-
-
-    // $('.fileupload').fileupload({
-    //            dataType: 'json',
-    //            add: function (e, data) {
-    //                var picker = $(this).data('link');
-    //                $(picker).children('span').html('check');
-    //                data.submit();
-    //                /*
-    //                data.context = $('<button/>').text('Upload')
-    //                    .appendTo(document.body)
-    //                    .click(function () {
-    //                        data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-    //                        data.submit();
-    //                        });
-    //                 */
-    //            },
-    //            done: function (e, data) {
-    //                //data.context.text('Upload finished.');            
-    //                $.each(data.result.files, function (index, file) {
-    //                    $('<p/>').text(file.name).appendTo(document.body);
-    //                });
-    //            },
-    //            progressall: function (e, data) {
-    //                var progress = parseInt(data.loaded / data.total * 100, 10);
-    //               //  $('#progress .bar').css(
-    //               //      'width',
-    //               //      progress + '%'
-    //               //  );
-    //                $('#progress .bar').progressbar({
-    //                     value: progress
-    //                });
-    //                $('#progress .bar').append(progress);
-    //            }   
-    //        });
-
-    //   var loadFile = function(event) {
-    //   var reader = new FileReader();
-    //   reader.onload = function(){
-    //     var output = new Image();
-    //     output.src = reader.result;
-    //     EXIF.getData(output, function() {
-    //       // console.log("Aa");
-    //       // var make = EXIF.getTag(this, "Make");
-    //       // var model = EXIF.getTag(this, "Model");
-    //       // var data = EXIF.getAllTags(this);
-    //       // console.log(make, model, allMetaData);
-
-    //       var exifLong = EXIF.getTag(this, "GPSLongitude");
-    //       // console.log(exifLong); 
-    //       var exifLongRef = EXIF.getTag(this, "GPSLongitudeRef");
-    //       // console.log(exifLongRef);
-    //       var exifLat = EXIF.getTag(this, "GPSLatitude"); 
-    //       // console.log(exifLat);
-    //       var exifLatRef = EXIF.getTag(this, "GPSLatitudeRef"); 
-    //       // console.log(exifLatRef);
-
-    //       if (exifLatRef == "S") {
-    //       var latitude = (exifLat[0]*-1) + (( (exifLat[1]*-60) + (exifLat[2]*-1) ) / 3600);						
-    //       } else {
-    //       var latitude = exifLat[0] + (( (exifLat[1]*60) + exifLat[2] ) / 3600);
-    //       }
-    //       console.log(latitude);
-
-    //       if (exifLongRef == "W") {
-    //       var longitude = (exifLong[0]*-1) + (( (exifLong[1]*-60) + (exifLong[2]*-1) ) / 3600);						
-    //       } else {
-    //       var longitude = exifLong[0] + (( (exifLong[1]*60) + exifLong[2] ) / 3600);
-    //       }
-    //       console.log(longitude);
-    //   });
-    //   };
-    //   reader.readAsDataURL(event.files[0]);
-    // };
-</script>
+    reader.readAsBinaryString(file);
+  }
+  </script> 
+-->

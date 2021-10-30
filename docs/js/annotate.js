@@ -291,7 +291,7 @@ async function load_random() {
                         url: String(base_link) + '/api/image/' + String(image_id)
                     },
                     gestureSettingsTouch: {
-                        pinchRotate: true
+                        pinchRotate: false
                     },
                     autoHideControls: false,
                     maxZoomPixelRatio: 6
