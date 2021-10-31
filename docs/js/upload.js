@@ -4,12 +4,98 @@
 
 const imageUploadbaseURL = 'https://annotator.ait.ac.th/api/image';
 //const imageUploadbaseURL = 'http://203.159.29.51:5000/api/image';
-let upload_dataset_id = 65;
+let upload_dataset_id = 303;
 let uploaded_images;
 let images_annotations = {};
 let uploaded_images_gps = {};
 var selected_anno;
 const MODEL_URL = 'tfjs/model.json'
+
+var upCatDict = {}
+fetch(base_link + "/api/dataset/" + String(upload_dataset_id) + "/cats", {
+  "headers": {
+    "accept": "application/json",
+    "accept-language": "en-GB,en-US;q=0.9,en;q=0.8"
+  },
+  "referrer": base_link,
+  "referrerPolicy": "strict-origin-when-cross-origin",
+  "body": null,
+  "method": "GET",
+  "mode": "cors",
+  "credentials": "include"
+})
+.then(response => response.json())
+.then(data => cats_response = data)
+.then(() => {
+  console.log("Catgeory dictionary for upload fecthed.");
+  upCatDict = cats_response.categories;
+})
+.catch(error => console.log(error))
+
+//console.log(upCatDict);
+
+let uploadTagSelectorWidget = (args) => {
+    var tempArgs;
+    tempArgs = args;
+    window.arguments = tempArgs;
+
+    tags = args.annotation ?
+        args.annotation.bodies.filter(function (b) {
+            return b.purpose == 'tagging' && b.type == 'TextualBody';
+        }) : [];
+
+    let createDropDown = function (options) {
+
+        var dropDownDiv = document.createElement('div');
+        dropDownDiv.setAttribute('class', 'cselect');
+
+        var input = document.createElement('input')
+        input.setAttribute('id', 'custom-select');
+        input.setAttribute('type', 'text');
+        input.setAttribute('placeholder', 'Please select');
+        input.setAttribute('value', options[0]);
+        input.disabled = true;
+
+        var ul = document.createElement('ul');
+        ul.setAttribute('id', 'custom-select-list');
+
+        options.forEach(optionValue => {
+            let optionElement = document.createElement('li');
+            optionElement.setAttribute('class', 'select-options');
+            optionElement.setAttribute('data-option', optionValue);
+
+            function capitalize(word) {
+                const lower = word.toLowerCase();
+                return word.charAt(0).toUpperCase() + lower.slice(1);
+            }
+            optionElement.appendChild(document.createTextNode(capitalize(optionValue)));
+            optionElement.value = optionValue;
+            optionElement.setAttribute('value', optionValue);
+            if (optionValue == tags[0]?.value) {
+                input.setAttribute('value', optionValue);
+            }
+            ul.appendChild(optionElement);
+        });
+        dropDownDiv.append(input)
+        dropDownDiv.append(ul);
+
+        dropDownDiv.addEventListener('click', function () {
+            $('.cselect ul').css('display', 'block');
+        });
+
+        return dropDownDiv;
+    }
+
+    var container = document.createElement('div');
+    container.className = 'tagselector-widget';
+
+    const UPLOADVOCABULARY = Object.keys(upCatDict);
+    container.appendChild(createDropDown(UPLOADVOCABULARY));
+
+    return container;
+};
+
+
 
 async function save_annotations_to_array(i){
   annotations_in_osd = selected_anno.getAnnotations();
@@ -87,7 +173,7 @@ function labelThis(i){
   selected_anno = OpenSeadragon.Annotorious(viewer, {
     locale: 'auto',
     allowEmpty: true,
-    widgets: [ TagSelectorWidget ]
+    widgets: [ uploadTagSelectorWidget ]
   });
 
   selected_anno.on('createSelection', async function (selection) {
@@ -187,8 +273,8 @@ async function uploadThis(id){
     //    //console.log(image_id);
 
     //    if(typeof image_id === 'number'){
-    fetch("https://annotator.ait.ac.th/api/image/?dataset_id=65", {
-    //  fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=65", { 
+    fetch("https://annotator.ait.ac.th/api/image/?dataset_id=303", {
+    //  fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=303", { 
        "headers": {
          "accept": "application/json",
          "Access-Control-Allow-Origin": "*",
@@ -225,7 +311,7 @@ async function uploadThis(id){
             var coords = value.includes(':') ? value.substring(value.indexOf(':') + 1) : value.substring(value.indexOf('=') + 1); 
             var [ x, y, w, h ] = coords.split(',').map(parseFloat);
             var cat_name = ann.body[0].value;
-            var cat_id = cat_dict[cat_name];
+            var cat_id = upCatDict[cat_name];
             //console.log(x, y, w, h, cat_id, ann.id)
             var box = [x, y, w, h];
             var seg = [[x,y,x+w,y,x+w,y+h,x,y+h]];
@@ -236,7 +322,7 @@ async function uploadThis(id){
             var value = ann.target.selector.value;
             var coords = value.includes('=') ? value.substring(value.indexOf('=\"') + 3, value.indexOf('\">')) : "";
             var cat_name = ann.body[0].value;
-            var cat_id = cat_dict[cat_name];
+            var cat_id = upCatDict[cat_name];
             var sep_coords = coords.split(' ');
             var flat_coords = [];
             sep_coords.forEach(sep_coord => {
