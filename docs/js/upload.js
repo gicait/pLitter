@@ -24,7 +24,7 @@ async function save_annotations_to_array(i){
 
 async function run_on_selected(i, image) {
   // console.log(uploaded_images.files[i].name) 
-  confirm("Do you prefer pLitter suggestions?")
+  confirm("Please wait for pLitter suggestions.")
   const model = await tf.automl.loadObjectDetection(MODEL_URL)    
   // console.log(image.width)
   // console.log(image.height)
@@ -154,7 +154,7 @@ async function uploadThis(id){
   let image_id = NaN;
   console.log(id)
   if(images_annotations[id].length == 0){
-    alert("Please add labels to the image")
+    alert("Please add/save labels!")
   }
   else{
     let imageFormData = new FormData();
@@ -209,7 +209,7 @@ async function uploadThis(id){
     .then(data => image_id = data.image_id)
     .then( () => {
       if(typeof image_id === 'number'){
-        alert(image_id)
+        // alert(image_id)
         // console.log(image_id);
         // }
         // })
@@ -311,9 +311,9 @@ async function uploadThis(id){
     })
     .catch(error => {
       alert("Failed:", error);
-      alert(error);
-      alert(error.message);
-      alert(error.response);
+      // alert(error);
+      // alert(error.message);
+      // alert(error.response);
     });
     // first upload the image, get the image image_id
     // then upload annotations using image_id
@@ -326,7 +326,7 @@ function cancelThis(i){
 }
 
 function addFiles(){
-alert("adding")
+// alert("adding")
 uploaded_images = document.getElementById("images");
 uploaded_images_annotations = {};
 uploaded_images_gps = {};
@@ -347,7 +347,7 @@ for (var i = 0; i < uploaded_images.files.length; i++) {
         <td>
           <span class="name">File name: ${uploaded_images.files[i].name}</span>
           <span class="size">Size: ${(uploaded_images.files[i].size/(1024*1024)).toFixed(2)} MB</span>
-          <span id="uploaded_images_${i}_gps">GPS coordinates: ${getExif(i) }</span>
+          <span id="uploaded_images_${i}_gps">GPS coordinates: ${getExif(i) }</span><br>
           <span class="size">Labels:<div style="inline" id="labelcount_${i}">0</div></span>
           <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress_bar_${i}" class="progress-bar progress-bar-success" style="width:0%;"></div></div>
         </td>
@@ -398,16 +398,17 @@ reader.onload = await function(e) {
   }
   else {
     if(navigator.geolocation){
-        document.getElementById("geop").innerHTML = 'laliga';
+        // document.getElementById("geop").innerHTML = 'laliga';
 	navigator.geolocation.getCurrentPosition(function(position){
-	  document.getElementById("geop").innerHTML = position.coords.latitude;
+		cord = position
+	  // document.getElementById("geop").innerHTML = position.coords.latitude;
 	}, function(error){
-	  document.getElementById("geop").innerHTML = error.code;
+	  document.getElementById("geop").innerHTML = "GPS Error: "+error.code;
 	});
 	//alert(navigator.geolocation.watchPosition(onGeoSuccess));
     }
-    else { 
-	document.getElementById('geop').innerHTML = 'loliga';
+    else {
+	document.getElementById('geop').innerHTML = '';
     }
     navigator.geolocation.getCurrentPosition(function(position){
       uploaded_images_gps[i] = {"lat": position.coords.latitude, "long": position.coords.longitude};
