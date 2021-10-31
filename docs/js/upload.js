@@ -187,8 +187,8 @@ async function uploadThis(id){
     //    //console.log(image_id);
 
     //    if(typeof image_id === 'number'){
-    //  fetch("https://annotator.ait.ac.th/api/image/?dataset_id=65", {
-    fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=65", { 
+    fetch("https://annotator.ait.ac.th/api/image/?dataset_id=65", {
+    //  fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=65", { 
        "headers": {
          "accept": "application/json",
          "Access-Control-Allow-Origin": "*",
