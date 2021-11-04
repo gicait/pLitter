@@ -11,17 +11,18 @@
         <div class="layer"></div>
         <div class="layer2"></div>
         <div class="login_form">
-            <input type="text" id="email_login" placeholder="email"/> </br>
+            <!-- <input type="text" id="email_login" placeholder="email"/> </br> -->
             <input type="text" id="username_login" placeholder="username"/> </br>
             <input type="password" id="password_login" placeholder="password"/> <br>
             <button id="login_button">Log In</button>
         </div>
    
         <div class="SignUp_form">
-            <input type="text" id="email_signup" placeholder="email"/> </br>
-            <input type="text" id="username_signup" placeholder="username"/> </br>
-            <input type="password" id="password_signup" placeholder="password"/> </br>
-            <input type="password" id="password_repeat_signup" placeholder="confirm password"/> <br>
+            <!-- <input type="text" id="email_signup" placeholder="email"/> </br> -->
+	    <input type="text" id="fullname_signup" placeholder="Fullname (optional)"/> </br>
+            <input type="text" id="username_signup" placeholder="Username"/> </br>
+            <input type="password" id="password_signup" placeholder="Password"/> </br>
+            <input type="password" id="password_repeat_signup" placeholder="Confirm password"/> <br>
             <button id="signup_button">Signup</button>
         </div>
     </div>
@@ -222,10 +223,11 @@
 
                     <input type="checkbox" id="chbox">	
                     <div class="user_form">
-                        <input type="text" id="email_user" placeholder="email"/> </br>
-                        <input type="text" id="username_user" placeholder="username"/> </br>
-                        <input type="password" id="password_user" placeholder="password"/> <br>
-                        <input type="password" id="password_repeat_user" placeholder="confirm password"/> <br>
+                        <!-- <input type="text" id="email_user" placeholder="email"/> </br> -->
+			<input type="text" id="fullname_user" placeholder="Fullname"></br>
+                        <input type="text" id="username_user" placeholder="Username"/> </br>
+                        <input type="password" id="password_user" placeholder="Password"/> <br>
+                        <input type="password" id="password_repeat_user" placeholder="Confirm password"/> <br>
                         <button id="edit_button">Edit</button>
                         <button id="logout_button" onclick="signOut();">Log Out</button>
                     </div>
@@ -236,7 +238,7 @@
        checkUserExist();
     
        function signup() {
-           let email = document.getElementById("email_signup").value;
+           let name = document.getElementById("fullname_signup").value;
            let username = document.getElementById("username_signup").value;
            let password = document.getElementById("password_signup").value;
            let password_repeat = document.getElementById("password_repeat_signup").value;
@@ -256,11 +258,10 @@
                "referrer": base_link + "/",
                "referrerPolicy": "strict-origin-when-cross-origin",
                "body": JSON.stringify({
-                   email: email,
+                   name: name,
                    username: username,
                    password: password,
                    confirmPassword: password_repeat,
-                   name: "",
                    loading: false
                }),
                "method": "POST",
