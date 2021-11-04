@@ -51,7 +51,7 @@
     
         // change file for license issue
 const osvg = document.querySelector('svg');
-const MODEL_URL = 'tfjs/model.json'
+// const MODEL_URL = 'tfjs/model.json'
 async function run() {
     alert("Start predicting pLitter! it might take few seconds to make inefrences")
     const model = await tf.automl.loadObjectDetection(MODEL_URL);
