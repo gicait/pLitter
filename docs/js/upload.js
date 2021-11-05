@@ -273,7 +273,7 @@ async function uploadThis(id){
     //    //console.log(image_id);
 
     //    if(typeof image_id === 'number'){
-    fetch("https://annotator.ait.ac.th/api/image/?dataset_id=303", {
+    fetch("https://annotator.ait.ac.th/api/image/?dataset_id=304", {
     //  fetch("https://65b9-203-159-29-51.ngrok.io/api/image/?dataset_id=303", { 
        "headers": {
          "accept": "application/json",
