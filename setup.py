@@ -3,8 +3,11 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+# packages=setuptools.find_packages(),
+
+
 setuptools.setup(
-    name="pLitterStreet",
+    name="plitterstreet",
     version="0.0.1",
     author="GIC@AIT",
     author_email="sriram@ait.ac.th",
@@ -12,7 +15,17 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gicait/pLitter",
-    packages=setuptools.find_packages(),
+    packages=["plitterstreet"],
+    install_requires=[
+        "opencv-python",
+        "exif",
+        "piexif",
+        "folium",
+        "tensorflow",
+        "tqdm",
+        "Pillow",
+        "geopy",
+    ],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
