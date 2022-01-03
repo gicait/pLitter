@@ -11,7 +11,7 @@ import csv
 import fractions
 from PIL import Image
 from PIL.ExifTags import TAGS
-from tag_exif import set_gps_location
+from .tag_exif import set_gps_location
 import geopy.distance
 
 class Video:

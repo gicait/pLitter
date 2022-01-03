@@ -12,7 +12,7 @@ from folium import plugins
 from folium.plugins import HeatMap
 from folium.features import ColorLine
 
-from predict import draw_boxes_on_image
+from .predict import draw_boxes_on_image
 
 def get_color(val):
 
