@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="plitterstreet",
-    version="0.0.1",
+    version="1.0",
     author="GIC@AIT",
     author_email="sriram@ait.ac.th",
     description="A tool identify and map the plastic litter in the streets",
