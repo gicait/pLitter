@@ -6,6 +6,7 @@ Supported models:
     darknet --> yolov4, works in colab easily, darknet installation is needed in local
 """
 
+import os
 import cv2
 import tensorflow as tf
 import tqdm
@@ -28,6 +29,7 @@ def draw_boxes_on_image(image, boxes, classes, scores, use_normalized_coordinate
 
 class EdgePredictor():
     def __init__(self, model_path):
+        model_path = os.path.join('../models/', model_path)
         loaded = tf.saved_model.load(export_dir=model_path)
         self.infer = loaded.signatures["serving_default"]
         self.ready = True

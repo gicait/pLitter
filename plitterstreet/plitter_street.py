@@ -53,6 +53,8 @@ def convert2decimal(coords, ref):
 
 class StreetData:
     def __init__(self, path, images_list='', images_json=''):
+        if not os.path.isdir(path):
+            return None
         self.images_dir = path
         if images_list == '':
             self.images_list = os.path.basename(path)+'.csv'
@@ -166,7 +168,8 @@ class StreetData:
     def save(self, dst_path=''):
         folder_name = os.path.basename(self.images_dir)
         data = dict()
-        data[folder_name] = self.images
+        data['images'] = self.images
+        data['predictions'] = self.predictions
         if dst_path=='':
             json.dump(data, open(os.path.join(self.images_dir, folder_name+'.json'), 'w'))
         else:
