@@ -69,6 +69,12 @@ Refer to [pLitter demo](/docs/notebooks/pLitter_demo.ipynb)
 
 Also visit [pLitter pages](https://plitter.org).
 
+## ToDo
+
+Add support for 360 camera videos
+
+Manage multiple streets or video tracks collected a city, and draw in a common map.
+
 
 <!-- ## Citation
 
