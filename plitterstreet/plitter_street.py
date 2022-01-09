@@ -2,7 +2,7 @@
     The tool to identify and map the plastic litters in the streets using street view data, which are the sequence georefrenced images.
 """
 
-import os, sys
+import os, sys, re
 import cv2
 import csv, json
 from exif import Image
@@ -41,9 +41,9 @@ icon_circle = folium.plugins.BeautifyIcon(
     border_width=10,
 )
 
-icon_bin=folium.Icon(color="blue",icon="trash", prefix='fa')
+#icon_bin=folium.Icon(color="blue",icon="trash", prefix='fa')
 
-icon_pile=folium.Icon(color="red",icon="dumpster-fire", prefix='fa')
+#icon_pile=folium.Icon(color="red",icon="dumpster-fire", prefix='fa')
 
 def convert2decimal(coords, ref):
         decimal_degrees = coords[0] + coords[1] / 60 + coords[2] / 3600
@@ -65,7 +65,7 @@ class StreetData:
         if images_json == '':
             self.images_json = os.path.basename(path)+'.json'
         else:
-            self.images_json = images_list
+            self.images_json = images_json
         if not os.path.isfile(os.path.join(self.images_dir, self.images_json)):
             print('Predictions file is invalid. Ignore it if the images are not predicted and saved.')
         self.images = list()
@@ -74,7 +74,10 @@ class StreetData:
     def load_images_from_dir(self):
         # a.sort(key=lambda f: int("".join(filter(str.isdigit, f))))
         self.images = []
-        for filename in os.listdir(self.images_dir).sort(key=lambda f: int("".join(filter(str.isdigit, f)))):
+        filenames = os.listdir(self.images_dir)
+        filenames = list(filter(lambda x: x.lower().endswith(('.jpg', '.png')), filenames))
+        filenames.sort(key = lambda f: int(re.sub('\D', '', f)))
+        for filename in filenames:
                 img = cv2.imread(os.path.join(self.images_dir,filename))
                 if img is not None:
                     img_exif = Image(open(os.path.join(self.images_dir,filename), 'rb'))
@@ -160,7 +163,7 @@ class StreetData:
                     self.predictions.append(item)
     
     def load_data_from_json(self):
-        with open(self.images_json) as jsf:
+        with open(os.path.join(self.images_dir, self.images_json)) as jsf:
             data = json.load(jsf)
             self.images = data['images']
             self.predictions = data['predictions']
@@ -175,7 +178,7 @@ class StreetData:
         else:
             json.dump(data, open(os.path.join(dst_path, folder_name+'.json'), 'w'))
 
-    def draw_street_on_map(self, m):
+    def draw_street_on_map(self, m = None):
         points = self.images
         if not type(m) == folium.folium.Map:
             m = folium.Map(tiles="OpenStreetMap", prefer_canvas=True)
@@ -198,10 +201,10 @@ class StreetData:
         max_count = 0
         for k in range(len(points)):
             if points[k]['Trash bin']:
-                folium.Marker([float(points[k]['latitude']), float(points[k]['longitude'])], icon=icon_bin).add_to(trashbins)
+                folium.Marker([float(points[k]['latitude']), float(points[k]['longitude'])], icon=folium.Icon(color='blue')).add_to(trashbins)
             if points[k]['Pile']:
-                folium.Marker([float(points[k]['latitude']), float(points[k]['longitude'])], icon=icon_pile).add_to(piles)
-            folium.CircleMarker([float(points[k]['latitude']), float(points[k]['longitude'])], radius=.1, popup="<i>"+points[k]['name']+"</i>", tooltip=points[k]['name'], icon=icon_circle).add_to(images)
+                folium.Marker([float(points[k]['latitude']), float(points[k]['longitude'])], icon=folium.Icon(color='red',icon_color='#FFFF00')).add_to(piles)
+            folium.CircleMarker([float(points[k]['latitude']), float(points[k]['longitude'])], radius=.3, popup="<i>"+points[k]['name']+"</i>", tooltip=points[k]['name'], icon=icon_circle).add_to(images)
             if k < len(points)-1:
                 p1_count = points[k]['Plastic']+points[k]['Face mask']+points[k]['Pile']*100
                 p2_count = points[k+1]['Plastic']+points[k+1]['Face mask']+points[k+1]['Pile']*100
@@ -219,6 +222,6 @@ class StreetData:
                     colormap=[color, color],
                     weight=3,
                 ).add_to(hotline)
-        HeatMap(heat_data, radius = 10, min_opacity = 0.1, max_val = max_count, gradient={.0: 'green', .1: 'yellow', .5: 'red', .9: 'blue'}).add_to(heatmap)
+        HeatMap(heat_data, radius = 10, min_opacity = 0.1, max_val = max_count, gradient={.0: 'green', .4: 'yellow', .5: 'orange', .9: 'red'}).add_to(heatmap)
         m.fit_bounds(m.get_bounds())
         return m

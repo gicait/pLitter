@@ -20,7 +20,7 @@ setuptools.setup(
         "opencv-python",
         "exif",
         "piexif",
-        "folium",
+        "folium==0.8.2",
         "tensorflow",
         "tqdm",
         "Pillow",
