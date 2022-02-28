@@ -77,6 +77,7 @@ class StreetData:
         filenames = os.listdir(self.images_dir)
         filenames = list(filter(lambda x: x.lower().endswith(('.jpg', '.png')), filenames))
         filenames.sort(key = lambda f: int(re.sub('\D', '', f)))
+#         filenames.sort(key=lambda f: int("".join(filter(str.isdigit, f))))
         for filename in filenames:
                 img = cv2.imread(os.path.join(self.images_dir,filename))
                 if img is not None:
@@ -172,7 +173,7 @@ class StreetData:
         folder_name = os.path.basename(self.images_dir)
         data = dict()
         data['images'] = self.images
-        data['predictions'] = self.predictions
+        data['predictions'] = self.predictions  
         if dst_path=='':
             json.dump(data, open(os.path.join(self.images_dir, folder_name+'.json'), 'w'))
         else:

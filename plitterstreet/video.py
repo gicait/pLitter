@@ -34,13 +34,22 @@ class Video:
                 with open(gps_file, 'r') as csvfile:
                     reader = csv.DictReader(csvfile)
                     for row in reader:
+#                         self.gps_list.append(
+#                             [
+#                                 row['cts'], 
+#                                 row['date'], 
+#                                 row['GPS (Lat.) [deg]'], 
+#                                 row['GPS (Long.) [deg]'], 
+#                                 row['GPS (Alt.) [m]']
+#                             ]
+#                         )
                         self.gps_list.append(
                             [
-                                row['cts'], 
-                                row['date'], 
-                                row['GPS (Lat.) [deg]'], 
-                                row['GPS (Long.) [deg]'], 
-                                row['GPS (Alt.) [m]']
+                                row['cts'] if "cts" in row else row["Milliseconds"] if "Milliseconds" in row else None, 
+                                row['date'] if "date" in row else None, 
+                                row['GPS (Lat.) [deg]'] if "GPS (Lat.) [deg]" in row else row["Latitude"] if "Latitude" in row else None, 
+                                row['GPS (Long.) [deg]'] if "GPS (Long.) [deg]" in row else row["Longitude"] if "Longitude" in row else None, 
+                                row['GPS (Alt.) [m]'] if "GPS (Alt.) [m]" in row else row["Altitude"] if "Altitude" in row else None
                             ]
                         )
                     if not len(self.gps_list) == 0:
@@ -49,6 +58,7 @@ class Video:
                     else:
                         self.gps_file = ''
                         self.gps_list = list()
+                        print("No GPS points found in teh file")
         else:
             print("Continuing withput GPS file, add it if available.")
             self.gps_file = ''
@@ -160,16 +170,18 @@ class Video:
     
     def ExtractbyGps(self, dst_path='', check_overlapping = True, gps_distance=0, cnt_th=1, qlt_th=0.7, skip=0):
         """
-            uses gps_pingts in gps_list to save frames, check_overlapping is set to True in default, change to False to avoid.
+            uses gps_points in gps_list to save frames, check_overlapping is set to True in default, change to False to avoid.
             gps_ditance is set to 0 in default, provide it with some number (consider in meters) to keep the distnce between images.
-        """        
+        """
         if len(self.gps_list) < 3:
             return 'Not enough gps data, check the given gps_file.'
 
         vidcap = cv2.VideoCapture(os.path.join(self.video_dir, self.file_name))
         srat_ts = float(self.gps_list[1][0])
+        print("starting position set to:", srat_ts)
         vidcap.set(cv2.CAP_PROP_POS_MSEC,(srat_ts))
         success, frame1 = vidcap.read()
+
 
         if success:
             if dst_path=='':
@@ -187,7 +199,7 @@ class Video:
                 
             gps_tag_filename = os.path.join(abs_folder_name, folder_name+'.csv') 
             with open(gps_tag_filename, 'w', newline='') as gps_tag_file:
-                gps_tag_writer = csv.DictWriter(gps_tag_file, fieldnames = ['Name', 'Latitude', 'Longitude'], delimiter=',')
+                gps_tag_writer = csv.DictWriter(gps_tag_file, fieldnames = ['CTS', 'Name', 'Latitude', 'Longitude'], delimiter=',')
                 gps_tag_writer.writeheader()
                 pivot_frame = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
                 count = 0
@@ -196,7 +208,7 @@ class Video:
                 cv2.imwrite(image_name, frame1)
                 print(float(self.gps_list[1][2]), float(self.gps_list[1][3]), float(self.gps_list[1][4]))
                 set_gps_location(image_name, str(self.gps_list[1][1]), float(self.gps_list[1][2]), float(self.gps_list[1][3]), int(float(self.gps_list[1][4])))
-                pivot_gps_tag_row = {"Name": folder_name+'_'+str(image_count)+'.jpg', "Latitude": self.gps_list[1][2], "Longitude": self.gps_list[1][3]}
+                pivot_gps_tag_row = {"CTS": srat_ts, "Name": folder_name+'_'+str(image_count)+'.jpg', "Latitude": self.gps_list[1][2], "Longitude": self.gps_list[1][3]}
                 gps_tag_writer.writerow(pivot_gps_tag_row)
                 image_count += 1
                 match_cnt1 = 100
@@ -207,7 +219,7 @@ class Video:
                         count += 1
                         continue
                     distance = geopy.distance.distance((pivot_gps_tag_row['Latitude'], pivot_gps_tag_row['Longitude']), (float(row[2]), float(row[3]))).m
-                    print(distance)
+#                     print(distance)
                     if distance < (gps_distance - gps_distance*0.15):
                         print('avoiding, gps distance:', distance)
                         count += 1
@@ -239,15 +251,16 @@ class Video:
                     match_cnt1 = match_cnt2
                     match_cnt2 = kp_matched_well_len
 
-                    print(match_cnt1, match_cnt2)
-                    print('iter: '+str(count)+', len: '+str(kp_matched_well_len))
+                    #print(match_cnt1, match_cnt2)
+                    #print('iter: '+str(count)+', len: '+str(kp_matched_well_len))
                 
                     if (match_cnt1 <= cnt_th) and (match_cnt2 <= cnt_th):
                         print("saving image at", pts)
                         image_name = os.path.join(abs_folder_name, folder_name+'_'+str(image_count)+'.jpg') 
                         cv2.imwrite(image_name, frame2)
+#                         print(row)
                         set_gps_location(image_name, row[1], float(row[2]), float(row[3]), float(row[4]))
-                        gps_tag_row = {"Name": folder_name+'_'+str(image_count)+'.jpg', "Latitude": row[2], "Longitude": row[3]}
+                        gps_tag_row = {"CTS": pts, "Name": folder_name+'_'+str(image_count)+'.jpg', "Latitude": row[2], "Longitude": row[3]}
                         gps_tag_writer.writerow(gps_tag_row)
                         pivot_gps_tag_row = gps_tag_row
                         image_count += 1
