@@ -90,8 +90,9 @@ class StreetData:
                                 image_dict['latitude'] = convert2decimal(img_exif.gps_latitude, img_exif.gps_latitude_ref)
                                 image_dict['longitude'] = convert2decimal(img_exif.gps_longitude, img_exif.gps_longitude_ref)
                                 self.images.append(image_dict)
+                                print(image_dict)
                             except AttributeError:
-                                print('GPS Coordinates not found in', filename)
+                                print(filename, 'GPS Coordinates not found in')
                     else:
                         print('No EXIF information in', filename)
         print(len(self.images), 'images are found in the directory.')
