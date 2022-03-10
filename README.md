@@ -31,17 +31,18 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 ## Datasets
 
-The datasets used in this repository can be downloaded from following link. Dataset contains RGB images, plastic litter annotations (COCO format, and CSV).
+The datasets used in this repository can be downloaded from following link. Dataset contains RGB images, plastic litter annotations (COCO format).
 
-* [pLitter](https://drive.google.com/drive/folders/1vKz85C5AzrhXFSWNePSL5-g3QTF8paqU?usp=sharing)
+* [pLitter](https://drive.google.com/drive/folders/165ZP5b9yU6Za8nfhdfGpoSyGFJTUpfiI?usp=sharing)
 
 pLitter dataset contains images from following areas,
-* Pathumthani
 * Mekong river basin
-* Ubon Ratchathani (ongoing)
-* Chiang Rai (ongoing)
+* Pathumthani, Ubon Ratchathani, and Chiang Rai (Thailand)
+* Can Tho (Vietnam)
+* Hanwella & Mawanella (Sri Lanka)
 
-*Note: We have used [Annotator tool](http://annotator.ait.ac.th) built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
+
+*Note: We have used a open-source Annotator tool built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
 
 ## Pre-trained models
 
@@ -57,9 +58,8 @@ Models that are trained separately for each of the datasets, as well as model th
 
 | Model | mAP |
 | --- | --- |
-| Google AutoML\* [Mobile High](/models/automl) | 0.439 |
-| Google AutoML\* [Cloud] | 0.624 |
-<!-- | Mask RCNN | (ongoing) | (ongoing) | -->
+| Google AutoML\* [Cloud] | 0.77 |
+| Faster RCNN | 0.67 |
 
 *Note: \*These models are trained using [Google AutoML Vision tools](https://cloud.google.com/automl) in [Google Cloud Platform](https://cloud.google.com/).*
 
@@ -71,10 +71,7 @@ Also visit [pLitter pages](https://plitter.org).
 
 ## ToDo
 
-Add support for 360 camera videos
-
-Manage multiple streets or video tracks collected a city, and draw in a common map.
-
+Add support for 360 camera
 
 <!-- ## Citation
 
