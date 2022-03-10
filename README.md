@@ -65,7 +65,7 @@ Models that are trained separately for each of the datasets, as well as model th
 
 ## Usage
 
-Refer to [pLitter demo](/docs/notebooks/pLitter_demo.ipynb)
+Refer to [pLitter demo](/demo/pLitterStreet_demo.ipynb)
 
 Also visit [pLitter pages](https://plitter.org).
 
