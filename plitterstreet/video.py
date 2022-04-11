@@ -73,7 +73,7 @@ class Video:
         success,image = vidcap.read()
         if success:
             if dst_path=='':
-                print("destination path is not given, stores the iamges into a created folder with video file name in the directroy to input video")
+                print("destination path is not given, saves the retrieved images into a folder with video file name in the same directroy of input video")
                 dst_path = self.video_dir
             else:
                 dst_path = os.path.abspath(dst_path)
@@ -109,7 +109,7 @@ class Video:
         success, frame1 = vidcap.read()
         if success:
             if dst_path=='':
-                print("destination path is not given, stores the iamges into a created folder with video file name in the directroy to input video")
+                print("destination path is not given, saves the retrieved images into a folder with video file name in the same directroy of input video")
                 dst_path = self.video_dir
             else:
                 dst_path = os.path.abspath(dst_path)
@@ -185,7 +185,7 @@ class Video:
 
         if success:
             if dst_path=='':
-                print("destination path is not given, stores the iamges into a created folder with video file name in the directroy to input video")
+                print("destination path is not given, saves the retrieved images into a folder with video file name in the same directroy of input video")
                 dst_path = self.video_dir
             else:
                 dst_path = os.path.abspath(dst_path)
