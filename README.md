@@ -76,6 +76,7 @@ Train a light weight model for deploying with Rpi/jetson to fix it on garbage tr
 ``` -->
 Use this bibtex to cite us.
 
+```BibTeX
 @misc{pLitterStreet_2021,
   title={pLitter-street, Plastic Litter detection along the streets using deep learning},
   author={Sriram Reddy, Chatura Lavanga, Lakmal Deshapriya, and Sujit},
@@ -83,7 +84,7 @@ Use this bibtex to cite us.
   publisher={Github},
   howpublished={\url{https://github.com/gicait/pLitter/}},
 }
-
+```
 
 ## Developed by
 
