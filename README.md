@@ -71,10 +71,9 @@ To deal with 360 images.
 
 Train a light weight model for deploying with Rpi/jetson to fix it on garbage truck for real time prediction. 
 
-<!-- ## Citation
-```
-``` -->
-Use this bibtex to cite us.
+## Citation
+
+Use the below bibtex to cite us.
 
 ```BibTeX
 @misc{pLitterStreet_2021,
