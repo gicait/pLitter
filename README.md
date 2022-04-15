@@ -78,7 +78,7 @@ Use the below bibtex to cite us.
 ```BibTeX
 @misc{pLitterStreet_2021,
   title={pLitter-street, Plastic Litter detection along the streets using deep learning},
-  author={Sriram Reddy, Chatura Lavanga, Lakmal Deshapriya, Dan Tran, Kavinda GUnasekara, and Sujit},
+  author={Sriram Reddy, Chatura Lavanga, Lakmal Deshapriya, Dan Tran, Kavinda Gunasekara, and Sujit},
   year={2021},
   publisher={Github},
   howpublished={\url{https://github.com/gicait/pLitter/}},
