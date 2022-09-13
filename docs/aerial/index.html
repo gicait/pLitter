@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- leaflet css link  -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    />
+
+    <link
+      rel="stylesheet"
+      href="./style.css"
+    />
+
+    <title>leaflet-videoTrack-demo</title>
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        width: 100%;
+        height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div id="vplayer"></div>
+  </body>
+</html>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
+<!-- <script src="https://unpkg.com/leafletvideoplay@1.0.0/public/bundle.js"></script> -->
+<script src="./bundle.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+
+<script>
+  var map = L.map("map").setView([14.0818318, 100.6325879], 14);
+
+  var osm = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  });
+
+  osm.addTo(map);
+
+  var geojsonStyle = {
+    fillColor:"#ff0000",
+    color: "#000",
+    weight: 1,
+    opacity: 1,
+    fillOpacity: 0.7,
+  };
+
+var options = {
+    maxZoom: 20,
+    tolerance: 3,
+    debug: 0,
+    style: geojsonStyle
+};
+// var canvasLayer = L.geoJson.vt(data, options).addTo(map);
+
+// console.log(canvasLayer)
+
+
+fetch('./sample.json')
+    .then(result => result.json())
+    .then((output) => {
+        var addedTrack = L.videoTrack.drawTrack(output, "vplayer").addTo(map);
+    })
+    .catch(err => console.error(err));
+
+
+</script>

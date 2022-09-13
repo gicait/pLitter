@@ -1,0 +1,16 @@
+#map
+{
+    width: auto;
+    height: 500px;
+}
+
+#vplayer {
+    position: absolute;
+    top: 540px;
+    left: 10px;
+    width: 300px;
+    height: 180px;
+    padding: 10px;
+    z-index: 500;
+    border: 5px solid red;
+}
