@@ -16,7 +16,7 @@
       href="./style.css"
     />
 
-    <title>leaflet-videoTrack-demo</title>
+    <title>pLitterAerial Demo</title>
 
     <style>
       body {
@@ -37,8 +37,8 @@
 
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
-<!-- <script src="https://unpkg.com/leafletvideoplay@1.0.0/public/bundle.js"></script> -->
-<script src="./bundle.js"></script>
+<script src="https://unpkg.com/leaflet.videomaps@1.1.0/dist/Leaflet.VideoMaps.js"></script>
+<!-- <script src="./bundle.js"></script> -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
@@ -74,7 +74,7 @@ var options = {
 fetch('./sample.json')
     .then(result => result.json())
     .then((output) => {
-        var addedTrack = L.videoTrack.drawTrack(output, "vplayer").addTo(map);
+        var addedTrack = L.VideoMaps.drawTrack(output, "vplayer").addTo(map);
     })
     .catch(err => console.error(err));
 
