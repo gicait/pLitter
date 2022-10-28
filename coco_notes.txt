@@ -1,0 +1,4 @@
+#written by coco
+If we fork the repo and connect with visual studio code, you will only get main branch. If you want to get
+another brances, type this in terminal: git clone -b docs --single-branch 'https://github.com/gicait/pLitter'
+
