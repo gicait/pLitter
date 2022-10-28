@@ -1,0 +1,4 @@
+cv2
+yolov5
+strong_sort
+fastapi
