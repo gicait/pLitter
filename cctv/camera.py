@@ -1,5 +1,8 @@
+import os
+import yaml
+
 CAMERA_NAME="test"
-WAIT_AT_START=3
+WAIT_AT_START=25
 CAMERA_SOURCE=0 #0 WEBCAM, 1 CSI-CAM, 2 IMAGES FROM DIR
 INPUT_WIDTH=1920
 INPUT_HEIGHT=1280
@@ -15,7 +18,6 @@ sys.path.append('/home/cctv/yolov5/')
 sys.path.append('/home/cctv/classy-sort-yolov5/sort')
 
 import argparse
-import os
 import platform
 import shutil
 import time
@@ -30,7 +32,6 @@ import torch.backends.cudnn as cudnn
 
 from utils.general import check_img_size, non_max_suppression, scale_coords
 from utils.torch_utils import select_device
-
 
 from sort import *
 
@@ -293,6 +294,28 @@ if __name__ == '__main__':
     args = parser.parse_args()
     args.img_size = check_img_size(args.img_size)
     print(args)
+
+    source_path = Path(__file__).resolve()
+    source_dir = source_path.parent
+
+    with open(os.path.join(source_dir, 'conf.yaml'), 'r') as stream:
+        data = yaml.safe_load(stream)
+        print(data)
+        if 'frame_width' in data.keys():
+            FRAME_WIDTH = data['frame_width']
+        if 'frame_height' in data.keys():
+            FRAME_HEIGHT = data['frame_height']
+
+
+    WAIT_AT_START=3
+    CAMERA_SOURCE=0 #0 WEBCAM, 1 CSI-CAM, 2 IMAGES FROM DIR
+    INPUT_WIDTH=1920
+    INPUT_HEIGHT=1280
+    MODE=0 #0 TIMELAPSE IMAGES, 1 VIDEO
+    FRAME_INTERVAL=15 #SECONDS
+    VIDEO_LENGTH=300 #SECONDS
+    #TARGET_DIR="/home/cctv/plitter_cctv/images"
+    SAVE_EMPTY=True
 
     with torch.no_grad():
         detect(args)

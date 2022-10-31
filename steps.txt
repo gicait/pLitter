@@ -1,0 +1,19 @@
+# commands to install necessary libraries for jetson nano to prepare cctv
+sudo apt update
+sudo apt install -y python3-pip
+pip3 install --upgrade pip
+
+sudo apt install -y libfreetype6-dev
+sudo apt-get install -y libjpeg-dev libopenblas-dev libopenmpi-dev libomp-dev
+sudo apt install -y zlib1g-dev
+wget https://nvidia.box.com/shared/static/fjtbno0vpo676a25cgvuqc1wty0fkkg6.whl -O torch-1.10.0-cp36-cp36m-linux_aarch64.whl
+pip3 install torch-1.10.0-cp36-cp36m-linux_aarch64.whl
+git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
+cd torchvision
+sudo python3 setup.py install
+cd ..
+git clone https://github.com/ultralytics/yolov5 --branch v6.0
+#comment down torch and torchvision (matplotlib may be)
+
+sudo apt update
+sudo apt install nginx

@@ -1,0 +1,8 @@
+frame_height: 1920
+frame_width: 1080
+interval: 25
+new_weights: true
+send_empty: true
+silce_width: 640
+slice_height: 640
+weights_url: https://github.com/gicait/pLitter/releases/download/v0.0.1/pLitterFloat_1216_x_1216_yolov5s.pt
