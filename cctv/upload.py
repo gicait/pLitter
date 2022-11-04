@@ -15,6 +15,7 @@ url = data['url']
 dataset_id = int(data['id'])
 
 image_url = url+'/api/image/'
+prediction_url = url+'/api/annotator/predictions'
 print(image_url)
 
 image_dir = '/home/cctv/plitter/data'
@@ -42,8 +43,14 @@ while True:
                 r = requests.post(image_url, files=files, data=data, timeout=119)
                 print(r.status_code)
                 if r.status_code in (200, 400):
-                    pass
+                    # pass
                     cur.execute("""UPDATE images SET uploaded=? WHERE im_name=?""", (True, image))
+                    r_json = r.json()
+                    try:
+                        image_id = r_json['image_id']
+                        # get coco from db
+                    except:
+                        pass
                     #os.remove(image_dir+image)
             except requests.exceptions.ConnectionError as errc:
                 print("Error connecting:", errc)

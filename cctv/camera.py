@@ -199,7 +199,7 @@ def detect(opt, *args):
         current_time = datetime.now().strftime("%H:%M:%S")
         start = '06:00:00'
         end = '18:00:00'
-        if current_time >= end and current_time < start:
+        if current_time >= end or current_time < start:
             if NIGHT_MODE == False:
                 print('night mode turning off')
                 break
