@@ -1,4 +1,4 @@
-# commands to install necessary libraries for jetson nano to prepare cctv
+# commands to install necessary libraries for jetson nano to prepare CCTV
 sudo apt update
 sudo apt install -y python3-pip
 pip3 install --upgrade pip
@@ -12,8 +12,10 @@ git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
 cd torchvision
 sudo python3 setup.py install
 cd ..
-git clone https://github.com/ultralytics/yolov5 --branch v6.0
+#git clone https://github.com/ultralytics/yolov5 --branch v6.0
 #comment down torch and torchvision (matplotlib may be)
-
 sudo apt update
 sudo apt install nginx
+cd
+git clone -b cctv https://github.com/gicait/plitter
+#add start.sh to crontab

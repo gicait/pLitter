@@ -9,12 +9,13 @@ INPUT_HEIGHT=1280
 MODE=0 #0 TIMELAPSE IMAGES, 1 VIDEO
 FRAME_INTERVAL=15 #SECONDS
 VIDEO_LENGTH=300 #SECONDS
-TARGET_DIR="/home/cctv/plitter_cctv/images"
+#TARGET_DIR="/home/cctv/plitter_cctv/images"
 SAVE_EMPTY=True
+NIGHT_MODE=False
 
 import sys
 sys.path.append('/home/cctv/')
-sys.path.append('/home/cctv/yolov5/')
+sys.path.append('/home/cctv/plitter/yolov5/')
 sys.path.append('/home/cctv/classy-sort-yolov5/sort')
 
 import argparse
@@ -30,18 +31,38 @@ import json
 import torch
 import torch.backends.cudnn as cudnn
 
-from utils.general import check_img_size, non_max_suppression, scale_coords
+from utils.general import check_img_size, non_max_suppression
+try:
+    from utils.general import scale_coords
+except:
+    from utils.general import scale_boxes
+
 from utils.torch_utils import select_device
 
 from sort import *
 
 import sqlite3
 
-dbpath = '/home/cctv/pLitterCCTV/test.db'
-conn = sqlite3.connect(dbpath, isolation_level=None)
+root_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+db_dir = os.path.join(root_path, 'db')
+data_dir = os.path.join(root_path, 'data')
+os.makedirs(db_dir, exist_ok=True)
+os.makedirs(data_dir, exist_ok=True)
+
+print(root_path, db_dir, data_dir)
+
+debris_dbpath = os.path.join(db_dir, 'debris.db') # change this
+images_dbpath = os.path.join(db_dir, 'images.db')
+
+conn = sqlite3.connect(debris_dbpath, isolation_level=None)
 cur = conn.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS debris(id INTEGER PRIMARY KEY, track_id INTEGER, im_name TEXT, cat_id INTEGER, bbox TEXT, segmentation TEXT)""")
 conn.commit()
+
+im_conn = sqlite3.connect(images_dbpath, isolation_level=None)
+im_cur = im_conn.cursor()
+im_cur.execute("""CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY, im_name TEXT UNIQUE, uploaded BOOLEAN)""")
+im_conn.commit()
 
 torch.set_printoptions(precision=3)
 
@@ -119,6 +140,9 @@ def detect(opt, *args):
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load yolov5 model
+    if os.path.isdir(weights):
+        weights = sorted(os.listdir(weights))[-1]
+    print(weights)
     model = torch.load(weights, map_location=device)['model'].float() #load to FP32. yolov5s.pt file is a dictionary, so we retrieve the model by indexing its key
     model.to(device).eval()
     if half:
@@ -150,9 +174,9 @@ def detect(opt, *args):
         
     #for frame_idx, (path, img, im0s, vid_cap) in enumerate(dataset): #for every frame
     dataset = []
-    for img in sorted(os.listdir(source)):
-        if img.endswith(('.jpg', '.png')):
-            dataset.append(img)
+    #for img in sorted(os.listdir(source)):
+    #    if img.endswith(('.jpg', '.png')):
+    #        dataset.append(img)
 
     old_ids = []
 
@@ -168,85 +192,100 @@ def detect(opt, *args):
     cur = conn.cursor()
     last_image_time = 0.0
     while True:
+        current_time = datetime.now().strftime("%H:%M:%S")
+        start = '06:00:00'
+        end = '18:00:00'
+        if current_time >= end and current_time < start:
+            if NIGHT_MODE == False:
+                print('night mode turning off')
+                break
         st = time.time()
         im_name = datetime.now().strftime("%Y%m%d_%H%M%S")+'.jpg'
         #print(im_name)
         #img0 = cv2.imread(os.path.join(source, im_name))
-        ret, img0 = cap.read()
-        if img0.all() is None:
-            continue
-        preds = np.empty((0,6))
+        try:
+            ret, img0 = cap.read()
+            if img0.all() is None:
+                continue
+            preds = np.empty((0,6))
 
-        for box in slice_boxes:
-            img = img0[box[1]:box[3], box[0]:box[2], :]
-            h,w,_ = img.shape
-            h_r = h/imgsz
-            w_r = w/imgsz
-            img = cv2.resize(img, (imgsz, imgsz), interpolation=cv2.INTER_LINEAR)
-            img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
-            img = np.ascontiguousarray(img)
-            img = torch.from_numpy(img).to(device)
-            img = img.half() if half else img.float() #unint8 to fp16 or fp32
-            img /= 255.0 #normalize to between 0 and 1.
-            if img.ndimension()==3:
-                img = img.unsqueeze(0)
+            for box in slice_boxes:
+                img = img0[box[1]:box[3], box[0]:box[2], :]
+                h,w,_ = img.shape
+                h_r = h/imgsz
+                w_r = w/imgsz
+                img = cv2.resize(img, (imgsz, imgsz), interpolation=cv2.INTER_LINEAR)
+                img = img.transpose((2, 0, 1))[::-1]  # HWC to CHW, BGR to RGB
+                img = np.ascontiguousarray(img)
+                img = torch.from_numpy(img).to(device)
+                img = img.half() if half else img.float() #unint8 to fp16 or fp32
+                img /= 255.0 #normalize to between 0 and 1.
+                if img.ndimension()==3:
+                    img = img.unsqueeze(0)
             
-            # Inference
-            #t1 = time_synchronized()
-            pred = model(img, augment=opt.augment)[0]
+                # Inference
+                #t1 = time_synchronized()
+                pred = model(img, augment=opt.augment)[0]
 
-            # Apply NMS
-            pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
+                # Apply NMS
+                pred = non_max_suppression(pred, opt.conf_thres, opt.iou_thres, classes=opt.classes, agnostic=opt.agnostic_nms)
 
-            for i, det in enumerate(pred):
-                #det[:, :4] = scale_coords(img.shape[2:], det[:, :4], shp).round()
-                for x1,y1,x2,y2,conf,detclass in det.cpu().detach().numpy():
-                    print(x1,y1,x2,y2,conf,detclass)
-                    preds = np.vstack((preds, np.array([box[0]+(x1*w_r), box[1]+(y1*h_r), box[0]+(x2*w_r), box[1]+(y2*h_r), conf, detclass])))
+                for i, det in enumerate(pred):
+                    #det[:, :4] = scale_coords(img.shape[2:], det[:, :4], shp).round()
+                    for x1,y1,x2,y2,conf,detclass in det.cpu().detach().numpy():
+                        print(x1,y1,x2,y2,conf,detclass)
+                        preds = np.vstack((preds, np.array([box[0]+(x1*w_r), box[1]+(y1*h_r), box[0]+(x2*w_r), box[1]+(y2*h_r), conf, detclass])))
         
-        print('preds:\n',preds,'\n')
-        
-        tracked_dets = sort_tracker.update(preds)
+            print('preds:\n',preds,'\n')
+            tracked_dets = sort_tracker.update(preds)
+            print('Output from SORT:\n',tracked_dets,'\n')
+            filtered_dets = np.empty((0,9))
+            old_ids = []
+            for det in tracked_dets:
+                if det[-1] not in old_ids and not np.isnan(det).any():
+                    old_ids.append(det[-1])
+                    print(det)
+                    filtered_dets = np.append(filtered_dets, [det], axis=0)
 
-        print('Output from SORT:\n',tracked_dets,'\n')
-        
-        filtered_dets = np.empty((0,9))
-        old_ids = []
-        for det in tracked_dets:
-            if det[-1] not in old_ids and not np.isnan(det).any():
-                old_ids.append(det[-1])
-                print(det)
-                filtered_dets = np.append(filtered_dets, [det], axis=0)
-
-        print('new dets:\n',filtered_dets,'\n')
+            print('new dets:\n',filtered_dets,'\n')
                 
-        # draw boxes for visualization
-        if len(filtered_dets)>0:
-            bbox_xyxy = filtered_dets[:,:4]
-            identities = filtered_dets[:, 8]
-            categories = filtered_dets[:, 4]
-            track_ids = filtered_dets[:, -1]
-            coco_json = {im_name: []}
-            for pred in filtered_dets:
-                coco_format = {}
-                bbox = xyxy2xywh(pred[:4])
-                coco_format['category_id'] = int(pred[4])
-                coco_format['isbbox'] = True
-                coco_format['segmentation'] = [[bbox[0], bbox[1], bbox[0]+bbox[2], bbox[1], bbox[0]+bbox[2], bbox[1]+bbox[3], bbox[0], bbox[1]+bbox[3]]]
-                coco_format['bbox'] = [bbox[0], bbox[1], bbox[2], bbox[3]]
-                coco_json[im_name].append(coco_format)
-                cur.execute("""INSERT INTO debris (track_id, im_name, cat_id, bbox, segmentation) values(?,?,?,?,?)""", ( int(pred[8]), im_name, int(pred[4]), json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])) )
-                print(( int(pred[8]), int(pred[4]), im_name, json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])))
-                #conn.cmmit()
-            print(coco_json)
-            #json.dump(coco_json, open(os.path.join(save_path, im_name.replace('.jpg', '.json')), 'w'))
-            #img0 = draw_boxes(img0, bbox_xyxy, identities, categories, names)
-            last_image_time = time.time()
-            ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
-        elif time.time()-last_image_time > 20:
-            last_image_time = time.time()
-            ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
-        #os.remove(os.path.join(source, im_name))
+            # draw boxes for visualization
+            if len(filtered_dets)>0:
+                bbox_xyxy = filtered_dets[:,:4]
+                identities = filtered_dets[:, 8]
+                categories = filtered_dets[:, 4]
+                track_ids = filtered_dets[:, -1]
+                coco_json = {im_name: []}
+                for pred in filtered_dets:
+                    coco_format = {}
+                    bbox = xyxy2xywh(pred[:4])
+                    coco_format['category_id'] = int(pred[4])
+                    coco_format['isbbox'] = True
+                    coco_format['segmentation'] = [[bbox[0], bbox[1], bbox[0]+bbox[2], bbox[1], bbox[0]+bbox[2], bbox[1]+bbox[3], bbox[0], bbox[1]+bbox[3]]]
+                    coco_format['bbox'] = [bbox[0], bbox[1], bbox[2], bbox[3]]
+                    coco_json[im_name].append(coco_format)
+                    cur.execute("""INSERT INTO debris (track_id, im_name, cat_id, bbox, segmentation) values(?,?,?,?,?)""", ( int(pred[8]), im_name, int(pred[4]), json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])) )
+                    print(( int(pred[8]), int(pred[4]), im_name, json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])))
+                    #conn.cmmit()
+                print(coco_json)
+                #json.dump(coco_json, open(os.path.join(save_path, im_name.replace('.jpg', '.json')), 'w'))
+                #img0 = draw_boxes(img0, bbox_xyxy, identities, categories, names)
+                #last_image_time = time.time()
+            if time.time()-last_image_time > FRAME_INTERVAL:
+                ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
+                if ch:
+                    im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (im_name, False))
+                    last_image_time = time.time()
+        except:
+            try:
+                if time.time()-last_image_time > FRAME_INTERVAL:
+                    ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
+                    if ch:
+                        im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (im_name, False))
+                        last_image_time = time.time()
+            except:
+                print('im_name time error may be')
+        ch = False
         print('time:', time.time()-st)
         print('--------------------------------------------------', '\n')
 
@@ -254,11 +293,11 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', type=str,
-                        default='/home/cctv/pLitterCCTV/best.pt', help='model.pt path')
+                        default='/home/cctv/plitter/models/best.pt', help='model.pt path')
     # file/folder, 0 for webcam
     parser.add_argument('--source', type=str,
-                        default='/home/cctv/pLitterCCTV/images', help='source')
-    parser.add_argument('--output', type=str, default='/home/cctv/pLitterCCTV/preds',
+                        default='/home/cctv/plitter/data', help='source')
+    parser.add_argument('--output', type=str, default='/home/cctv/plitter/data',
                         help='output folder')  # output folder
     parser.add_argument('--img-size', type=int, default=640,
                         help='inference size (pixels)')
@@ -316,6 +355,7 @@ if __name__ == '__main__':
     VIDEO_LENGTH=300 #SECONDS
     #TARGET_DIR="/home/cctv/plitter_cctv/images"
     SAVE_EMPTY=True
+    NIGHT_MODE=False
 
     with torch.no_grad():
         detect(args)

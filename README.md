@@ -1,5 +1,14 @@
-pLitterCCTV
+# pLitterCCTV - An IoT style CCTV camera for real time plastic debris (floating) detection 
 
-# this is a standalone cctv type camera system. It continueusly captures the images/videos with given interval and for given time durations.
-# To access the collected information, first connect the wifi hotspot provided by the system, thgen visit the address xxx.xxx.xx.xxx in your web browse.
-# A dashboard opens up.
+This tool is used to prepare a standalone CCTV type camera system using Nvidia Jetson Nano.
+
+<h2>How it works</h2>
+
+? to do
+
+<h2>Required Hardware</h2>
+
+Jetson Nano 4GB
+USB camera or CSI camera 
+
+Follow steps.txt to install required libraried and setting up the camera

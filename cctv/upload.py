@@ -3,10 +3,15 @@ import json
 #import base64
 import requests
 import time
+import sqlite3
 
 image_url = 'http://*********/api/image/'
 image_dir = '******************'
 headers = {"Content-Type": "application/json; charset=utf-8"}
+
+# open sqlite connection
+# find annotations in database and uplaod them to cloud
+# update db
 
 while True:
     time.sleep(10)
