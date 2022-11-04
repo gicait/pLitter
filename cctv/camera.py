@@ -141,7 +141,7 @@ def detect(opt, *args):
 
     # Load yolov5 model
     if os.path.isdir(weights):
-        weights = os.path.join(os.path.isdir(weights), sorted(os.listdir(weights))[-1])
+        weights = os.path.join(weights, sorted(os.listdir(weights))[-1])
     print(weights)
     model = torch.load(weights, map_location=device)['model'].float() #load to FP32. yolov5s.pt file is a dictionary, so we retrieve the model by indexing its key
     model.to(device).eval()
