@@ -22,23 +22,26 @@ with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
             if k in conf.keys():
                 conf[k] = v
 
-try:
-    res = requests.get(url+'/api/dataset/'+id+'/config', timeout=30)
-    if res.status_code == 200:
-        re = res.json()
-        print(re, type(re))
-        for k,v in re.items():
-            if k in conf.keys():
-                if k == 'weights_url':
-                    if conf[k] == v:
-                        conf['new_weights'] = False
+updated = False
+while updated == False:
+    try:
+        res = requests.get(url+'/api/dataset/'+id+'/config', timeout=60)
+        if res.status_code == 200:
+            updated = True
+            re = res.json()
+            print(re, type(re))
+            for k,v in re.items():
+                if k in conf.keys():
+                    if k == 'weights_url':
+                        if conf[k] == v:
+                            conf['new_weights'] = False
+                        else:
+                            conf[k] = v
+                            conf['new_weights'] = True
                     else:
                         conf[k] = v
-                        conf['new_weights'] = True
-                else:
-                    conf[k] = v
 
-    with open(os.path.join(cctv_path, 'conf.yaml'), 'w') as outf:
-        yaml.dump(conf, outf)
-except:
-    pass
+        with open(os.path.join(cctv_path, 'conf.yaml'), 'w') as outf:
+            yaml.dump(conf, outf)
+    except:
+        pass

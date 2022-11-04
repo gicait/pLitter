@@ -9,7 +9,7 @@ import requests
 import yaml
 
 def download_file(url):
-    local_filename = url.split('/')[-1]
+    local_filename = '.'+url.split('/')[-1]
     # NOTE the stream=True parameter below
     with requests.get(url, stream=True) as r:
         r.raise_for_status()
@@ -19,7 +19,7 @@ def download_file(url):
                 # and set chunk_size parameter to None.
                 #if chunk:
                 f.write(chunk)
-    return local_filename
+    return local_filename, True
 
 weights_url = None
 with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
@@ -30,7 +30,11 @@ with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
             weights_url = data['weights_url']
     print(weights_url)
 if weights_url:
-    try:
-        return_weights_file = download_file(weights_url)
-    except:
-        pass
+    updated = False
+    while updated == False:
+        try:
+            return_weights_file, updated = download_file(weights_url)
+            if updated:
+                os.rename(os.path.join(weights_path, return_weights_file), os.path.join(weights_path, return_weights_file[1:]))
+        except:
+            pass
