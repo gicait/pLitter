@@ -337,15 +337,7 @@ if __name__ == '__main__':
     source_path = Path(__file__).resolve()
     source_dir = source_path.parent
 
-    with open(os.path.join(source_dir, 'conf.yaml'), 'r') as stream:
-        data = yaml.safe_load(stream)
-        print(data)
-        if 'frame_width' in data.keys():
-            FRAME_WIDTH = data['frame_width']
-        if 'frame_height' in data.keys():
-            FRAME_HEIGHT = data['frame_height']
-
-
+    IM_PREFIX = ''
     WAIT_AT_START=3
     CAMERA_SOURCE=0 #0 WEBCAM, 1 CSI-CAM, 2 IMAGES FROM DIR
     INPUT_WIDTH=1920
@@ -356,6 +348,18 @@ if __name__ == '__main__':
     #TARGET_DIR="/home/cctv/plitter_cctv/images"
     SAVE_EMPTY=True
     NIGHT_MODE=False
+
+    with open(os.path.join(source_dir, 'conf.yaml'), 'r') as stream:
+        data = yaml.safe_load(stream)
+        print(data)
+        if 'frame_width' in data.keys():
+            FRAME_WIDTH = data['frame_width']
+        if 'frame_height' in data.keys():
+            FRAME_HEIGHT = data['frame_height']
+        if 'images_prefix' in data.keys():
+            IM_PREFIX = data['images_prefix']
+        if 'interval' in data.keys():
+            FRAME_INTERVAL = data['interval']
 
     with torch.no_grad():
         detect(args)
