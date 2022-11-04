@@ -3,13 +3,13 @@ import yaml
 
 CAMERA_NAME="test"
 WAIT_AT_START=25
+IM_PREFIX = ''
 CAMERA_SOURCE=0 #0 WEBCAM, 1 CSI-CAM, 2 IMAGES FROM DIR
-INPUT_WIDTH=1920
-INPUT_HEIGHT=1280
 MODE=0 #0 TIMELAPSE IMAGES, 1 VIDEO
+FRAME_WIDTH = 1920
+FRAME_HEIGHT = 1280
 FRAME_INTERVAL=15 #SECONDS
 VIDEO_LENGTH=300 #SECONDS
-#TARGET_DIR="/home/cctv/plitter_cctv/images"
 SAVE_EMPTY=True
 NIGHT_MODE=False
 
@@ -68,10 +68,10 @@ torch.set_printoptions(precision=3)
 
 palette = (2 ** 11 - 1, 2 ** 15 - 1, 2 ** 20 - 1)
 
-if INPUT_WIDTH == 3840:
-    slice_boxes = [[0, 0, 960, 840], [864, 0, 1824, 840], [1728, 0, 2688, 840], [2592, 0, 3552, 840], [2880, 0, 3840, 840], [0, 756, 960, 1596], [864, 756, 1824, 1596], [1728, 756, 2688, 1596], [2592, 756, 3552, 1596], [2880, 756, 3840, 1596], [0, 1320, 960, 2160], [864, 1320, 1824, 2160], [1728, 1320, 2688, 2160], [2592, 1320, 3552, 2160], [2880, 1320, 3840, 2160]]
-else:
-    slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
+# if FRAME_WIDTH == 3840:
+#     slice_boxes = [[0, 0, 960, 840], [864, 0, 1824, 840], [1728, 0, 2688, 840], [2592, 0, 3552, 840], [2880, 0, 3840, 840], [0, 756, 960, 1596], [864, 756, 1824, 1596], [1728, 756, 2688, 1596], [2592, 756, 3552, 1596], [2880, 756, 3840, 1596], [0, 1320, 960, 2160], [864, 1320, 1824, 2160], [1728, 1320, 2688, 2160], [2592, 1320, 3552, 2160], [2880, 1320, 3840, 2160]]
+# else:
+#     slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
 
 def bbox_rel(*xyxy):
     """" Calculates the relative bounding box from absolute pixel values. """
@@ -131,7 +131,11 @@ def detect(opt, *args):
                        min_hits=sort_min_hits,
                        iou_threshold=sort_iou_thresh) # {plug into parser}
     
-    
+    if FRAME_WIDTH == 3840:
+        slice_boxes = [[0, 0, 960, 840], [864, 0, 1824, 840], [1728, 0, 2688, 840], [2592, 0, 3552, 840], [2880, 0, 3840, 840], [0, 756, 960, 1596], [864, 756, 1824, 1596], [1728, 756, 2688, 1596], [2592, 756, 3552, 1596], [2880, 756, 3840, 1596], [0, 1320, 960, 2160], [864, 1320, 1824, 2160], [1728, 1320, 2688, 2160], [2592, 1320, 3552, 2160], [2880, 1320, 3840, 2160]]
+    else:
+        slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
+
     # Directory and CUDA settings for yolov5
     device = select_device(opt.device)
     #if os.path.exists(out):
@@ -182,8 +186,8 @@ def detect(opt, *args):
 
     if CAMERA_SOURCE == 0:
         cap = cv2.VideoCapture(0)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1920)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 1080)
+        cap.set(cv2.CAP_PROP_FRAME_WIDTH, FRAME_WIDTH)
+        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, FRAME_HEIGHT)
     
     if not cap.isOpened():
         raise Exception("could not open video device")
@@ -264,7 +268,7 @@ def detect(opt, *args):
                     coco_format['segmentation'] = [[bbox[0], bbox[1], bbox[0]+bbox[2], bbox[1], bbox[0]+bbox[2], bbox[1]+bbox[3], bbox[0], bbox[1]+bbox[3]]]
                     coco_format['bbox'] = [bbox[0], bbox[1], bbox[2], bbox[3]]
                     coco_json[im_name].append(coco_format)
-                    cur.execute("""INSERT INTO debris (track_id, im_name, cat_id, bbox, segmentation) values(?,?,?,?,?)""", ( int(pred[8]), im_name, int(pred[4]), json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])) )
+                    cur.execute("""INSERT INTO debris (track_id, im_name, cat_id, bbox, segmentation) values(?,?,?,?,?)""", ( int(pred[8]), IM_PREFIX+im_name, int(pred[4]), json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])) )
                     print(( int(pred[8]), int(pred[4]), im_name, json.dumps(coco_format['bbox']), json.dumps(coco_format['segmentation'])))
                     #conn.cmmit()
                 print(coco_json)
@@ -272,16 +276,16 @@ def detect(opt, *args):
                 #img0 = draw_boxes(img0, bbox_xyxy, identities, categories, names)
                 #last_image_time = time.time()
             if time.time()-last_image_time > FRAME_INTERVAL:
-                ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
+                ch = cv2.imwrite(os.path.join(save_path, IM_PREFIX+im_name), img0)
                 if ch:
-                    im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (im_name, False))
+                    im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (IM_PREFIX+im_name, False))
                     last_image_time = time.time()
         except:
             try:
                 if time.time()-last_image_time > FRAME_INTERVAL:
-                    ch = cv2.imwrite(os.path.join(save_path, im_name), img0)
+                    ch = cv2.imwrite(os.path.join(save_path, IM_PREFIX+im_name), img0)
                     if ch:
-                        im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (im_name, False))
+                        im_cur.execute("""INSERT INTO images (im_name, uploaded) values(?,?)""", (IM_PREFIX+im_name, False))
                         last_image_time = time.time()
             except:
                 print('im_name time error may be')
@@ -340,12 +344,11 @@ if __name__ == '__main__':
     IM_PREFIX = ''
     WAIT_AT_START=3
     CAMERA_SOURCE=0 #0 WEBCAM, 1 CSI-CAM, 2 IMAGES FROM DIR
-    INPUT_WIDTH=1920
-    INPUT_HEIGHT=1280
     MODE=0 #0 TIMELAPSE IMAGES, 1 VIDEO
+    FRAME_WIDTH = 1920
+    FRAME_HEIGHT = 1280
     FRAME_INTERVAL=15 #SECONDS
     VIDEO_LENGTH=300 #SECONDS
-    #TARGET_DIR="/home/cctv/plitter_cctv/images"
     SAVE_EMPTY=True
     NIGHT_MODE=False
 
