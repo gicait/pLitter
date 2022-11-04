@@ -1,6 +1,7 @@
 import os
 home = os.path.expanduser("~") 
-root_path = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+cctv_path = os.path.dirname(os.path.realpath(__file__))
+root_path = os.path.dirname(cctv_path)
 print(root_path)
 weights_path = os.path.join(root_path, 'models')
 os.makedirs(weights_path, exist_ok=True)
@@ -21,7 +22,7 @@ def download_file(url):
     return local_filename
 
 weights_url = None
-with open(os.path.join(root_path, 'conf.yaml'), 'r') as inf:
+with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
     data = yaml.safe_load(inf)
     print(data)
     if 'new_weights' in data.keys():
