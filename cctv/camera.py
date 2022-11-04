@@ -141,7 +141,7 @@ def detect(opt, *args):
 
     # Load yolov5 model
     if os.path.isdir(weights):
-        weights = sorted(os.listdir(weights))[-1]
+        weights = os.path.join(os.path.isdir(weights), sorted(os.listdir(weights))[-1])
     print(weights)
     model = torch.load(weights, map_location=device)['model'].float() #load to FP32. yolov5s.pt file is a dictionary, so we retrieve the model by indexing its key
     model.to(device).eval()
@@ -293,7 +293,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--weights', type=str,
-                        default='/home/cctv/plitter/models/best.pt', help='model.pt path')
+                        default='/home/cctv/plitter/models/', help='model.pt path')
     # file/folder, 0 for webcam
     parser.add_argument('--source', type=str,
                         default='/home/cctv/plitter/data', help='source')

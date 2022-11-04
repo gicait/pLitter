@@ -12,7 +12,7 @@ with open(os.path.join(home, '.cctv'), 'r') as stream:
 url = data['url']
 id = str(data['id'])
 
-conf = {'frame_width': 1920, 'frame_height': 1080, 'silce_width': 640, 'slice_height': 640, 'interval': 20, 'send_empty': True, 'weights_url': '', 'new_weights': False}
+conf = {'frame_width': 1920, 'frame_height': 1080, 'silce_width': 640, 'slice_height': 640, 'interval': 20, 'send_empty': True, 'weights_url': '', 'new_weights': False, 'pull': False}
 
 with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
     data = yaml.safe_load(inf)
