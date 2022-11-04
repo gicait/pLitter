@@ -16,3 +16,4 @@ echo "pull done"
 /usr/bin/python3 cctv/upload.py >> /home/cctv/ulog.txt 2>&1 &
 sleep 60
 OPENBLAS_CORETYPE=ARMV8 MPLBACKEND=agg /usr/bin/python3 cctv/camera.py >> /home/cctv/clog.txt 2>&1 & /usr/bin/python3 serve/main.py >> /home/cctv/slog.txt 2>&1 &
+/usr/bin/python3 cctv/clean.py >> /home/cctv/cllog.txt 2>&1 &
