@@ -1,5 +1,5 @@
 #cv2
-Pillow==8.4.0
+#Pillow==8.4.0
 Scikit-image
 filterpy
 tqdm
