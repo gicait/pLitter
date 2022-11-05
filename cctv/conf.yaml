@@ -1,7 +1,9 @@
 frame_height: 1920
 frame_width: 1080
+images_prefix: ''
 interval: 25
 new_weights: true
+pull: false
 send_empty: true
 silce_width: 640
 slice_height: 640

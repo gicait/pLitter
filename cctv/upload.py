@@ -5,6 +5,8 @@ import requests
 import time
 import yaml
 import sqlite3
+import numpy as np
+import cv2
 
 home = os.path.expanduser("~")
 
@@ -26,6 +28,19 @@ images_dbpath = '/home/cctv/plitter/db/images.db'
 
 conn = sqlite3.connect(images_dbpath, isolation_level=None)
 cur = conn.cursor()
+
+time.sleep(60)
+
+img = np.zeros((1080,1920,3), np.uint8)
+ch = cv2.imwrite('test.jpg', img)
+files = {'image': open('test.jpg', 'rb')}
+data = {'dataset_id': dataset_id}
+try:
+    r = requests.post(image_url, files=files, data=data, timeout=119)
+    print("upload test done")
+except:
+    pass
+
 
 while True:
     #time.sleep(10)
