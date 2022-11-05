@@ -154,27 +154,27 @@ def detect(opt, *args):
             model.half() #to FP16
         names = model.module.names if hasattr(model, 'module') else model.names
         print(names)
-    except:
-        model = None
-    # Set DataLoader
-    vid_path, vid_writer = None, None
-    
-    #if webcam:
-    #    view_img = True
-    #    cudnn.benchmark = True  # set True to speed up constant image size inference
-    #    dataset = LoadStreams(source, img_size=imgsz)
-    #else:
-    #    dataset = LoadImages(source, img_size=imgsz)
-    
-    # get names of object categories from yolov5.pt model
+        # Set DataLoader
+        vid_path, vid_writer = None, None
+        
+        #if webcam:
+        #    view_img = True
+        #    cudnn.benchmark = True  # set True to speed up constant image size inference
+        #    dataset = LoadStreams(source, img_size=imgsz)
+        #else:
+        #    dataset = LoadImages(source, img_size=imgsz)
+        
+        # get names of object categories from yolov5.pt model
 
-    
-    # Run inference
-    t0 = time.time()
-    img = torch.zeros((1,3,imgsz,imgsz), device=device) #init img
-    
-    # Run once (throwaway)
-    _ = model(img.half() if half else img) if device.type != 'cpu' else None
+        
+        # Run inference
+        t0 = time.time()
+        img = torch.zeros((1,3,imgsz,imgsz), device=device) #init img
+        
+        # Run once (throwaway)
+        _ = model(img.half() if half else img) if device.type != 'cpu' else None
+    except:
+        pass
     
     save_path = str(Path(out))
     txt_path = str(Path(out))+'/results.txt'
