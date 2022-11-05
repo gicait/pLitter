@@ -1,3 +1,4 @@
+from genericpath import isfile
 import os
 home = os.path.expanduser("~") 
 cctv_path = os.path.dirname(os.path.realpath(__file__))
@@ -30,11 +31,13 @@ with open(os.path.join(cctv_path, 'conf.yaml'), 'r') as inf:
             weights_url = data['weights_url']
     print(weights_url)
 if weights_url:
-    updated = False
-    while updated == False:
-        try:
-            return_weights_file, updated = download_file(weights_url)
-            if updated:
-                os.rename(os.path.join(weights_path, return_weights_file), os.path.join(weights_path, return_weights_file[1:]))
-        except:
-            pass
+    local_filename = weights_url.split('/')[-1]
+    if not os.path.isfile(os.path.join(weights_path, local_filename)):
+        updated = False
+        while updated == False:
+            try:
+                return_weights_file, updated = download_file(weights_url)
+                if updated:
+                    os.rename(os.path.join(weights_path, return_weights_file), os.path.join(weights_path, return_weights_file[1:]))
+            except:
+                pass

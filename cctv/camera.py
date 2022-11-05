@@ -144,13 +144,16 @@ def detect(opt, *args):
     half = device.type != 'cpu'  # half precision only supported on CUDA
 
     # Load yolov5 model
-    if os.path.isdir(weights):
-        weights = os.path.join(weights, sorted(os.listdir(weights))[-1])
-    print(weights)
-    model = torch.load(weights, map_location=device)['model'].float() #load to FP32. yolov5s.pt file is a dictionary, so we retrieve the model by indexing its key
-    model.to(device).eval()
-    if half:
-        model.half() #to FP16
+    try:
+        if os.path.isdir(weights):
+            weights = os.path.join(weights, sorted(os.listdir(weights))[-1])
+        print(weights)
+        model = torch.load(weights, map_location=device)['model'].float() #load to FP32. yolov5s.pt file is a dictionary, so we retrieve the model by indexing its key
+        model.to(device).eval()
+        if half:
+            model.half() #to FP16
+    except:
+        model = None
 
     # Set DataLoader
     vid_path, vid_writer = None, None
