@@ -152,9 +152,10 @@ def detect(opt, *args):
         model.to(device).eval()
         if half:
             model.half() #to FP16
+        names = model.module.names if hasattr(model, 'module') else model.names
+        print(names)
     except:
         model = None
-
     # Set DataLoader
     vid_path, vid_writer = None, None
     
@@ -166,8 +167,7 @@ def detect(opt, *args):
     #    dataset = LoadImages(source, img_size=imgsz)
     
     # get names of object categories from yolov5.pt model
-    names = model.module.names if hasattr(model, 'module') else model.names
-    print(names)
+
     
     # Run inference
     t0 = time.time()
