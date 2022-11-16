@@ -27,18 +27,55 @@
         width: 100%;
         height: 100vh;
       }
+      #topbar {
+        width: 100%;
+        height: 20px;
+      }
     </style>
   </head>
   <body>
+
+    <div id="topbar" style="visibility: hidden;">
+      <form>
+        <label for="country">Country:</label>
+        <select name="country" id="country" onchange="drawTopBar({country: this.value});">
+          <option disabled selected value> -- select an option -- </option>
+        </select>
+
+        <label for="province">Province:</label>
+        <select name="province" id="province" onchange="drawTopBar({country: document.getElementById('country').value, province: this.value});">
+          <option disabled selected value> -- select an option -- </option>
+        </select>
+
+        <label for="city">City:</label>
+        <select name="city" id="city" onchange="drawTopBar({country: document.getElementById('country').value, province: document.getElementById('province').value, city: this.value});">
+          <option disabled selected value> -- select an option -- </option>
+        </select>
+
+        <label for="year">Year:</label>
+        <select name="year" id="year" onchange="drawTopBar({country: document.getElementById('country').value, province: document.getElementById('province').value, city: document.getElementById('city').value, year: this.value});">
+          <option disabled selected value> -- select an option -- </option>
+        </select>
+
+        <label for="month">Month:</label>
+        <select name="month" id="month" onchange="drawTopBar({country: document.getElementById('country').value, province: document.getElementById('province').value, city: document.getElementById('city').value, year: document.getElementById('year').value, month: this.value});">
+          <option disabled selected value> -- select an option -- </option>
+        </select>
+        <button onclick=drawCollection>Apply</button>
+      </form>
+    </div>
+
     <div id="map"></div>
     <div id="vplayer"></div>
   </body>
 </html>
 
+
+<script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.vectorgrid@latest/dist/Leaflet.VectorGrid.js"></script>
-<!-- <script src="https://unpkg.com/leafletvideoplay@1.0.0/public/bundle.js"></script> -->
-<script src="../js/LeafletVideoTrack.js"></script>
+<script src="https://unpkg.com/leaflet.videomaps@1.1.1/dist/Leaflet.VideoMaps.js"></script>
+<!-- <script src="../js/LeafletVideoTrack.js"></script> -->
 <script src="https://www.youtube.com/iframe_api"></script>
 
 <script>
@@ -66,23 +103,197 @@ var options = {
     debug: 0,
     style: geojsonStyle
 };
+
 // var canvasLayer = L.geoJson.vt(data, options).addTo(map);
 
-// console.log(canvasLayer)
-// fetch('./locations.json')
-//     .then(result => result.json())
-//     .then((output) => {
+// var url_string = window.location;
+// var url = new URL(url_string);
+// var country = url.searchParams.get("country");
+// var province = url.searchParams.get("province");
+// var city = url.searchParams.get("city");
+// var year = parseInt(url.searchParams.get("year"));
+// var month = url.searchParams.get("month");
 
-//     })
+var baseURLstring = window.location;
+var locations=null;
 
+// console.log(country, province, city, year, month);
 
-// fetch('./sample.json')
-fetch('./tracks/MawanellaLeafletVideo.json')
-    .then(result => result.json())
-    .then((output) => {
-        var addedTrack = L.videoTrack.drawTrack(output, "vplayer").addTo(map);
-    })
-    .catch(err => console.error(err));
+// var isTrackFound = false;
 
+function changecountry() {
+  let countryOptions = document.getElementById("country");
+
+}
+
+class StreetCollections {
+  constructor(data) {
+    if (typeof(data) === "object"){
+      this.data = data;
+    }
+    else if (typeof(data) === "string") {
+      fetch('locations.json')
+        .then(result => result.json())
+        .then((output) => {
+          this.data = output;
+        })
+    }
+  }
+
+//   async setSelections({country=null, province=null, city=null, year=null, month=null, track=null} = {}) {
+//     console.log("aa");
+//   }
+
+}
+
+async function drawTopBar({country=null, province=null, city=null, year=null, month=null, track=null} = {}) {
+  var el = document.getElementById("topbar");
+  console.log("select a country");
+  Object.keys(locations).forEach(c => {
+    if($(`#country option:contains("${c}")`).length ==0) { 
+      $("#country").append(new Option(`${c}`, `${c}`));
+    }
+    if (c === country){
+      $(`#country option[value="${c}"]`).attr('selected', '');
+    }
+  });
+
+  if (document.getElementById("country").value) {
+    $(`#province`).empty();
+    let df = new Option(`-- select an option --`, null, true, true);
+    df.setAttribute('disabled', null);
+    $("#province").append(df);
+    Object.keys(locations[document.getElementById("country").value]).forEach(p => {
+      if($(`#province option:contains("${p}")`).length ==0) {
+        $("#province").append(new Option(`${p}`, `${p}`));
+      }
+      if (p === province){
+        console.log($(`#province option[value="${p}"]`));
+        $(`#province option[value="${p}"]`).attr('selected', '');
+      }
+    });
+  }
+
+  if (country != null & province != null){
+    $(`#city`).empty();
+    let df = new Option(`-- select an option --`, null, true, true);
+    df.setAttribute('disabled', null);
+    $("#city").append(df);
+    Object.keys(locations[country][province]).forEach(ct => {
+      if($(`#city option:contains("${ct}")`).length ==0) {
+        $("#city").append(new Option(`${ct}`, `${ct}`));
+      }
+      if (ct === city){
+        $(`#city option[value="${ct}"]`).attr('selected',true);
+      }
+    });
+  }
+
+  if (country != null & province != null & city != null){
+    $("#year").empty();
+    let df = new Option(`-- select an option --`, null, true, true);
+    df.setAttribute('disabled', null);
+    $("#year").append(df);    
+    locations[country][province][city].collections.forEach(cl => {
+      if($(`#year option:contains("${cl['year']}")`).length ==0) {
+        $("#year").append(new Option(`${cl['year']}`, `${cl['year']}`));
+      }
+      if (cl['year'] === parseInt(year)){
+        $(`#year option[value="${cl['year']}"]`).attr('selected', '');
+      }
+    });
+  }
+
+  if (country != null & province != null & city != null & year != null){
+    $("#month").empty();
+    let df = new Option(`-- select an option --`, null, true, true);
+    df.setAttribute('disabled', null);
+    $("#month").append(df);    
+    locations[country][province][city].collections.flatMap(c => c.year === parseInt(year) ? [c.month] : []).forEach(m => {
+      if($(`#month option:contains("${m}")`).length ==0) {
+        $("#month").append(new Option(`${m}`, `${m}`));
+      }
+      if (m === month){
+        $(`#month option[value="${m}"]`).attr('selected', '');
+      }
+    });
+  }
+
+  el.style.visibility = "visible";
+}
+
+fetch('locations.json')
+  .then(result => result.json())
+  .then((output) => {
+    locations = output;
+
+    let url_string = window.location;
+    let url = new URL(url_string);
+    let country = url.searchParams.get("country");
+    let province = url.searchParams.get("province");
+    let city = url.searchParams.get("city");
+    let year = parseInt(url.searchParams.get("year"));
+    let month = url.searchParams.get("month");
+
+    console.log(country, province, city, year, month);
+
+    var isTrackFound = false;
+
+    if (locations[country] != undefined) {
+      if (locations[country][province] != undefined) {
+        if (locations[country][province][city] != undefined) {
+          if (year && locations[country][province][city].collections.map(a => a.year).includes(year)) {
+            console.log(year, locations[country][province][city].collections.map(a => a.year), locations[country][province][city].collections.map(a => a.year).includes(year));
+            let filcol = locations[country][province][city].collections.flatMap(c => c.year === year ? [c] : []);
+            console.log(month, filcol, filcol.map(c => c.month), filcol.map(c => c.month).includes(month));
+            if (month && filcol.map(c => c.month).includes(month)) {
+              filcol = filcol.flatMap(c => String(c.month) === month ? [c] : []);
+              isTrackFound = true;
+              console.log("here");
+              const track = filcol[0].track;
+              console.log(track);
+              fetch('./tracks/'+track)
+                .then(result => result.json())
+                .then((output) => {
+                  console.log(output);
+                  var addedTrack =  L.VideoMaps.drawTrack(output, "vplayer").addTo(map);
+                })
+              .catch(err => console.error(err));
+              console.log(locations, country, province, city, year, month);
+              drawTopBar({locations: locations, country: country, province: province, city: city, year: year, month: month});
+            }
+            else {
+              console.log("select a month", Object.keys(locations[country][province][city]));
+              drawTopBar({locations: locations, country: country, province: province, city: city, year: year});            
+            }
+          }
+          else {
+            console.log("select a year", Object.keys(locations[country][province][city]));
+            drawTopBar({locations: locations, country: country, province: province, city: city});
+          }
+        }
+        else {
+          console.log("Select a city from", Object.keys(locations[country][province]));
+          drawTopBar({locations: locations, country: country, province: province});
+        }
+      }
+      else {
+        console.log("Select a province from", Object.keys(locations[country]));
+        drawTopBar({locations: locations, country: country});
+      }
+    }
+    else {
+      console.log("select a country from", Object.keys(locations));
+      drawTopBar({locations: locations});
+    }      
+})
+.catch(err => console.error(err));
+
+// if (isTrackFound === false) {
+//   alert("wrong selection");
+// }
+
+const plitterStreet = new StreetCollections('locations.json');
+console.log(plitterStreet);
 
 </script>

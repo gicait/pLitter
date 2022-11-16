@@ -1,43 +1,54 @@
 {
-    "countries": {
-        "Sri Lanka": {
-            "provinces": {
-                "Western Privince": {
-                    "Hanwella": [
-                        {"year": 2022, "month": "January", "track": "Hanwella_January_2022.geojson"}
-                    ]
-                },
-                "Sabaragamuwa": {
-                    "Mawanella": [
-                        {"year": 2022, "month": "January", "track": "Mawanella_January_2022.geojson"}
-                    ]
-                }
+    "Sri Lanka": {
+        "Western Privince": {
+            "Hanwella": {
+                "collections": [
+                    {"year": 2022, "month": "January", "track": "Hanwella_January_2022.geojson"}
+                ],
+                "lat": 6.897834, 
+                "lon": 80.081429
             }
-        }, 
-        "Vietnam": {
-            "provinces": {
-                "Can Tho": {
-                    "Can Tho": [
-                        {"year": 2022, "month": "January", "track": "CanTho_January_2022.geojson"}
-                    ]
-                }
+        },
+        "Sabaragamuwa": {
+            "Mawanella": {
+                "collections": [
+                    {"year": 2022, "month": "January", "track": "Mawanella_January_2022.geojson"}
+                ],
+                "lat": 7.248126, 
+                "lon:": 80.446559
             }
-
-        }, 
-        "Thailand": {
-            "provinces": {
-                "Chiang Rai": {
-                    "Chiang Rai": [
-                        {"year": 2021, "month": "September", "track": "Chiang_Rai_September_2021.geojson"},
-                        {"year": 2022, "month": "February", "track": "Chiang_Rai_February_2022.geojson"}
-                    ]
-                },
-                "Ubon Ratchathani": {
-                    "Ubon Ratchathani": [
-                        {"year": 2021, "month": "July", "track": "UbonRatchathani_July_2021.geojson"},
-                        {"year": 2022, "month": "January", "track": "UbonRatchathani_January_2022.geojson"}
-                    ]
-                }
+        }
+    },
+    "Vietnam": {
+        "Can Tho": {
+            "Can Tho": {
+                "collections": [
+                    {"year": 2022, "month": "January", "track": "CanTho_January_2022.geojson"}
+                ], 
+                "lat": 10.027254, 
+                "lon": 105.769806
+            }
+        }
+    }, 
+    "Thailand": {
+        "Chiang Rai": {
+            "Chiang Rai": {
+                "collections":[
+                    {"year": 2021, "month": "September", "track": "ChiangRai_September_2021.geojson"},
+                    {"year": 2022, "month": "February", "track": "ChiangRai_February_2022.geojson"}
+                ], 
+                "lat": 19.910480, 
+                "lon": 99.840576
+            }
+        },
+        "Ubon Ratchathani": {
+            "Ubon Ratchathani": {
+                "collections": [
+                    {"year": 2021, "month": "July", "track": "UbonRatchathani_July_2021.geojson"},
+                    {"year": 2022, "month": "January", "track": "UbonRatchathani_January_2022.geojson"}
+                ],
+                "lat": 15.23844,
+                "lon": 104.84866 
             }
         }
     }
