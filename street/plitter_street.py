@@ -141,6 +141,8 @@ class StreetData:
                         print('No EXIF information in', filename)
             print(len(missing_images), 'images have georefernce and are missing in the list.')
 
+
+
     def predict_on_images(self, predictor, min_score_thr=0.5, dst_path=''):
         dst_path = self.images_dir
         if not os.path.isdir(os.path.join(dst_path, 'predictions')):
