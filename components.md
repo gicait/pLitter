@@ -1,13 +1,13 @@
 | Item Name			| Figure           			  | Link           |
 | :--------------              	|    :------------:    			  |    ---------:  |
-| Nvidia Jetson Nano		|![Jetson 4GB](figure/jetson4gb.jpg) 	  | link	   |
-| USB Camera 			|![USB Camera](figure/usb_camera.jpg) 	  | link     	   |
-| Memory card			|![SD Card](figure/sdcard.jpg)		  | link	   |
-| Deep Cycle Battery Pack	|![battery](figure/battery.jpg) 	  | link	   |
-| Camera Mount			|![Camera Mount](figure/camera_mount.jpg) | link	   |
-| 3D Printed Parts		|![3D Parts](figure/3D_parts.jpg) 	  | link	   |
-| USB Power/Data Cables		|![Cables](figure/Cables.jpg) 	   	  | link	   |
-| GSM Network Dongle		|![Dongle](figure/dongle.jpg) 	       	  | link	   |
+| Nvidia Jetson Nano		|![Jetson 4GB](figures/jetson4gb.jpg) 	  | link	   |
+| USB Camera 			|![USB Camera](figures/usb_camera.jpg) 	  | link     	   |
+| Memory card			|![SD Card](figures/sdcard.jpg)		  | link	   |
+| Deep Cycle Battery Pack	|![battery](figures/battery.jpg) 	  | link	   |
+| Camera Mount			|![Camera Mount](figures/camera_mount.jpg) | link	   |
+| 3D Printed Parts		|![3D Parts](figures/3D_parts.jpg) 	  | link	   |
+| USB Power/Data Cables		|![Cables](figures/Cables.jpg) 	   	  | link	   |
+| GSM Network Dongle		|![Dongle](figures/dongle.jpg) 	       	  | link	   |
 
 
 | Steel Box			|![BOX](figure/steel_box.jpg) 	             |		   |
