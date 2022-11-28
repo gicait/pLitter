@@ -1,7 +1,7 @@
 | Item Name			| Figure           			  | Link           |
 | :--------------              	|    :------------:    			  |    ---------:  |
 | Nvidia Jetson Nano		|![Jetson 4GB](figure/jetson4gb.jpg) 	  | link	   |
-| USB Camera 			|![USB Camera](figure/camera.jpg) 	  | link     	   |
+| USB Camera 			|![USB Camera](figure/usb_camera.jpg) 	  | link     	   |
 | Memory card			|![SD Card](figure/sdcard.jpg)		  | link	   |
 | Deep Cycle Battery Pack	|![battery](figure/battery.jpg) 	  | link	   |
 | Camera Mount			|![Camera Mount](figure/camera_mount.jpg) | link	   |
