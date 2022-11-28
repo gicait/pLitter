@@ -77,7 +77,7 @@ with torch.no_grad():
         im_name = datetime.now().strftime("%Y%m%d_%H%M%S")
         
         ret, img0 = cap.read()
-        img0 = cv2.imread(root_dir+'/cctv/test.jpg') #image for test
+        #img0 = cv2.imread(root_dir+'/cctv/test.jpg') #image for test
         
         if img0.all() is None:
             continue
