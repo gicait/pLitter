@@ -1,9 +1,0 @@
-#cv2
-#Pillow==8.4.0
-Scikit-image
-filterpy
-tqdm
-#yolov5
-#sort
-fastapi
-uvicorn[standard]

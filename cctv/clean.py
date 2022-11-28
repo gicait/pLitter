@@ -1,8 +1,11 @@
 import os
 
-images = os.listdir('/home/cctv/plitter/data')
-if len(images) > 10000:
+root_path = '/home/cctv/plitter' #change root_path
+
+images = os.listdir(root_path+'/data')
+
+if len(images) > 20000:
     for im in sorted(images)[0:10000]:
-        os.remove('/home/cctv/plitter/data/'+im)
+        os.remove(root_path+'/data/'+im)
 else:
     print("not ready for cleaning")

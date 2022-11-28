@@ -1,0 +1,4 @@
+#cv2
+#Pillow==8.4.0
+torch
+torchvision
