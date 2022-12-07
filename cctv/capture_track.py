@@ -200,11 +200,12 @@ with torch.no_grad():
         print(preds)
         imgr = draw_boxes_on_image(img0, preds[:, :4].tolist(), [model.names[int(i)] for i in preds[:, 5].tolist()], preds[:, 5].tolist(), preds[:, 4].tolist())
 
-        for pred in preds:
-            pred = list(map(int, pred.tolist()))
+        for j, (pred) in enumerate(preds):
+            #print(pred)
+            #pred = list(map(int, pred.tolist()))
             bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
             segmentation = [[pred[0], pred[1], pred[2], pred[1], pred[2], pred[3], pred[0], pred[3]]]
-            cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[pred[5]], json.dumps(bbox), json.dumps(segmentation)))
+            cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
         im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', imgr)
         print(data_dir+'/'+im_name+'.jpg')
         if im_save:
