@@ -1,6 +1,8 @@
 #!/bin/bash
 echo "Script executed from: ${PWD}"
 
+sleep 10
+
 BASEDIR=$(dirname $0)
 echo "Script location: ${BASEDIR}"
 cd ${BASEDIR}
@@ -18,7 +20,5 @@ mkdir -p logs
 echo $root_dir
 
 export OPENBLAS_CORETYPE=ARMV8
-OPENBLAS_CORETYPE=ARMV8 MPLBACKEND=agg /usr/bin/python3 cctv/capture.py > logs/capture.log &
-/usr/bin/python3 cctv/clean.py &
-sleep 60
-OPENBLAS_CORETYPE=ARMV8 /usr/bin/python3 cctv/upload.py > logs/upload.log &
+OPENBLAS_CORETYPE=ARMV8 MPLBACKEND=agg /usr/bin/python3 cctv/capture_track.py &> logs/capture.log &
+OPENBLAS_CORETYPE=ARMV8 /usr/bin/python3 cctv/upload.py &> logs/upload.log &

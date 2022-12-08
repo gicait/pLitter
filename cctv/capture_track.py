@@ -35,15 +35,19 @@ def draw_boxes_on_image(image, boxes, classes, class_ids, scores, use_normalized
     return image
 
 #set env var with desired path
-root_dir = os.getenv('root_dir', '/home/cctv/plitter/')
-yolo_weights = os.getenv('weights', root_dir+'/models/yolov5s.pt')
-reid_weights = Path(os.getenv('reid_weights', root_dir+'/models/osnet_x0_25_msmt17.pt'))
+
+root_dir = os.getenv('root_dir', '/'.join(os.path.abspath(__file__).split('/')[0:-2]))
+
+yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'yolov5s.pt')
+reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_25_msmt17.pt')
+
 FRAME_WIDTH = os.getenv('frame_width', 1920)
 FRAME_HEIGHT = os.getenv('frame_height', 1280)
 interval = int(os.getenv('interval', 3))
 work_in_night = os.getenv('work_in_night', True)
+weights_url = os.getenv('weights_url', None)
 
-print(root_dir, yolo_weights, FRAME_WIDTH, FRAME_HEIGHT, interval, work_in_night)
+print(root_dir, yolo_weights, reid_weights, FRAME_WIDTH, FRAME_HEIGHT, interval, work_in_night)
 
 if os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet') not in sys.path:
     print(os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet'))
@@ -59,7 +63,6 @@ from yolov5.models.common import DetectMultiBackend
 from yolov5.utils.general import (LOGGER, check_img_size, non_max_suppression, scale_boxes, check_requirements, cv2,
                                   check_imshow, xyxy2xywh, increment_path, strip_optimizer, colorstr, print_args, check_file)
 
-
 from trackers.strong_sort.utils.parser import get_config
 from trackers.strong_sort.strong_sort import StrongSORT
 
@@ -69,7 +72,6 @@ os.makedirs(db_dir, exist_ok=True)
 os.makedirs(data_dir, exist_ok=True)
 
 #print(root_dir, db_dir, data_dir)
-
 #generate a unique string fro saving tracking ids (tracker starts from zero, every time it restarts, so it requires a unique id to distinguish)
 
 uid = str(uuid.uuid4())
@@ -97,6 +99,14 @@ device = torch.device('cuda:0')
 half = True
 
 #model = torch.hub.load('ultralytics/yolov5', 'custom', weights, skip_validation=True)
+if not os.path.isfile(yolo_weights):
+    #download weights here
+    try:
+        torch.hub.download_url_to_file(weights_url, yolo_weights)
+    except:
+        yolo_weights = Path(root_dir) / 'models/yolov5s.pt'
+        pass
+
 model = DetectMultiBackend(yolo_weights, device=device, fp16=half)
 stride, names, pt = model.stride, model.names, model.pt
 print(model.names)
@@ -135,11 +145,12 @@ im_cur = im_conn.cursor()
 
 prev_frame, curr_frame = None, None
 
+start = '06:00:00'
+end = '18:00:00'
+
 with torch.no_grad():
     while True:
         current_time = datetime.now().strftime("%H:%M:%S")
-        start = '06:00:00'
-        end = '18:00:00'
         if current_time >= end or current_time < start:
             if work_in_night in (False, 'False'):
                 print('night mode turning off')
@@ -198,7 +209,7 @@ with torch.no_grad():
 
         #print(preds[:, :4], model.names, preds[:, 5], preds[:, 6]) 
         print(preds)
-        imgr = draw_boxes_on_image(img0, preds[:, :4].tolist(), [model.names[int(i)] for i in preds[:, 5].tolist()], preds[:, 5].tolist(), preds[:, 4].tolist())
+        #imgr = draw_boxes_on_image(img0, preds[:, :4].tolist(), [model.names[int(i)] for i in preds[:, 5].tolist()], preds[:, 5].tolist(), preds[:, 4].tolist())
 
         for j, (pred) in enumerate(preds):
             #print(pred)
@@ -206,7 +217,7 @@ with torch.no_grad():
             bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
             segmentation = [[pred[0], pred[1], pred[2], pred[1], pred[2], pred[3], pred[0], pred[3]]]
             cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
-        im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', imgr)
+        im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', img0)
         print(data_dir+'/'+im_name+'.jpg')
         if im_save:
             im_cur.execute("""INSERT INTO images (file_name, uploaded) values(?,?)""", (im_name, False))
