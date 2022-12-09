@@ -1,4 +1,10 @@
-# Prepare Nvidia Jetson Nano 4GB as CCTV camera for Floating Litter Detection
+# Prepare Nvidia Jetson Nano 4GB as a CCTV camera for Floating Litter Detection
+
+### Requirements
+    - Nvidia Jetson Nano 4GB Dev Kit
+    - SD card (> 32GB)
+    - USB Camera
+    - Other peripherals, please refer to [components](./components.md) for list of equipments we use to build the camera setup. 
 
 ## Install OS and boot from TF card
 
