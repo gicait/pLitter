@@ -4,7 +4,7 @@
     - Nvidia Jetson Nano 4GB Dev Kit
     - SD card (> 32GB)
     - USB Camera
-    - Other peripherals, please refer to [components](./components.md) for list of equipments we use to build the camera setup. 
+Other peripherals, please refer to [components](./components.md) for list of equipments we use to build the camera setup. 
 
 ## Install OS and boot from TF card
 
@@ -68,6 +68,3 @@ Before you run the follow step, make surem a USB camera is plugged and device is
 Check logs/ folder for logs. In case of erros follow the prompts, solve and run agian. If No errors your system is ready to deploy, add this to crontab to start at system boot up.
 
     @reboot path_to_plitter/start.sh
-
-
-Refer to [components](components.md) for more information on list of components we use for building the CCTV station.
