@@ -58,7 +58,7 @@ Clone the cctv branch from plitter repo
     cd plitter
     pip3 install -r requirements.txt
 
-Update the details for camera configuration. Change the variable vavalues in [camera_config.env](camera_config.env) and [cctv_secret.env](cctv_secret.env), this information is necessary to uplaod the captured images and detections to the cloud.
+Update the details for camera configuration. Change the variable vavalues in [camera_config.env](../camera_config.env) and [cctv_secret.env](../cctv_secret.env), this information is necessary to uplaod the captured images and detections to the cloud.
 
 Before you run the follow step, make surem a USB camera is plugged and device is connected to internet.
 
