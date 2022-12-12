@@ -1,4 +1,4 @@
-# pLitterCam - An IoT style camera for plastic debris (floating) detection 
+# pLitterCCTV - An IoT style camera for floating debris (macro-plastic) detection 
 
 This tool is used to prepare a standalone CCTV type camera system using Nvidia Jetson Nano or any other Single board computer.
 
@@ -15,8 +15,8 @@ camera starts capturing images with a selected interval, detects the objects (fl
 
 Jetson Nano 4GB or
 USB camera or CSI camera 
-Detailed list of components with figures are in [components.md](./components.md).
+Detailed list of components with figures are in [here](./docs/List-of-Components.md).
 
 ## Setup
 
-Follow [Prepare_Nvidia_Jetson_Nano.md](./Prepare_Nvidia_Jetson_Nano.md) to install required libraried and setting up the camera.
+Follow the [steps](./docs/Jetson-Nano-Preparation-Material.md) to install required libraried and setting up the camera.

@@ -4,7 +4,7 @@
     - Nvidia Jetson Nano 4GB Dev Kit
     - SD card (> 32GB)
     - USB Camera
-Other peripherals, please refer to [components](./components.md) for list of equipments we use to build the camera setup. 
+Other peripherals, please refer to [components](./List-of-Components.md) for list of equipments we use to build the camera setup.
 
 ## Install OS and boot from TF card
 
