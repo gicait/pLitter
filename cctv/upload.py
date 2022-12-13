@@ -14,7 +14,7 @@ class_map = {'Debris': 'plastic', 'Bottle': 'Plastic bottle', 'Styrofoam': 'Styr
 # ------make sure below env vars are set before run----------
 root_dir = os.getenv('root_dir', 'project_home')
 url = os.getenv('url', None)
-dataset_id = os.getenv('id', None)
+dataset_id = os.getenv('dataset_id', None)
 key = os.getenv('key', '--secrte-key--')
 
 print(root_dir, url, dataset_id)

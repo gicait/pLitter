@@ -3,11 +3,11 @@ import json
 import time
 
 url = os.getenv('url', None)
-cctv_id = os.getenv('id', None)
+dataset_id = os.getenv('dataset_id', None)
 
-print(url, cctv_id)
+print(url, dataset_id)
 
-if not (url and cctv_id):
+if not (url and dataset_id):
     print("set var")
     exit()
 
@@ -65,7 +65,7 @@ else:
 time.sleep(180) # wait 3 min for start other programs
 while True:
     #update config
-    new_config = getConfig(url+'/api/dataset/'+str(cctv_id)+'/config')
+    new_config = getConfig(url+'/api/dataset/'+str(dataset_id)+'/config')
     print(new_config)
     modify=False
     for k in config.keys():
