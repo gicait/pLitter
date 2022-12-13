@@ -65,7 +65,7 @@ reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_2
 
 FRAME_WIDTH = int(os.getenv('frame_width', 1920))
 FRAME_HEIGHT = int(os.getenv('frame_height', 1280))
-interval = int(os.getenv('interval', 3))
+interval = int(os.getenv('interval', 10))
 work_in_night = os.getenv('work_in_night', True)
 weights_url = os.getenv('weights_url', None)
 
