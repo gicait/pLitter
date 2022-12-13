@@ -60,7 +60,7 @@ def draw_boxes_on_image(image, boxes, classes, class_ids, scores, use_normalized
 
 root_dir = os.getenv('root_dir', '/'.join(os.path.abspath(__file__).split('/')[0:-2]))
 
-yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'yolov5s.pt')
+yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'pLitterFloat_800x752_to_640x640.pt')
 reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_25_msmt17.pt')
 
 FRAME_WIDTH = int(os.getenv('frame_width', 1920))
