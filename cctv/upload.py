@@ -76,7 +76,7 @@ while True:
                             print(det)
                             detections.append({
                                 'track_id': det[1],
-                                'category': class_map[det[3]],
+                                'category': class_map[det[3]] if det[3] in class_map.keys() else 'plastic',
                                 'isbbox': True,
                                 'bbox': json.loads(det[4]),
                                 'segmentation': json.loads(det[5]),
