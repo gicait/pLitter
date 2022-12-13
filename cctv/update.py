@@ -43,10 +43,24 @@ def writeConfig(file_path, config):
     f.close()
     os.rename('.'+file_path+'.swp', file_path)
 
+"""
+                    frame_height=1080
+                    frame_width=1920
+                    images_prefix=''
+                    interval=10
+                    gitpull=False
+                    send_empty=True
+                    silce_width=800
+                    slice_height=752
+                    work_in_night=False
+                    weights=pLitterFloat_800x752_to_640x640.pt
+                    weights_url=https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt
+"""
+
 if os.path.isfile('camera_config.env'):
     config = readConfig('camera_config.env') #read filename from env var
 else:
-    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'new_weights': 'true', 'gitpull': 'false', 'send_empty': 'true', 'silce_width': '800', 'slice_height': '752', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.0.1/pLitterFloat_1216_x_1216_yolov5s.pt'}
+    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'gitpull': 'False', 'send_empty': 'True', 'silce_width': '800', 'slice_height': '752', 'work_in_night': 'False', 'weights': 'pLitterFloat_800x752_to_640x640.pt', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt'}
 
 time.sleep(180) # wait 3 min for start other programs
 while True:
