@@ -48,6 +48,7 @@ if os.path.isfile('camera_config.env'):
 else:
     config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'new_weights': 'true', 'gitpull': 'false', 'send_empty': 'true', 'silce_width': '800', 'slice_height': '752', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.0.1/pLitterFloat_1216_x_1216_yolov5s.pt'}
 
+time.sleep(180) # wait 3 min for start other programs
 while True:
     #update config
     new_config = getConfig(url+'/api/dataset/'+str(cctv_id)+'/config')
