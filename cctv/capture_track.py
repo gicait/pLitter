@@ -9,7 +9,7 @@ import numpy as np
 import cv2
 import json
 import torch
-import torchvision
+# import torchvision
 import sqlite3
 import uuid
 
@@ -104,11 +104,13 @@ detections_dbpath = os.path.join(db_dir, 'detections.db') # change this
 images_dbpath = os.path.join(db_dir, 'images.db')
 
 conn = sqlite3.connect(detections_dbpath, isolation_level=None)
+conn.execute("VACUUM")
 cur = conn.cursor()
 cur.execute("""CREATE TABLE IF NOT EXISTS detections(id INTEGER PRIMARY KEY, track_id TEXT, date_time TEXT, category TEXT, bbox TEXT, segmentation TEXT)""")
 conn.commit()
 
 im_conn = sqlite3.connect(images_dbpath, isolation_level=None)
+im_conn.execute("VACUUM")
 im_cur = im_conn.cursor()
 im_cur.execute("""CREATE TABLE IF NOT EXISTS images(id INTEGER PRIMARY KEY, file_name TEXT UNIQUE, uploaded BOOLEAN)""")
 im_conn.commit()

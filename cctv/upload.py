@@ -35,11 +35,11 @@ images_dbpath = root_dir+'/db/images.db'
 print(detections_dbpath, images_dbpath)
 
 conn = sqlite3.connect(images_dbpath, isolation_level=None)
-conn.execute("VACUUM")
+# conn.execute("VACUUM")
 cur = conn.cursor()
 
 det_conn = sqlite3.connect(detections_dbpath, isolation_level=None)
-det_conn.execute("VACUUM")
+# det_conn.execute("VACUUM")
 det_cur = det_conn.cursor()
 
 #time.sleep(10) # wait 10 sec
