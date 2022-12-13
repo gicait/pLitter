@@ -191,8 +191,9 @@ with torch.no_grad():
         curr_frame = img0
 
         if img0 is None:
+            print("check if camera is connected and run again")
             continue
-        
+
         if img0.all() is None:
             continue
         
