@@ -46,7 +46,7 @@ def writeConfig(file_path, config):
 if os.path.isfile('camera_config.env'):
     config = readConfig('camera_config.env') #read filename from env var
 else:
-    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'new_weights': 'true', 'gitpull': 'false', 'send_empty': 'true', 'silce_width': '640', 'slice_height': '640', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.0.1/pLitterFloat_1216_x_1216_yolov5s.pt'}
+    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'new_weights': 'true', 'gitpull': 'false', 'send_empty': 'true', 'silce_width': '800', 'slice_height': '752', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.0.1/pLitterFloat_1216_x_1216_yolov5s.pt'}
 
 while True:
     #update config

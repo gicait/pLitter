@@ -13,6 +13,28 @@ import torchvision
 import sqlite3
 import uuid
 
+def get_slice_bboxes(image_height,image_width,slice_height,slice_width,overlap_height_ratio,overlap_width_ratio):
+    slice_bboxes = []
+    y_max = y_min = 0
+    y_overlap = int(overlap_height_ratio * slice_height)
+    x_overlap = int(overlap_width_ratio * slice_width)
+    while y_max < image_height:
+        x_min = x_max = 0
+        y_max = y_min + slice_height
+        while x_max < image_width:
+            x_max = x_min + slice_width
+            if y_max > image_height or x_max > image_width:
+                xmax = min(image_width, x_max)
+                ymax = min(image_height, y_max)
+                xmin = max(0, xmax - slice_width)
+                ymin = max(0, ymax - slice_height)
+                slice_bboxes.append([xmin, ymin, xmax, ymax])
+            else:
+                slice_bboxes.append([x_min, y_min, x_max, y_max])
+            x_min = x_max - x_overlap
+        y_min = y_max - y_overlap
+    return slice_bboxes
+
 colors = [(0,255,255), (0,0,255), (255,0,0), (0,255,0)]*20
 def draw_boxes_on_image(image, boxes, classes, class_ids, scores, use_normalized_coordinates=False, min_score_thresh=.3):
     assert len(boxes) == len(scores)
@@ -93,7 +115,11 @@ im_conn.commit()
 
 # torch.set_printoptions(precision=3)
 
-slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
+silce_width = os.getenv("silce_width", 800)
+slice_height = os.getenv("slice_height", 752)
+
+# slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
+slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, silce_width, 0.04, 0.04)
 
 device = torch.device('cuda:0')
 half = True

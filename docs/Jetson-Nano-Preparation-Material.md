@@ -47,7 +47,7 @@ Install PyTorch from below wheel
 
 Test if PyTorch working with CUDA
 
-    python3 -c 'import torch; torch.cuda.is_available()'
+    python3 -c 'import torch; print(torch.cuda.is_available())'
 
 
 ## Setting up pLitterCCTV + Yolov5 + StrongSort
