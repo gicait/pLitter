@@ -46,7 +46,12 @@ det_cur = det_conn.cursor()
 # dos moething to check netwrok connection
 
 while True:
-    cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+    try:
+        cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+    except:
+        print("db error")
+        time.sleep(60)
+        continue
     for row in cur.fetchall():
         image = row[0]+'.jpg'
         print(image)
