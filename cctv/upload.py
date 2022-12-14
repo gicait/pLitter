@@ -89,6 +89,7 @@ while True:
                             print('detections uploaded successfully')
                             cur.execute("""DELETE FROM images WHERE file_name=?""", (row[0],))
                             det_cur.execute("""DELETE FROM detections WHERE date_time=?""", (row[0],))
+                            os.remove(os.path.join(image_dir,image))
                     else:
                         pass
                     #os.remove(image_dir+image) #delete image after uploading optioanlly

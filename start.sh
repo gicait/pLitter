@@ -23,4 +23,3 @@ export OPENBLAS_CORETYPE=ARMV8
 OPENBLAS_CORETYPE=ARMV8 MPLBACKEND=agg /usr/bin/python3 cctv/capture_track.py &> logs/capture.log &
 OPENBLAS_CORETYPE=ARMV8 /usr/bin/python3 cctv/upload.py &> logs/upload.log &
 OPENBLAS_CORETYPE=ARMV8 /usr/bin/python3 cctv/update.py &> logs/update.log &
-
