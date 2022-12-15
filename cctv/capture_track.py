@@ -175,6 +175,7 @@ prev_frame, curr_frame = None, None
 
 start = '06:00:00'
 end = '18:00:00'
+timer = time.time()
 
 with torch.no_grad():
     while True:
@@ -233,27 +234,29 @@ with torch.no_grad():
         if prev_frame is not None and curr_frame is not None:
             tracker.tracker.camera_update(prev_frame, curr_frame)
         
-        preds = tracker.update(preds, img0)
+        preds = tracker.update(preds, curr_frame)
         #print(preds)
 
-        if len(preds) == 0:
-            continue
+        # if len(preds) == 0:
+        #     prev_frame = curr_frame
+        #     continue
 
         #print(preds[:, :4], model.names, preds[:, 5], preds[:, 6]) 
         print(preds)
         #imgr = draw_boxes_on_image(img0, preds[:, :4].tolist(), [model.names[int(i)] for i in preds[:, 5].tolist()], preds[:, 5].tolist(), preds[:, 4].tolist())
 
-        for j, (pred) in enumerate(preds):
-            #print(pred)
-            #pred = list(map(int, pred.tolist()))
-            bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
-            segmentation = [[pred[0], pred[1], pred[2], pred[1], pred[2], pred[3], pred[0], pred[3]]]
-            cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
-        im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', img0)
-        print(data_dir+'/'+im_name+'.jpg')
-        if im_save:
-            im_cur.execute("""INSERT INTO images (file_name, uploaded) values(?,?)""", (im_name, False))
-        fn = time.time()
-        print("time:", fn-st)
+        if abs(time.time()-timer) >= interval:
+            for j, (pred) in enumerate(preds):
+                #print(pred)
+                #pred = list(map(int, pred.tolist()))
+                bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
+                segmentation = [[pred[0], pred[1], pred[2], pred[1], pred[2], pred[3], pred[0], pred[3]]]
+                cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
+            im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', img0)
+            print(data_dir+'/'+im_name+'.jpg')
+            if im_save:
+                im_cur.execute("""INSERT INTO images (file_name, uploaded) values(?,?)""", (im_name, False))
+            print("time:", time.time()-st)
+            timer = time.time()
+            # time.sleep(interval)
         prev_frame = curr_frame
-        time.sleep(interval)
