@@ -259,4 +259,6 @@ with torch.no_grad():
             print("time:", time.time()-st)
             timer = time.time()
             # time.sleep(interval)
+        else:
+            print("waiting for interval")
         prev_frame = curr_frame

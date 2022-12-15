@@ -1,6 +1,7 @@
 import os, requests
 import json
 import time
+from argparse import ArgumentParser
 
 url = os.getenv('url', None)
 dataset_id = os.getenv('dataset_id', None)
@@ -62,17 +63,32 @@ if os.path.isfile('camera_config.env'):
 else:
     config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'gitpull': 'False', 'send_empty': 'True', 'silce_width': '800', 'slice_height': '752', 'work_in_night': 'False', 'weights': 'pLitterFloat_800x752_to_640x640.pt', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt'}
 
-time.sleep(180) # wait 3 min for start other programs
-while True:
-    #update config
-    new_config = getConfig(url+'/api/dataset/'+str(dataset_id)+'/config')
-    print(new_config)
-    modify=False
-    for k in config.keys():
-        if k in new_config.keys():
-            if config[k] != new_config[k]:
-                config[k] = new_config[k]
-                modify = True
-    if modify:
-        writeConfig('camera_config.env', config)
-    time.sleep(300) #update for every 5 minutes
+if __name__ == "__main__":
+
+    parser = ArgumentParser()
+    parser.add_argument("--setup", default=False, action='store_true')
+
+    args = parser.parse_args()
+    setup = args.setup
+
+    if setup:
+        pass
+    else:
+        time.sleep(180) # wait 3 min for start other programs
+
+    while True:
+        #update config
+        new_config = getConfig(url+'/api/dataset/'+str(dataset_id)+'/config')
+        print(new_config)
+        modify=False
+        for k in config.keys():
+            if k in new_config.keys():
+                if config[k] != new_config[k]:
+                    config[k] = new_config[k]
+                    modify = True
+        if modify:
+            writeConfig('camera_config.env', config)
+        if setup:
+            break
+        else:
+            time.sleep(300) #update for every 5 minutes
