@@ -71,22 +71,22 @@ while True:
                         image_id = r_json['image_id']
                         # get detections from db and upload
                         print(image_id)
-                        detections = []
                         det_cur.execute("""SELECT * from detections WHERE date_time=?""", (row[0],))
                         dets = det_cur.fetchall()
-                        for det in dets:
-                            print(det)
-                            detections.append({
-                                'track_id': det[1],
-                                'category': class_map[det[3]] if det[3] in class_map.keys() else 'plastic',
-                                'isbbox': True,
-                                'bbox': json.loads(det[4]),
-                                'segmentation': json.loads(det[5]),
-                                })
-                            data = {'image_id': image_id, 'key': key, 'predictions': detections}
-                        print(data)
-                        rr = requests.post(prediction_url, json=data, timeout=119)
-                        print(rr.status_code, rr.json())
+                        if len(dets):
+                            det_data = {'image_id': image_id, 'key': key, 'detections': []}
+                            for det in dets:
+                                print(det)
+                                det_data['detections'].append({
+                                    'track_id': det[1],
+                                    'category': class_map[det[3]] if det[3] in class_map.keys() else 'plastic',
+                                    'isbbox': True,
+                                    'bbox': json.loads(det[4]),
+                                    'segmentation': json.loads(det[5]),
+                                    })
+                            print(det_data)
+                            rr = requests.post(prediction_url, json=det_data, timeout=119)
+                            print(rr.status_code, rr.json())
                         if len(dets) == 0 or rr.status_code == 200:
                             print('detections uploaded successfully')
                             cur.execute("""DELETE FROM images WHERE file_name=?""", (row[0],))
