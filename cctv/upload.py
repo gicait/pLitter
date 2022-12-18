@@ -47,7 +47,8 @@ det_cur = det_conn.cursor()
 
 while True:
     try:
-        cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+        #cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+        cur.execute("""SELECT file_name FROM images""")
     except:
         print("db error")
         time.sleep(60)
@@ -72,7 +73,8 @@ while True:
                         print(image_id)
                         detections = []
                         det_cur.execute("""SELECT * from detections WHERE date_time=?""", (row[0],))
-                        for det in det_cur.fetchall():
+                        dets = det_cur.fetchall()
+                        for det in dets:
                             print(det)
                             detections.append({
                                 'track_id': det[1],
@@ -85,7 +87,7 @@ while True:
                         print(data)
                         rr = requests.post(prediction_url, json=data, timeout=119)
                         print(rr.status_code, rr.json())
-                        if rr.status_code == 200:
+                        if len(dets) == 0 or rr.status_code == 200:
                             print('detections uploaded successfully')
                             cur.execute("""DELETE FROM images WHERE file_name=?""", (row[0],))
                             det_cur.execute("""DELETE FROM detections WHERE date_time=?""", (row[0],))
