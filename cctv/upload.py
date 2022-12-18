@@ -61,12 +61,12 @@ while True:
             try:
                 r = requests.post(image_url, files=files, data=data, timeout=119)
                 print(r.status_code)
-                if r.status_code == 200:
+                if r.status_code in (200, 400):
                     print("image uploaded successfully")
                     cur.execute("""UPDATE images SET uploaded=? WHERE file_name=?""", (1, row[0]))
                     r_json = r.json()
                     print(r_json)
-                    if True:
+                    if 'image_id' in r_json.keys():
                         image_id = r_json['image_id']
                         # get detections from db and upload
                         print(image_id)
@@ -94,7 +94,7 @@ while True:
                         pass
                     #os.remove(image_dir+image) #delete image after uploading optioanlly
                 else:
-                    print("failed to uplaod the image")
+                    print("failed to upoad the image")
             except requests.exceptions.ConnectionError as errc:
                 print("Error connecting:", errc)
             except requests.exceptions.HTTPError as errh:
