@@ -234,7 +234,7 @@ with torch.no_grad():
         if prev_frame is not None and curr_frame is not None:
             tracker.tracker.camera_update(prev_frame, curr_frame)
         
-        preds = tracker.update(preds, curr_frame)
+        tracker_preds = tracker.update(preds, curr_frame)
         #print(preds)
 
         # if len(preds) == 0:
@@ -242,11 +242,13 @@ with torch.no_grad():
         #     continue
 
         #print(preds[:, :4], model.names, preds[:, 5], preds[:, 6]) 
-        print(preds)
+        print(tracker_preds)
         #imgr = draw_boxes_on_image(img0, preds[:, :4].tolist(), [model.names[int(i)] for i in preds[:, 5].tolist()], preds[:, 5].tolist(), preds[:, 4].tolist())
 
         if abs(time.time()-timer) >= interval:
-            for j, (pred) in enumerate(preds):
+            # if len(tracker_preds) != len(preds):
+                # tracker_preds = preds
+            for j, (pred) in enumerate(tracker_preds):
                 #print(pred)
                 #pred = list(map(int, pred.tolist()))
                 bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
