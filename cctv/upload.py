@@ -47,7 +47,8 @@ det_cur = det_conn.cursor()
 
 while True:
     try:
-        cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+        #cur.execute("""SELECT file_name FROM images WHERE uploaded=?""", (False,))
+        cur.execute("""SELECT file_name FROM images""")
     except:
         print("db error")
         time.sleep(60)
@@ -61,31 +62,32 @@ while True:
             try:
                 r = requests.post(image_url, files=files, data=data, timeout=119)
                 print(r.status_code)
-                if r.status_code == 200:
+                if r.status_code in (200, 400):
                     print("image uploaded successfully")
                     cur.execute("""UPDATE images SET uploaded=? WHERE file_name=?""", (1, row[0]))
                     r_json = r.json()
                     print(r_json)
-                    if True:
+                    if 'image_id' in r_json.keys():
                         image_id = r_json['image_id']
                         # get detections from db and upload
                         print(image_id)
-                        detections = []
                         det_cur.execute("""SELECT * from detections WHERE date_time=?""", (row[0],))
-                        for det in det_cur.fetchall():
-                            print(det)
-                            detections.append({
-                                'track_id': det[1],
-                                'category': class_map[det[3]] if det[3] in class_map.keys() else 'plastic',
-                                'isbbox': True,
-                                'bbox': json.loads(det[4]),
-                                'segmentation': json.loads(det[5]),
-                                })
-                            data = {'image_id': image_id, 'key': key, 'predictions': detections}
-                        print(data)
-                        rr = requests.post(prediction_url, json=data, timeout=119)
-                        print(rr.status_code, rr.json())
-                        if rr.status_code == 200:
+                        dets = det_cur.fetchall()
+                        if len(dets):
+                            det_data = {'image_id': image_id, 'key': key, 'detections': []}
+                            for det in dets:
+                                print(det)
+                                det_data['detections'].append({
+                                    'track_id': det[1],
+                                    'category': class_map[det[3]] if det[3] in class_map.keys() else 'plastic',
+                                    'isbbox': True,
+                                    'bbox': json.loads(det[4]),
+                                    'segmentation': json.loads(det[5]),
+                                    })
+                            print(det_data)
+                            rr = requests.post(prediction_url, json=det_data, timeout=119)
+                            print(rr.status_code, rr.json())
+                        if len(dets) == 0 or rr.status_code == 200:
                             print('detections uploaded successfully')
                             cur.execute("""DELETE FROM images WHERE file_name=?""", (row[0],))
                             det_cur.execute("""DELETE FROM detections WHERE date_time=?""", (row[0],))
@@ -94,7 +96,7 @@ while True:
                         pass
                     #os.remove(image_dir+image) #delete image after uploading optioanlly
                 else:
-                    print("failed to uplaod the image")
+                    print("failed to upoad the image")
             except requests.exceptions.ConnectionError as errc:
                 print("Error connecting:", errc)
             except requests.exceptions.HTTPError as errh:

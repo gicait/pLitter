@@ -150,8 +150,10 @@ tracker = StrongSORT(
     max_dist=cfg.STRONGSORT.MAX_DIST,
     max_iou_distance=cfg.STRONGSORT.MAX_IOU_DISTANCE,
     max_age=cfg.STRONGSORT.MAX_AGE,
-    max_unmatched_preds=cfg.STRONGSORT.MAX_UNMATCHED_PREDS,
-    n_init=cfg.STRONGSORT.N_INIT,
+    max_unmatched_preds=99,
+    #max_unmatched_preds=cfg.STRONGSORT.MAX_UNMATCHED_PREDS,
+    #n_init=cfg.STRONGSORT.N_INIT,
+    n_init=0,
     nn_budget=cfg.STRONGSORT.NN_BUDGET,
     mc_lambda=cfg.STRONGSORT.MC_LAMBDA,
     ema_alpha=cfg.STRONGSORT.EMA_ALPHA,
@@ -253,11 +255,17 @@ with torch.no_grad():
                 #pred = list(map(int, pred.tolist()))
                 bbox = [pred[0], pred[1], pred[2]-pred[0], pred[3]-pred[1]]
                 segmentation = [[pred[0], pred[1], pred[2], pred[1], pred[2], pred[3], pred[0], pred[3]]]
-                cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
+                try:
+                    cur.execute("""INSERT INTO detections (track_id, date_time, category, bbox, segmentation) values(?,?,?,?,?)""", ( uid+'_'+str(pred[4]), im_name, model.names[int(pred[5])], json.dumps(bbox), json.dumps(segmentation)))
+                except:
+                    pass
             im_save = cv2.imwrite(data_dir+'/'+im_name+'.jpg', img0)
             print(data_dir+'/'+im_name+'.jpg')
             if im_save:
-                im_cur.execute("""INSERT INTO images (file_name, uploaded) values(?,?)""", (im_name, False))
+                try:
+                    im_cur.execute("""INSERT INTO images (file_name, uploaded) values(?,?)""", (im_name, False))
+                except:
+                    pass
             print("time:", time.time()-st)
             timer = time.time()
             # time.sleep(interval)
