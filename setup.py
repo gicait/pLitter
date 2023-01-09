@@ -7,24 +7,21 @@ with open("README.md", "r") as fh:
 
 
 setuptools.setup(
-    name="plitterstreet",
-    version="1.0",
+    name="plitter",
+    version="0.1.0",
     author="GIC@AIT",
     author_email="sriram@ait.ac.th",
-    description="A tool identify and map the plastic litter in the streets",
+    description="plastic litter detection tool",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gicait/pLitter",
-    packages=["plitterstreet"],
+    packages=["plitter"],
     install_requires=[
         "opencv-python",
+        'pandas',
         "exif",
-        "piexif",
-        "folium==0.8.2",
-        "tensorflow",
-        "tqdm",
-        "Pillow",
-        "geopy",
+        "gpxpy",
+        'torch',
     ],
     classifiers=[
         "Programming Language :: Python :: 3",
