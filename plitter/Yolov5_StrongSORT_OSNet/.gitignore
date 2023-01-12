@@ -1,0 +1,23 @@
+.vscode/
+
+# interpreter bytecode
+__pycache__/
+
+# experiment results
+runs/
+
+# evaluation tools folder
+val_utils/
+
+# zip files
+*.zip
+
+# exports
+*_openvino_model
+*.torchscript
+*.pt
+*.onnx
+*.engine
+
+# interactive plots
+*.html
