@@ -56,14 +56,16 @@ pLitterStreet dataset contains images from following locations,
 * Can Tho (Vietnam)
 * Hanwella & Mawanella (Sri Lanka)
 * Mekong river basin (contains piles i.e, clusters of litter on the roadsides)
-* Trying add more for new locations
 
 pLitterFloat contains data from,
 
 * Mekong river, Chaing Rai, Thailand
 * Ruak RIVER, Chiang Rai, Thialand
 * Chao Praya, Bangkok, Thailand
-* Mekong river, Cantho, Vietnam (coming soon)
+* Cantho, Vietnam (coming soon)
+
+#### Trying add more data from new locations (please contact us if you have data to contribute.)
+
 
 *Note: We have used a open-source Annotator tool built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
 
@@ -71,12 +73,12 @@ pLitterFloat contains data from,
 
 ## # Pre-trained models
 
-Pre-trained models will be updated very soon.
+Trained weights of YOLOv5 are give below.
 
-| Dataset | AP | Link |
-| --- | --- | --- |
-| Street | 0.77 | - |
-| CCTV | 0.43 | - |
+| Dataset | Model | AP | Link |
+| --- | --- | --- | --- |
+| Street |  YOLOv5l | 0.77 | [download](https://github.com/gicait/pLitter/releases/download/v0.0.0-street/pLitterStreet_YOLOv5l.pt) |
+| CCTV | YOLOv5s | 0.43 | [download](https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt) |
 
 * * * * *
 
