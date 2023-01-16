@@ -1,6 +1,7 @@
 data/*
 weights/*
 other/*
+.*
 
 *.DS_Store
 
