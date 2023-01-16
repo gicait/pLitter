@@ -10,6 +10,7 @@ import gpxpy
 from exif import Image
 import pandas as pd
 import pickle
+import torch
 
 """
 
@@ -87,8 +88,10 @@ class pTrack:
         filenames = os.listdir(self.directory)
         images = list(filter(lambda x: x.lower().endswith(('.png', '.jpg', '.jpeg')), filenames))
         videos = list(filter(lambda x: x.lower().endswith(('.mp4', '.mkv', '.avi')), filenames))
-        images.sort(key = lambda f: int(re.sub('\D', '', f)))
-        videos.sort(key = lambda f: int(re.sub('\D', '', f)))
+
+        # sort the images and videos by the alphanumeric order in the file name
+        images.sort(key = lambda f: int(re.sub('\D', '', f) if re.sub('\D', '', f) else 0))
+        videos.sort(key = lambda f: int(re.sub('\D', '', f) if re.sub('\D', '', f) else 0))
         
         for image in images:
             try:
@@ -156,7 +159,8 @@ class pTrack:
             boxes = preds.xyxy[0].cpu().numpy()[:,:4]
             self.images[i].predictions = {'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()}
 
-    def detectVideos(self, model, skip_frames=0, tracker=None):
+    @torch.no_grad()
+    def detectVideos(self, model, tracker=None, skip_frames=0):
         if self.names == dict():
             self.names = model.names
         print('Detecting plastic litters in videos')
@@ -169,32 +173,72 @@ class pTrack:
             last_pos = 0.0
             print('fps:', fps, 'frame_count:', frame_count, 'duration:', duration)
             skipped_frames = 0
-            while vidcap.isOpened():
-                success, image = vidcap.read()
-                if skip_frames > 0:
-                    if skipped_frames%skip_frames != 0:
-                        skipped_frames += 1
-                        print('skipped frame', skipped_frames)
-                        continue
-                skipped_frames += 1
-                if success:
-                    preds = model(image, size=1280)
-                    class_ids = preds.xyxy[0].cpu().numpy()[:, 5]
-                    classes = [preds.names[cls] for cls in class_ids]
-                    scores = preds.xyxy[0].cpu().numpy()[:, 4]
-                    boxes = preds.xyxy[0].cpu().numpy()[:,:4]
-                    self.videos[i].predictions.append({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
-                    print({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
+            if tracker is None:
+                while vidcap.isOpened():
+                    success, image = vidcap.read()
+                    if skip_frames > 0:
+                        if skipped_frames%skip_frames != 0:
+                            skipped_frames += 1
+                            print('skipped frame', skipped_frames)
+                            continue
+                    skipped_frames += 1
+                    if success:
+                        preds = model(image, size=1280)
+                        class_ids = preds.xyxy[0].cpu().numpy()[:, 5]
+                        classes = [preds.names[cls] for cls in class_ids]
+                        scores = preds.xyxy[0].cpu().numpy()[:, 4]
+                        boxes = preds.xyxy[0].cpu().numpy()[:,:4]
+                        self.videos[i].predictions.append({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
+                        print({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
 
-                if vidcap.get(cv2.CAP_PROP_POS_MSEC) != 0.0:
-                    last_pos = vidcap.get(cv2.CAP_PROP_POS_MSEC)
-                else:
-                    last_pos += 1000/fps
+                    if vidcap.get(cv2.CAP_PROP_POS_MSEC) != 0.0:
+                        last_pos = vidcap.get(cv2.CAP_PROP_POS_MSEC)
+                    else:
+                        last_pos += 1000/fps
 
-                print(last_pos, duration)
-                if duration*1000 <= last_pos:
-                    print('video', self.videos[i].file_name, 'is finished')
-                    break
+                    print(last_pos, duration)
+                    if duration*1000 <= last_pos:
+                        print('video', self.videos[i].file_name, 'is finished')
+                        break
+            else:
+                prev_frame = None
+                curr_frame = None
+                while vidcap.isOpened():
+                    success, image = vidcap.read()
+                    if skip_frames > 0:
+                        if skipped_frames%skip_frames != 0:
+                            skipped_frames += 1
+                            print('skipped frame', skipped_frames)
+                            continue
+                    skipped_frames += 1
+                    if success:
+                        preds = model(image, size=1280)
+                        if prev_frame is not None and curr_frame is not None:
+                            tracker.tracker.camera_update(prev_frame, curr_frame)
+                        if len(preds.xyxy[0].cpu()) > 0:
+                            print(preds.xyxy[0].cpu())
+                            outputs = tracker.update(preds.xyxy[0].cpu(), image)
+                            print(outputs)
+                            if len(outputs):
+                                class_ids = outputs[:, 5].astype(int)
+                                track_ids = outputs[:, 4]
+                                classes = [preds.names[int(cls)] for cls in class_ids]
+                                scores = [float(f) for f in outputs[:, 6]]
+                                boxes = outputs[:,:4]
+                                print(class_ids, track_ids, classes, scores, boxes)
+                                self.videos[i].predictions.append({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores})
+                                print({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'track_ids': track_ids.tolist(), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores})
+
+                    if vidcap.get(cv2.CAP_PROP_POS_MSEC) != 0.0:
+                        last_pos = vidcap.get(cv2.CAP_PROP_POS_MSEC)
+                    else:
+                        last_pos += 1000/fps
+                    prev_frame = curr_frame
+
+                    print(last_pos, duration)
+                    if duration*1000 <= last_pos:
+                        print('video', self.videos[i].file_name, 'is finished')
+                        break
 
             vidcap.release()
             with open(os.path.join(self.directory, self.videos[i].file_name+'.pkl'), 'wb') as f:
@@ -203,72 +247,136 @@ class pTrack:
     def detect(self, model, tracker=None, skip_frames=0):
         self.names = model.names
         self.detectImages(model)
-        self.detectVideos(model, skip_frames=skip_frames, tracker=tracker)
+        self.detectVideos(model, tracker=tracker, skip_frames=skip_frames)
 
-    def export(self, output_file):
-        geojson = {
-            "type": "FeatureCollection",
-            "features": []
-        }
-
-        for image in self.images:
-            feature = {
-                "type": "Feature",
-                "properties": {
-                    "file_name": image.file_name,
-                    "count": 0,
-                },
-                "geometry": {
-                    "type": "Point",
-                    "coordinates": [round(image.longitude, 6), round(image.latitude, 6)]
-                }
+    def export(self, output_file, with_predictions=False, html=False):
+        if with_predictions:
+            geojson = {
+                "type": "FeatureCollection",
+                "features": []
             }
-            for name in self.names.values():
-                feature['properties'].update({name: []})
-            
-            for i in range(len(image.predictions['classes'])):
-                if image.predictions['scores'][i] > 0.4:
-                    if image.predictions['classes'][i] != 'Trash bin':
-                        feature['properties']['count'] += 1
-                    feature['properties'][image.predictions['classes'][i]].append({
-                        "box": [int(x) for x in image.predictions['boxes'][i]],
-                        "score": round(image.predictions['scores'][i], 2)
-                    })
- 
-            geojson['features'].append(feature)
 
-        for video in self.videos:
-            feature = {
-                "type": "Feature",
-                "properties": {
-                    "file_name": video.file_name,
-                    "indexes": ['lon', 'lat', 'cts', 'count'],
-                    "track": []
-                },
-                "geometry": {
-                    "type": "LineString",
-                    "coordinates": []
+            for image in self.images:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "file_name": image.file_name,
+                        "count": 0,
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [round(image.longitude, 6), round(image.latitude, 6)]
+                    }
                 }
+                for name in self.names.values():
+                    feature['properties'].update({name: []})
+                
+                for i in range(len(image.predictions['classes'])):
+                    if image.predictions['scores'][i] > 0.4:
+                        if image.predictions['classes'][i] != 'Trash bin':
+                            feature['properties']['count'] += 1
+                        feature['properties'][image.predictions['classes'][i]].append({
+                            "box": [int(x) for x in image.predictions['boxes'][i]],
+                            "score": round(image.predictions['scores'][i], 2)
+                        })
+    
+                geojson['features'].append(feature)
+
+            for video in self.videos:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "file_name": video.file_name,
+                        "indexes": ['lon', 'lat', 'cts', 'count'],
+                        "track": []
+                    },
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": []
+                    }
+                }
+                feature['properties']['indexes'].extend(self.names.values())
+
+                for i in range(len(video.predictions)):
+                    frame_cts = video.predictions[i]['frame_cts']
+                    near_gpx = video.gpx.iloc[(video.gpx['cts']-frame_cts).abs().argsort()[0]]
+                    track_point = {'lon': round(near_gpx.longitude, 6), 'lat': round(near_gpx.latitude, 6), 'cts': round(near_gpx.cts, 3), 'count': 0}
+                    track_point.update({name: [] for name in self.names.values()})
+                    for j in range(len(video.predictions[i]['classes'])):
+                        if video.predictions[i]['scores'][j] > 0.4:
+                            if video.predictions[i]['classes'][j] != 'Trash bin':
+                                track_point['count'] += 1
+                            track_point[video.predictions[i]['classes'][j]].append({
+                                # convert list of floats to list of integers
+                                "box": [int(x) for x in video.predictions[i]['boxes'][j]],
+                                "score": round(video.predictions[i]['scores'][j], 2)
+                            })                
+                    feature['geometry']['coordinates'].append([round(near_gpx.longitude, 6), round(near_gpx.latitude, 6)])
+                    feature['properties']['track'].append(list(track_point.values()))
+                geojson['features'].append(feature)
+
+            with open(output_file, 'w') as f:
+                json.dump(geojson, f)
+        else:
+            geojson = {
+                "type": "FeatureCollection",
+                "features": []
             }
-            feature['properties']['indexes'].extend(self.names.values())
 
-            for i in range(len(video.predictions)):
-                frame_cts = video.predictions[i]['frame_cts']
-                near_gpx = video.gpx.iloc[(video.gpx['cts']-frame_cts).abs().argsort()[0]]
-                track_point = {'lon': round(near_gpx.longitude, 6), 'lat': round(near_gpx.latitude, 6), 'cts': round(near_gpx.cts, 3), 'count': 0}
-                track_point.update({name: [] for name in self.names.values()})
-                for j in range(len(video.predictions[i]['classes'])):
-                    if video.predictions[i]['scores'][j] > 0.4:
-                        if video.predictions[i]['classes'][j] != 'Trash bin':
-                            track_point['count'] += 1
-                        track_point[video.predictions[i]['classes'][j]].append({
-                            # convert list of floats to list of integers
-                            "box": [int(x) for x in video.predictions[i]['boxes'][j]],
-                            "score": round(video.predictions[i]['scores'][j], 2)
-                        })                
-                feature['geometry']['coordinates'].append([round(near_gpx.longitude, 6), round(near_gpx.latitude, 6)])
-                feature['properties']['track'].append(list(track_point.values()))
-            geojson['features'].append(feature)
+            for image in self.images:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "file_name": image.file_name,
+                        "count": 0,
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [round(image.longitude, 6), round(image.latitude, 6)]
+                    }
+                }
+                for name in self.names.values():
+                    feature['properties'].update({name: 0})
+                
+                for i in range(len(image.predictions['classes'])):
+                    if image.predictions['scores'][i] > 0.4:
+                        if image.predictions['classes'][i] != 'Trash bin':
+                            feature['properties']['count'] += 1
+                        feature['properties'][image.predictions['classes'][i]] += 1
+    
+                geojson['features'].append(feature)
 
-        with open(output_file, 'w') as f:
-            json.dump(geojson, f)
+            for video in self.videos:
+                feature = {
+                    "type": "Feature",
+                    "properties": {
+                        "file_name": video.file_name,
+                        "indexes": ['lon', 'lat', 'cts', 'count'],
+                        "track": []
+                    },
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": []
+                    }
+                }
+                feature['properties']['indexes'].extend(self.names.values())
+
+                for i in range(len(video.predictions)):
+                    frame_cts = video.predictions[i]['frame_cts']
+                    near_gpx = video.gpx.iloc[(video.gpx['cts']-frame_cts).abs().argsort()[0]]
+                    track_point = {'lon': round(near_gpx.longitude, 6), 'lat': round(near_gpx.latitude, 6), 'cts': round(near_gpx.cts, 3), 'count': 0}
+                    track_point.update({name: 0 for name in self.names.values()})
+                    for j in range(len(video.predictions[i]['classes'])):
+                        if video.predictions[i]['scores'][j] > 0.4:
+                            if video.predictions[i]['classes'][j] != 'Trash bin':
+                                track_point['count'] += 1
+                            track_point[video.predictions[i]['classes'][j]] += 1
+                    feature['geometry']['coordinates'].append([round(near_gpx.longitude, 6), round(near_gpx.latitude, 6)])
+                    feature['properties']['track'].append(list(track_point.values()))
+                geojson['features'].append(feature)
+
+            with open(output_file, 'w') as f:
+                json.dump(geojson, f)
+        if html:
+            # TODO: add html output, use a templte to poen the geojson file
+            pass

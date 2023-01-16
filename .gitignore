@@ -1,4 +1,7 @@
-/demo/data
+data/*
+weights/*
+other/*
+
 *.DS_Store
 
 
