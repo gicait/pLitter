@@ -66,6 +66,10 @@ pLitterFloat contains data from,
 
 #### Trying add more data from new locations (please contact us if you have data to contribute.)
 
+* Mekong river, Chaing Rai, Thailand
+* Ruak RIVER, Chiang Rai, Thialand
+* Chao Praya, Bangkok, Thailand
+* Mekong river, Cantho, Vietnam (coming soon)
 
 *Note: We have used a open-source Annotator tool built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
 
