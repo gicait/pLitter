@@ -30,6 +30,13 @@ while True:
     for image in images_list:
         print(image)
         if image.endswith(('.png', '.jpg')) and os.path.isfile(os.path.join(image_dir,image)):
+            if os.path.getsize(os.path.join(image_dir,image)) == 0:
+                try:
+                    os.remove(os.path.join(image_dir, image))
+                    os.remove(os.path.join(image_dir, image.replace('.jpg', '.json')))
+                except:
+                    pass
+                continue
             files = {'image': open(os.path.join(image_dir,image), 'rb')}
             data = {'dataset_id': dataset_id, 'key': key}
             try:
