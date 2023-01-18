@@ -166,4 +166,8 @@ Before you run the follow step, make surem a USB camera is plugged and device is
 
 Check logs/ folder for logs. In case of erros follow the prompts, solve and run agian. If No errors your system is ready to deploy, add this to crontab to start at system boot up.
 
+    # with tracker
     @reboot path_to_plitter/start.sh
+    # without tracker
+    @reboot path_to_plitter/start_cctv.sh
+
