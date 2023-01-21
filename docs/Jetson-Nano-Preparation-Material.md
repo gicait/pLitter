@@ -153,7 +153,7 @@ Test if PyTorch working with CUDA
 
 Clone the cctv branch from plitter repo
 
-    git clone -b cctv --recurse-submodules https://github.com/gicait/plitter
+    git clone -b cctv --recurse-submodules --single-branch https://github.com/gicait/plitter
     cd plitter
     pip3 install -r requirements.txt
 
