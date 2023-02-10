@@ -139,10 +139,10 @@ Install PyTorch from below wheel
     wget https://nvidia.box.com/shared/static/fjtbno0vpo676a25cgvuqc1wty0fkkg6.whl -O torch-1.10.0-cp36-cp36m-linux_aarch64.whl
     pip3 install torch-1.10.0-cp36-cp36m-linux_aarch64.whl
 
-    <!-- git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
+    git clone --branch v0.11.1 https://github.com/pytorch/vision torchvision
     cd torchvision
     sudo python3 setup.py install
-    cd .. -->
+    cd ..
 
 Test if PyTorch working with CUDA
 
@@ -153,7 +153,7 @@ Test if PyTorch working with CUDA
 
 Clone the cctv branch from plitter repo
 
-    git clone -b cctv --recurse-submodules https://github.com/gicait/plitter
+    git clone -b cctv --recurse-submodules --single-branch https://github.com/gicait/plitter
     cd plitter
     pip3 install -r requirements.txt
 
