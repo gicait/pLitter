@@ -49,7 +49,10 @@ while True:
                     if 'image_id' in r_json.keys():
                         image_id = r_json['image_id']
                         print(image_id)
-                        json_data = json.load(open(os.path.join(image_dir,image.replace('.jpg', '.json')), 'rb'))
+                        try:
+                            json_data = json.load(open(os.path.join(image_dir,image.replace('.jpg', '.json')), 'rb'))
+                        except:
+                            json_data = {'preds': []}
                         if len(json_data['preds']) == 0:
                             print('no detections')
                             os.remove(os.path.join(image_dir, image))
