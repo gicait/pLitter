@@ -188,8 +188,9 @@ class pTrack:
                         classes = [preds.names[cls] for cls in class_ids]
                         scores = preds.xyxy[0].cpu().numpy()[:, 4]
                         boxes = preds.xyxy[0].cpu().numpy()[:,:4]
-                        self.videos[i].predictions.append({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
-                        print({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()})
+                        rec = {'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC)*0.001, 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores.tolist()}
+                        self.videos[i].predictions.append(rec)
+                        print(rec)
 
                     if vidcap.get(cv2.CAP_PROP_POS_MSEC) != 0.0:
                         last_pos = vidcap.get(cv2.CAP_PROP_POS_MSEC)
@@ -225,9 +226,10 @@ class pTrack:
                                 classes = [preds.names[int(cls)] for cls in class_ids]
                                 scores = [float(f) for f in outputs[:, 6]]
                                 boxes = outputs[:,:4]
-                                print(class_ids, track_ids, classes, scores, boxes)
-                                self.videos[i].predictions.append({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores})
-                                print({'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC), 'track_ids': track_ids.tolist(), 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores})
+                                # print(class_ids, track_ids, classes, scores, boxes)
+                                rec = {'frame_cts': vidcap.get(cv2.CAP_PROP_POS_MSEC)*0.001, 'category_ids': class_ids.tolist(), 'classes': classes, 'boxes': boxes.tolist(), 'scores': scores}
+                                self.videos[i].predictions.append(rec)
+                                print(rec)
 
                     if vidcap.get(cv2.CAP_PROP_POS_MSEC) != 0.0:
                         last_pos = vidcap.get(cv2.CAP_PROP_POS_MSEC)
