@@ -50,7 +50,8 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 We have prepared datsets separatelty for street level plastic litter (pLitterStreet) and floating plastic litters (pLitterFloat). These datasets contains RGB images, plastic litter annotations (JSON format same as COCO).
 
-pLitterStreet [Dataset](https://doi.org/10.5281/zenodo.8288500)
+pLitterStreet [Dataset](https://doi.org/10.5281/zenodo.8288500).
+
 This dataset contains images from following locations,
 
 * Pathumthani, Ubon Ratchathani, and Chiang Rai (Thailand)
