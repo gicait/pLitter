@@ -50,12 +50,14 @@ In the conventional sense, typical machine learning pipeline consisted of collec
 
 We have prepared datsets separatelty for street level plastic litter (pLitterStreet) and floating plastic litters (pLitterFloat). These datasets contains RGB images, plastic litter annotations (JSON format same as COCO).
 
-pLitterStreet dataset contains images from following locations,
+pLitterStreet [Dataset](https://doi.org/10.5281/zenodo.8288500)
+This dataset contains images from following locations,
 
 * Pathumthani, Ubon Ratchathani, and Chiang Rai (Thailand)
 * Can Tho (Vietnam)
 * Hanwella & Mawanella (Sri Lanka)
-* Mekong river basin (contains piles i.e, clusters of litter on the roadsides)
+* Other Mekong river basin areas (contains only piles i.e, clusters of litter on the roadsides)
+
 
 pLitterFloat contains data from,
 
@@ -79,7 +81,7 @@ pLitterFloat contains data from,
 
 Trained weights of YOLOv5 are give below.
 
-| Dataset | Model | AP | Link |
+| Dataset | Model | AP50 | Link |
 | --- | --- | --- | --- |
 | Street |  YOLOv5l | 0.77 | [download](https://github.com/gicait/pLitter/releases/download/v0.0.0-street/pLitterStreet_YOLOv5l.pt) |
 | CCTV | YOLOv5s | 0.43 | [download](https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt) |
