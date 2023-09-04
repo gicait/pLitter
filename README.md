@@ -60,19 +60,14 @@ This dataset contains images from following locations,
 * Other Mekong river basin areas (contains only piles i.e, clusters of litter on the roadsides)
 
 
-pLitterFloat contains data from,
+pLitterFloat (link will be updated) contains data from,
 
 * Mekong river, Chaing Rai, Thailand
-* Ruak RIVER, Chiang Rai, Thialand
-* Chao Praya, Bangkok, Thailand
-* Cantho, Vietnam (coming soon)
+* Ruak river, Chiang Rai, Thialand
+* Chao Praya river, Bangkok, Thailand
+* Cantho river, Cantho, Vietnam (coming soon)
 
 #### Trying add more data from new locations (please contact us if you have data to contribute.)
-
-* Mekong river, Chaing Rai, Thailand
-* Ruak RIVER, Chiang Rai, Thialand
-* Chao Praya, Bangkok, Thailand
-* Mekong river, Cantho, Vietnam (coming soon)
 
 *Note: We have used a open-source Annotator tool built from [COCO annotator](https://github.com/jsbroks/coco-annotator) for generation of bounding box annotations with the help of group of annotators. If you are planning to generate your own training data, it is an option*
 
