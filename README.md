@@ -111,7 +111,7 @@ Use the below bibtex to cite us.
       title={pLitterStreet: Street Level Plastic Litter Detection and Mapping}, 
       author={Sriram Reddy Mandhati and N. Lakmal Deshapriya and Chatura Lavanga Mendis and Kavinda Gunasekara and Frank Yrle and Angsana Chaksan and Sujit Sanjeev},
       year={2024},
-      url={https://arxiv.org/abs/2401.14719}
+      url={https://arxiv.org/abs/2401.14719},
       eprint={2401.14719},
       archivePrefix={arXiv},
       primaryClass={cs.CV}
