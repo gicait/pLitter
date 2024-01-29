@@ -97,13 +97,24 @@ Also visit [pLitter pages](https://plitter.org) to look at the all initiatives o
 
 Use the below bibtex to cite us.
 
-```BibTeX
-@misc{pLitterStreet_2021,
+<!-- @misc{pLitterStreet_2021,
   title={pLitter-street, Plastic Litter detection along the streets using deep learning},
   author={Sriram Reddy, Lakmal Deshapriya, Chatura Lavanga, Dan Tran, Kavinda Gunasekara, Frank Yrle, Angsana Chaksan, and Sujit},
   year={2021},
   publisher={Github},
   howpublished={\url{https://github.com/gicait/pLitter/}},
+} -->
+
+```BibTeX
+
+@misc{plitterstreet,
+      title={pLitterStreet: Street Level Plastic Litter Detection and Mapping}, 
+      author={Sriram Reddy Mandhati and N. Lakmal Deshapriya and Chatura Lavanga Mendis and Kavinda Gunasekara and Frank Yrle and Angsana Chaksan and Sujit Sanjeev},
+      year={2024},
+      url={https://arxiv.org/abs/2401.14719}
+      eprint={2401.14719},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
 }
 
 @misc{pLitterFloat_2022,
