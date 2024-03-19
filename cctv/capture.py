@@ -64,10 +64,10 @@ data_dir = os.path.join(root_dir, 'data')
 
 # torch.set_printoptions(precision=3)
 
-silce_width = int(os.getenv("silce_width", 800))
+slice_width = int(os.getenv("slice_width", 800))
 slice_height = int(os.getenv("slice_height", 752))
 
-slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, silce_width, 0.04, 0.04)
+slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, slice_width, 0.04, 0.04)
 
 device = torch.device('cuda:0')
 half = True
