@@ -51,7 +51,7 @@ def writeConfig(file_path, config):
                     interval=10
                     gitpull=False
                     send_empty=True
-                    silce_width=800
+                    slice_width=800
                     slice_height=752
                     work_in_night=False
                     weights=pLitterFloat_800x752_to_640x640.pt
@@ -61,7 +61,7 @@ def writeConfig(file_path, config):
 if os.path.isfile('camera_config.env'):
     config = readConfig('camera_config.env') #read filename from env var
 else:
-    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'gitpull': 'False', 'send_empty': 'True', 'silce_width': '800', 'slice_height': '752', 'work_in_night': 'False', 'weights': 'pLitterFloat_800x752_to_640x640.pt', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt'}
+    config = {'frame_height': '1920', 'frame_width': '1080', 'images_prefix': "''", 'interval': '30', 'gitpull': 'False', 'send_empty': 'True', 'slice_width': '800', 'slice_height': '752', 'work_in_night': 'False', 'weights': 'pLitterFloat_800x752_to_640x640.pt', 'weights_url': 'https://github.com/gicait/pLitter/releases/download/v0.1/pLitterFloat_800x752_to_640x640.pt'}
 
 if __name__ == "__main__":
 
