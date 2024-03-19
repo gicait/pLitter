@@ -117,11 +117,11 @@ im_conn.commit()
 
 # torch.set_printoptions(precision=3)
 
-silce_width = int(os.getenv("silce_width", 800))
+slice_width = int(os.getenv("slice_width", 800))
 slice_height = int(os.getenv("slice_height", 752))
 
 # slice_boxes = [[0, 0, 720, 840], [648, 0, 1368, 840], [1200, 0, 1920, 840], [0, 440, 720, 1280], [648, 440, 1368, 1280], [1200, 440, 1920, 1280]]
-slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, silce_width, 0.04, 0.04)
+slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, slice_width, 0.04, 0.04)
 
 device = torch.device('cuda:0')
 half = True
