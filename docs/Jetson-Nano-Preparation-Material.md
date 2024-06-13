@@ -129,7 +129,10 @@ Check if CUDA available,
 
 If CUDA not available, either use SDK manager from Nvida to install or run below. This step might be skipped if using board is official module.
 
-    sudo apt install nvidia-jetpack
+    sudo apt dist-upgrade
+    sudo apt update
+    sudo apt-get install nvidia-container
+    sudo apt-get install nvidia-jetpack
 
     echo $'export PATH="/usr/local/cuda/bin:${PATH}"' >> ~/.bashrc
     echo $'export LD_LIBRARY_PATH="/usr/local/cuda/lib64:${LD_LIBRARY_PATH}"' >> ~/.bashrc
