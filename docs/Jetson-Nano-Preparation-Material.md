@@ -164,8 +164,8 @@ Update the details for camera configuration. Change the variable vavalues in [ca
 
 Before you run the follow step, make surem a USB camera is plugged and device is connected to internet.
 
-    sudo chmod +x start.sh
-    ./start.sh
+    sudo chmod +x start_cctv.sh
+    ./start_cctv.sh
 
 Check logs/ folder for logs. In case of erros follow the prompts, solve and run agian. If No errors your system is ready to deploy, add this to crontab to start at system boot up.
 
