@@ -6,4 +6,4 @@ WORKDIR /workspace/
 COPY ./backend/ /workspace/
 
 EXPOSE 5555
-CMD celery -A workers worker -l info
+CMD celery -A workers worker -l info --concurrency 4

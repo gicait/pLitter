@@ -111,12 +111,13 @@ pie_limits.add_argument('frequency', default='', type=str)
 #dataset_country.add_argument('country', required=True)
 
 cctv_config = reqparse.RequestParser()
+cctv_config.add_argument('weights_name', default=None, type=str)
 cctv_config.add_argument('weights_url', default=None, type=str)
 cctv_config.add_argument('frame_height', default=None, type=int)
 cctv_config.add_argument('frame_width', default=None, type=int)
 cctv_config.add_argument('slice_height', default=None, type=int)
 cctv_config.add_argument('slice_width', default=None, type=int)
-cctv_config.add_argument('interval', default=15, type=int)
+cctv_config.add_argument('interval', default=20, type=int)
 cctv_config.add_argument('key', default=None, type=str)
 
 @api.route('/')
@@ -135,36 +136,33 @@ class Dataset(Resource):
                     return query_util.fix_ids(current_user.datasets.filter(deleted=False, country=country, province=province, city=city).only('id', 'display_name', 'country', 'province', 'city', 'latitude', 'longitude', 'start_date', 'purpose').all())
                 return query_util.fix_ids(current_user.datasets.filter(deleted=False, country=country, province=province).all())
             return query_util.fix_ids(current_user.datasets.filter(deleted=False, country=country).all())
-        #data = current_user.datasets.filter(deleted=False).all()
-        #logger.info(f'type, {type(data)}')
-        #aggr = current_user.datasets.filter(deleted=False).aggregate({"$project": {"id": "$id", "name": "$display_name"}})
-        #logger.info(f'type, {type(aggr)}')
-        #return query_util.fix_ids(data)
         return query_util.fix_ids(current_user.datasets.filter(deleted=False).all())
-        #return query_util.fix_ids(json.dumps(list(current_user.datasets.filter(deleted=False).aggregate({"$project": {"id": "$id", "name": "$display_name"}}))))
-
+    
     @api.expect(dataset_create)
     @login_required
     def post(self):
         """ Creates a dataset """
-        args = dataset_create.parse_args()
-        name = args['name']
-        country = args['country']
-        province = args['province']
-        city = args['city']
-        latitude = args['latitude']
-        longitude = args['longitude']
-        categories = args.get('categories', [])
+        if current_user.is_admin:
+            args = dataset_create.parse_args()
+            name = args['name']
+            country = args['country']
+            province = args['province']
+            city = args['city']
+            latitude = args['latitude']
+            longitude = args['longitude']
+            categories = args.get('categories', [])
 
-        category_ids = CategoryModel.bulk_create(categories)
+            category_ids = CategoryModel.bulk_create(categories)
 
-        try:
-            dataset = DatasetModel(name=name, display_name=name, categories=category_ids, country=country, province=province, city=city, latitude=latitude, longitude=longitude)
-            dataset.save()
-        except NotUniqueError:
-            return {'message': 'Dataset already exists. Check the undo tab to fully delete the dataset.'}, 400
+            try:
+                dataset = DatasetModel(name=name, display_name=name, categories=category_ids, country=country, province=province, city=city, latitude=latitude, longitude=longitude)
+                dataset.save()
+            except NotUniqueError:
+                return {'message': 'Dataset already exists. Check the undo tab to fully delete the dataset.'}, 400
 
-        return query_util.fix_ids(dataset)
+            return query_util.fix_ids(dataset)
+        else: 
+            return {'message': 'Only admin users are allowed to create datasets.'}, 403
 
 
 def download_images(output_dir, args):
@@ -253,6 +251,7 @@ class DatasetConfig(Resource):
     def post(self, dataset_id):
         """updates cctv camera configuration"""
         args = cctv_config.parse_args()
+        weights = args['weights_name']
         weights_url = args['weights_url']
         frame_width = args['frame_width']
         frame_height = args['frame_height']
@@ -263,6 +262,8 @@ class DatasetConfig(Resource):
 
         dataset = current_user.datasets.filter(id=dataset_id, deleted=False).first()
 
+        if weights:
+            dataset.update(set__weights=weights)
         if weights_url:
              dataset.update(set__weights_url=weights_url)
         if frame_width:
@@ -321,26 +322,137 @@ class DatasetCleanMeta(Resource):
 class DatasetPiestats(Resource):
 
     @api.expect(pie_limits)
-    @cache.cached(timeout=60, query_string=True)
+    @cache.cached(timeout=120, query_string=True)
     def get(self, dataset_id):
-
         args = pie_limits.parse_args()
         start_date = args['start_date']
         end_date = args['end_date']
 
+        # Validate the dataset
         dataset = current_user.datasets.filter(id=dataset_id, deleted=False).first()
         if dataset is None:
             return {"message": "Invalid dataset id"}, 400
 
-        images = ImageModel.objects(dataset_id=dataset.id, deleted=False, file_name__gte=start_date, file_name__lte=end_date, num_annotations__gt=0)
-        annotations = AnnotationModel.objects(dataset_id=dataset.id, deleted=False)
-        category_count = dict()
-        #to do: filters annotations by images from start to end
-        for category in dataset.categories:
-            cat_name = CategoryModel.objects(id=category).first()['name']
-            cat_count = annotations.filter(category_id=category).count()
-            category_count.update({str(cat_name): cat_count})
+        category_count = {}
+
+        if start_date:
+            # Ensure that the indexes are used by filtering on the date range and dataset_id
+            images = ImageModel.objects(
+                dataset_id=dataset.id, 
+                deleted=False, 
+                file_name__gte=start_date, 
+                file_name__lte=end_date
+            ).only('id').timeout(False)
+
+            image_ids = [image.id for image in images]
+            
+            if not image_ids:
+                return category_count, 200  # Return empty if no images found within date range
+
+            # Filter annotations based on the image IDs
+            pipeline = [
+                {'$match': {
+                    'dataset_id': dataset.id, 
+                    'deleted': False, 
+                    'image_id': {'$in': image_ids}
+                }},
+                {'$group': {
+                    '_id': '$category_id',
+                    'count': {'$sum': 1}
+                }}
+            ]
+            result = list(AnnotationModel.objects.aggregate(*pipeline))
+        else:
+            # Aggregate annotations directly by category_id without date filter
+            pipeline = [
+                {'$match': {'dataset_id': dataset.id, 'deleted': False}},
+                {'$group': {
+                    '_id': '$category_id',
+                    'count': {'$sum': 1}
+                }}
+            ]
+            result = list(AnnotationModel.objects.aggregate(*pipeline))
+
+        # Prepare the category count dictionary
+        if result:
+            category_ids = [entry['_id'] for entry in result]
+            categories = CategoryModel.objects(id__in=category_ids)
+            category_dict = {str(cat.id): cat.name for cat in categories}
+
+            for entry in result:
+                category_name = category_dict.get(str(entry['_id']))
+                if category_name:
+                    category_count[category_name] = entry['count']
+
         return category_count, 200
+
+    # def get(self, dataset_id):
+    #     args = pie_limits.parse_args()
+    #     start_date = args['start_date']
+    #     end_date = args['end_date']
+
+    #     dataset = current_user.datasets.filter(id=dataset_id, deleted=False).first()
+    #     if dataset is None:
+    #         return {"message": "Invalid dataset id"}, 400
+    #     if not start_date:
+    #         annotations = AnnotationModel.objects(dataset_id=dataset.id, deleted=False)
+
+    #         category_count = dict()
+    #         for category in dataset.categories:
+    #             cat_name = CategoryModel.objects(id=category).first().name
+    #             cat_count = annotations.filter(category_id=category).count()
+    #             category_count[cat_name] = cat_count
+    #     else:
+    #         images = ImageModel.objects(dataset_id=dataset.id, deleted=False, file_name__gte=start_date, file_name__lte=end_date)
+    #         image_ids = [image.id for image in images]
+
+    #         # Filter annotations based on the dataset, deletion status, and associated image IDs
+    #         annotations = AnnotationModel.objects(dataset_id=dataset.id, deleted=False, image_id__in=image_ids)
+    #         category_count = dict()
+    #         for category in dataset.categories:
+    #             cat_name = CategoryModel.objects(id=category).first().name  # Access directly without dictionary access
+    #             cat_count = annotations.filter(category_id=category).count()
+    #             category_count.update({str(cat_name): cat_count})
+    #     return category_count, 200
+
+    # def get(self, dataset_id):
+    #     args = pie_limits.parse_args()
+    #     start_date = args['start_date']
+    #     end_date = args['end_date']
+
+    #     dataset = current_user.datasets.filter(id=dataset_id, deleted=False).first()
+    #     if dataset is None:
+    #         return {"message": "Invalid dataset id"}, 400
+    #     if start_date:
+    #         images = ImageModel.objects(dataset_id=dataset.id, deleted=False, file_name__gte=start_date, file_name__lte=end_date)
+    #         image_ids = [image.id for image in images]
+
+    #         # Filter annotations based on the dataset, deletion status, and associated image IDs
+    #         annotations = AnnotationModel.objects(dataset_id=dataset.id, deleted=False, image_id__in=image_ids)
+    #         category_count = dict()
+    #         for category in dataset.categories:
+    #             cat_name = CategoryModel.objects(id=category).first().name  # Access directly without dictionary access
+    #             cat_count = annotations.filter(category_id=category).count()
+    #             category_count.update({str(cat_name): cat_count}) 
+    #     else:
+    #         match_conditions = {'dataset_id': dataset.id, 'deleted': False}
+    #         pipeline = [
+    #             {'$match': match_conditions},
+    #             {'$group': {
+    #                 '_id': '$category_id',
+    #                 'count': {'$sum': 1}
+    #             }}
+    #         ]
+
+    #         result = AnnotationModel.objects.aggregate(*pipeline)
+
+    #         category_count = {}
+    #         for entry in result:
+    #             category = CategoryModel.objects(id=entry['_id']).first()
+    #             if category:
+    #                 category_count[category.name] = entry['count']
+
+    #     return category_count, 200
 
 @api.route('/<int:dataset_id>/line_stats')
 class DatasetLinestats(Resource):
@@ -357,11 +469,17 @@ class DatasetLinestats(Resource):
         if dataset is None:
             return {"message": "Invalid dataset id"}, 400
 
+        si = 0
+        if dataset.images_prefix:
+            start_date = dataset.images_prefix + start_date
+            end_date = dataset.images_prefix + end_date
+            si = len(dataset.images_prefix)
+
         res = ImageModel.objects(dataset_id=dataset.id, deleted=False, file_name__gte=start_date, file_name__lte=end_date, num_annotations__gt=0).aggregate(
             {
                 "$project": {
                     "day": {
-                        "$substr": ["$file_name", 0, 8]
+                        "$substr": ["$file_name", si, si+8]
                     },
                     "category_ids": 1
                 }
@@ -1282,3 +1400,24 @@ class DatasetEmptyimages(Resource):
         images = ImageModel.objects(deleted=False, dataset_id=dataset_id, instances__exists=True, instances__ne={}).only('id', 'file_name', 'path').order_by('id').all()
 
         return query_util.fix_ids(images), 200
+
+@api.route('/<int:dataset_id>/refresh')
+class DatasetRefresh(Resource):
+
+    @api.expect(dataset_refresh)
+    @login_required
+    def get(self, dataset_id):
+
+        args = dataset_refresh.parse_args()
+        start_date = args['start_date']
+        end_date = args['end_date']
+
+        dataset = DatasetModel.objects(id=dataset_id).first()
+        
+        if not dataset:
+            return {'message': 'Invalid dataset ID'}, 400
+        
+        if start_date > end_date:
+            return {'message': 'Invalid date range'}, 400
+
+        dataset.refresh(str(start_date), str(end_date))

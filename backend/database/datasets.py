@@ -51,6 +51,7 @@ class DatasetModel(DynamicDocument):
     # is_visible_public = BooleanField(default=False)
     # is_annotate_public = BooleanField(default=False)
 
+    weights = StringField()
     weights_url = StringField()
     frame_width = IntField()
     frame_height = IntField()
@@ -152,6 +153,25 @@ class DatasetModel(DynamicDocument):
         task.save()
         
         cel_task = delete_empty_images_in_dataset.delay(task.id, self.id, start_date, end_date)
+
+        return {
+            "celery_id": cel_task.id,
+            "id": task.id,
+            "name": task.name
+        }
+
+    def refresh(self, start_date, end_date):
+
+        from workers.tasks import refresh_dataset
+
+        task = TaskModel(
+            name=f"Refreshing {self.name}",
+            dataset_id=self.id,
+            group="Dataset Refresh"
+        )
+        task.save()
+
+        cel_task = refresh_dataset.delay(task.id, self.id, start_date, end_date)
 
         return {
             "celery_id": cel_task.id,

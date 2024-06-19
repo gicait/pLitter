@@ -15,3 +15,5 @@ db/*
 docs/*
 dconfig
 config/*
+/datasets_bkk/
+/datasets_bkk2/

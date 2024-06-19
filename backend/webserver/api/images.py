@@ -104,12 +104,13 @@ class Images(Resource):
         # if current_user or dataset['is_public']:
 
         logger.info(f'Image upload with key {dataset_key}')
-        if dataset_key != dataset.key:
-            return {'message': 'requires a key to upload'}, 403
-
-        if True:
+        if dataset_key == dataset.key:
             directory = dataset.directory
-            path = os.path.join(directory, image.filename)
+            if image.filename[0:8].isdigit():
+                path = os.path.join(directory, image.filename[0:8], image.filename)
+                os.makedirs(os.path.join(directory, image.filename[0:8]), exist_ok=True)    
+            else:
+                path = os.path.join(directory, image.filename)
 
             if os.path.exists(path):
                 logger.info(f'file already exists {image.filename}')
@@ -120,19 +121,25 @@ class Images(Resource):
             try:
                 pil_image = Image.open(io.BytesIO(image.read()))
                 pil_image.save(path)
+                # db_image = ImageModel.create_from_path(path, dataset_id).save()
+                db_image = ImageModel()
+                db_image.file_name = os.path.basename(path)
+                db_image.path = path
+                db_image.dataset_id = dataset_id
+                db_image.width = pil_image.size[0]
+                db_image.height = pil_image.size[1]
+                db_image.regenerate_thumbnail = True
+                db_image.uploaded_by = "System"
+                db_image.save()
                 image.close()
                 pil_image.close()
-                db_image = ImageModel.create_from_path(path, dataset_id).save()
-                # to do @sriram
-                # generate thubnail immediately after uploading
-                thumbnails.generate_thumbnail(db_image)
             except OSError:
                 return {'message': 'Can not read image from file'}, 500
-            logger.info(f'Image post with filename: {image.filename} and id {db_image.id}')
+            
+            logger.info(f'Image post with filename: {db_image.file_name} and id {db_image.id}')
             return {'image_id': db_image.id}, 200
         else:
-            return {'message': 'Upload not permitted'}, 403
-
+            return {'message': 'Upload not permitted with out key'}, 403
 
 @api.route('/<int:image_id>')
 class ImageId(Resource):
@@ -158,7 +165,10 @@ class ImageId(Resource):
         if not height:
             height = image.height
 
-        pil_image = image.open_thumbnail() if thumbnail else Image.open(image.path)
+        try:
+            pil_image = image.open_thumbnail() if thumbnail else Image.open(image.path)
+        except:
+            pil_image = Image.open(image.path)    
 
         pil_image.thumbnail((width, height), Image.ANTIALIAS)
         image_io = io.BytesIO()
@@ -265,6 +275,60 @@ class FilenameId(Resource):
             return {'image_id': image.id, 'dataset_id': dataset_id, 'file_name': file_name}, 200
         else:
             return {'message': 'image not found with the file_name'}, 404
+
+
+@api.route('/<int:image_id>/instances')
+class ImageIdInstances(Resource):
+
+    @login_required
+    def post(self, image_id):
+        image = current_user.images.filter(id=image_id, deleted=False).first()
+        if image is None:
+            return {"message": "Invalid image ID"}, 400
+        #project only on category_id and group by category_id and count
+        im_instances = current_user.annotations.filter(image_id=image_id, deleted=False).aggregate(
+            {
+                "$project": {
+                    "category_id": 1
+                    }
+            }, 
+            {
+                "$group": {
+                    "_id": "$category_id", 
+                    "count": {"$sum": 1}
+                }
+            }, 
+            {
+                "$group": {
+                    "_id": 0, 
+                    "data": {
+                    "$push": {
+                        "k": {"$convert": {"input": "$_id", "to": "string"}}, 
+                        "v": "$count"
+                        }
+                    }
+                }
+            }, 
+            {
+                "$replaceRoot": {
+                    "newRoot": {
+                        "$arrayToObject": "$data"
+                    }
+                }
+            }
+        )
+
+        im_instances = list(im_instances)
+        if len(im_instances) > 0:
+            im_instances = im_instances[0]
+        else:
+            im_instances = {}
+
+        if image.instances != im_instances:
+            image.update(set__instances=im_instances)
+            return {'message': 'instances updated', 'instances': im_instances}, 200
+        
+        return {'message': 'Instances not changed', 'instances': im_instances}, 200
 
 @api.route('/flag')
 class ImageFlag(Resource):

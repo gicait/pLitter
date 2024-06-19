@@ -231,7 +231,7 @@ class PredictionsData(Resource):
 
         if predictions == []:
             predictions = detections
-        logger.info(f'detections: {data}')
+        # logger.info(f'detections: {data}')
 
         if not isinstance(image_id, int):
             return {'success': False, 'message': 'image_id is required'}, 404
@@ -252,13 +252,13 @@ class PredictionsData(Resource):
         added_predictions = []
         added_categories = set()
         # Iterate every prediction from the data predictions
-        logger.info(f'predictions: {predictions}')
+        # logger.info(f'predictions: {predictions}')
         for prediction in predictions:
             category_id = prediction.get('category_id', None)
             category_name = prediction.get('category', None)
 
             if category_name is not None:
-                logger.info(f'categegory name: {category_name}')
+                # logger.info(f'categegory name: {category_name}')
                 #db_category = categories.filter(name=category_name).first()
                 db_category = categories.filter(Q(name=category_name) | Q(othernames__in=category_name)).first()
                 if db_category is not None:
@@ -281,7 +281,7 @@ class PredictionsData(Resource):
             if area is None:
                 area = int(bbox[2]*bbox[3])
             try:
-                logger.info(f'creating annotation with {image_id, category_id, segmentation, bbox, isbbox, area, track_id}')
+                # logger.info(f'creating annotation with {image_id, category_id, segmentation, bbox, isbbox, area, track_id}')
                 annotation = AnnotationModel(
                     image_id=image_id,
                     category_id=category_id,
@@ -298,14 +298,15 @@ class PredictionsData(Resource):
                 added_predictions.append({'success': False, 'message': str(e)})
 
         num_annotations = len(added_predictions)
+        image_model.thumbnail()
+
         image_model.update(
             set__annotated=(num_annotations > 0),
             set__category_ids=list(added_categories),
-            set__regenerate_thumbnail=True,
+            set__regenerate_thumbnail=False,
             set__num_annotations=num_annotations,
             set__is_predicted_with=True
         )
-
-        thumbnails.generate_thumbnail(image_model)
+        logger.info(f'{image_id, num_annotations}')
 
         return {"success": True, "annotations": added_predictions}, 200

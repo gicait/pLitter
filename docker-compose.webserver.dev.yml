@@ -1,0 +1,27 @@
+version: "3"
+networks:
+  cocoannotator:
+    external: true
+
+services:
+  webserver:  
+    container_name: annotator_webserver
+    build:
+      context: .
+      dockerfile: ./backend/webserver/Dockerfile
+    ports:
+      - 5000:5000
+    volumes:
+      - "./backend/config:/workspace/config"
+      - "./backend/webserver:/workspace/webserver"
+      - "./backend/workers:/workspace/workers"
+      - "./backend/database:/workspace/database"
+      - "./datasets:/datasets"
+      - "./models:/models"
+    environment:
+      - FILE_WATCHER=true
+      - FLASK_APP=webserver
+      - FLASK_ENV=development
+      - DEBUG=false
+    networks:
+      - cocoannotator

@@ -20,7 +20,8 @@ class Config:
     VERSION = get_tag()
 
     ### File Watcher
-    FILE_WATCHER = os.getenv("FILE_WATCHER", False)
+    # FILE_WATCHER = os.getenv("FILE_WATCHER", False)
+    FILE_WATCHER = False
     IGNORE_DIRECTORIES = ["_thumbnail", "_settings"]
 
     # Flask/Gunicorn
