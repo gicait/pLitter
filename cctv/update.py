@@ -2,6 +2,9 @@ import os, requests
 import json
 import time
 from argparse import ArgumentParser
+from dotenv import load_dotenv
+load_dotenv("/home/cctv/plitter/camera_config.env")
+load_dotenv("/home/cctv/plitter/cctv_secret.env")
 
 url = os.getenv('url', None)
 dataset_id = os.getenv('dataset_id', None)
