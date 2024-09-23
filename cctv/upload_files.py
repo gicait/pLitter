@@ -4,6 +4,8 @@ import requests
 import time
 import cv2
 import json
+from dotenv import load_dotenv
+load_dotenv("/home/cctv/plitter/cctv_secret.env")
 
 class_map = {'debris': 'plastic', 'bottle': 'Plastic bottle', 'styrofoam': 'Styrofoam', 'trash bag': 'Trash bag', 'straw': 'Straw'}
 
