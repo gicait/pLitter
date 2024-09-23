@@ -8,6 +8,8 @@ import sqlite3
 import numpy as np
 import cv2
 import json
+from dotenv import load_dotenv
+load_dotenv("/home/cctv/plitter/cctv_secret.env")
 
 class_map = {'Debris': 'plastic', 'Bottle': 'Plastic bottle', 'Styrofoam': 'Styrofoam', 'Trash bag': 'Trash bag'}
 
