@@ -12,6 +12,8 @@ import torch
 # import torchvision
 import sqlite3
 import uuid
+from dotenv import load_dotenv
+load_dotenv("/home/cctv/plitter/camera_config.env")
 
 def get_slice_bboxes(image_height,image_width,slice_height,slice_width,overlap_height_ratio,overlap_width_ratio):
     slice_bboxes = []
