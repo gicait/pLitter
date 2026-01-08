@@ -124,7 +124,22 @@ Use the below bibtex to cite us.
   publisher={Github},
   howpublished={\url{https://github.com/gicait/pLitter/}},
 }
-
+@software{plitter_v02_2026,
+  author       = {Nguyen, Hau and
+                  Wipasuramonton, Pongpol and
+                  Vidanaarachchi, Sandaru and
+                  Sriram Reddy and
+                  Chatura Lavanga and
+                  Kavinda Gunasekara and
+                  Angsana Chaksan},
+  title        = {HauuNguyen/pLitter\_v2.0\_2025},
+  month        = jan,
+  year         = 2026,
+  publisher    = {Github},
+  version      = {v2.0},
+  doi          = {10.5281/zenodo.18181291},
+  url          = {https://doi.org/10.5281/zenodo.18181291},
+}
 ```
 * * * * *
 
