@@ -7,8 +7,7 @@ import json
 from dotenv import load_dotenv
 load_dotenv("/home/cctv/plitter/cctv_secret.env")
 
-class_map = {'Plastic bottle': 'Plastic bottle', 'Trash bag': 'Trash bag', 'Straw': 'Straw'}
-
+class_map = {'debris': 'plastic', 'bottle': 'Plastic bottle', 'styrofoam': 'Styrofoam', 'trash bag': 'Trash bag', 'straw': 'Straw'}
 # ------make sure below env vars are set before run----------
 root_dir = os.getenv('root_dir', 'project_home')
 url = os.getenv('url', None)
