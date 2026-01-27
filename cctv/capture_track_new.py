@@ -156,7 +156,37 @@ def save_tracker_state_to_db(trackings, conn, max_frames=20):
 
     conn.commit()
     return uuid_map
+def update_env():
+    load_dotenv("/home/cctv/plitter/camera_config.env", override=True)
 
+    global interval, work_in_night
+    global slice_width, slice_height
+    global xmin, ymin, xmax, ymax, roi
+    global FRAME_WIDTH, FRAME_HEIGHT, slice_boxes
+
+    interval = int(os.getenv('interval', 10))
+    work_in_night = os.getenv('work_in_night', 'True')
+
+    slice_width = int(os.getenv("slice_width", 1024))
+    slice_height = int(os.getenv("slice_height", 1024))
+
+    xmin = int(os.getenv('xmin'))
+    ymin = int(os.getenv('ymin'))
+    xmax = int(os.getenv('xmax'))
+    ymax = int(os.getenv('ymax'))
+
+    roi = [xmin, ymin, xmax, ymax]
+
+    FRAME_WIDTH = int(os.getenv('frame_width', 1920))
+    FRAME_HEIGHT = int(os.getenv('frame_height', 1080))
+
+    slice_boxes = get_slice_bboxes(
+        FRAME_HEIGHT, FRAME_WIDTH,
+        slice_height, slice_width,
+        0.04, 0.04
+    )
+
+    print("ENV RELOADED | ROI =", roi)
 def load_reid_features_from_db(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT track_id, reid_feature FROM tracked_objects")
@@ -172,17 +202,9 @@ root_dir = os.getenv('root_dir', '/'.join(os.path.abspath(__file__).split('/')[:
 yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'pLitterFloat_800x752_to_640x640.pt')
 reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_25_msmt17.pt')
 FRAME_WIDTH, FRAME_HEIGHT = int(os.getenv('frame_width', 1920)), int(os.getenv('frame_height', 1280))
-interval = int(os.getenv('interval', 10))
-work_in_night = os.getenv('work_in_night', True)
-slice_width = int(os.getenv("slice_width", 1024))
-slice_height = int(os.getenv("slice_height", 1024))
-slice_boxes = get_slice_bboxes(FRAME_HEIGHT, FRAME_WIDTH, slice_height, slice_width, 0.04, 0.04)
+
 device = torch.device('cuda:0')
 half = True
-xmin=int(os.getenv('xmin', 0))
-ymin=int(os.getenv('ymin', 0))
-xmax=int(os.getenv('xmax', 1920))
-ymax=int(os.getenv('ymax', 1080))
 tracker_state_file = 'tracker_state.json'
 
 # --- Kết nối DB và khởi tạo ---
@@ -234,7 +256,7 @@ with torch.no_grad():
     uuid_map = load_uuid_map_from_db(conn)
 
     while True:
-        roi = [xmin, ymin, xmax, ymax]
+        update_env()
         print('ROI :', roi)
 
         current_time_str = datetime.now().strftime("%H:%M:%S")
@@ -304,7 +326,7 @@ with torch.no_grad():
             
             # Populate JSON with detections if available
             if trackings is not None and len(trackings) > 0:
-                save_tracker_state_to_db(trackings, conn)
+                uuid_map = save_tracker_state_to_db(trackings, conn)
                 for det in trackings:
                     strongsort_id = int(det[4])
                     matched_uuid = uuid_map.get(strongsort_id)
@@ -329,4 +351,3 @@ with torch.no_grad():
             print(f"Error saving files: {e}")
 
         time.sleep(interval)
-
