@@ -169,7 +169,7 @@ def load_reid_features_from_db(conn):
 
 # Load configurations
 root_dir = os.getenv('root_dir', '/'.join(os.path.abspath(__file__).split('/')[:-2]))
-yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'best.pt')
+yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'pLitterFloat_800x752_to_640x640.pt')
 reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_25_msmt17.pt')
 FRAME_WIDTH, FRAME_HEIGHT = int(os.getenv('frame_width', 1920)), int(os.getenv('frame_height', 1280))
 interval = int(os.getenv('interval', 10))
