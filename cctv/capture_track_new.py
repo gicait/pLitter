@@ -12,13 +12,12 @@ from dotenv import load_dotenv
 import sqlite3
 import pickle
 
-# Load environment variables
+# LOAD ENVIRONMENT VARIABLES
 load_dotenv("/home/cctv/plitter/camera_config.env")
 
-# --- Các hàm xử lý hình ảnh và dữ liệu ---
-
+# --- Images and data processing function ---
+# CHECK IF THE BOUNDING BOX OVERLAPS WITH THE DEFINED ROI
 def is_within_roi(box, roi):
-    """Check if the bounding box overlaps with the defined ROI."""
     x_min, y_min, x_max, y_max = box
     roi_x_min, roi_y_min, roi_x_max, roi_y_max = roi
     return not (x_max < roi_x_min or x_min > roi_x_max or y_max < roi_y_min or y_min > roi_y_max)
@@ -33,6 +32,17 @@ def calculate_iou(box1, box2):
     box2_area = (box2[2] - box2[0]) * (box2[3] - box2[1])
     union_area = box1_area + box2_area - inter_area
     return inter_area / union_area if union_area > 0 else 0
+
+def match_tracking_to_detection(track, detections, iou_thresh=0.5):
+    best_iou = 0
+    best_idx = None
+    for i, det in enumerate(detections):
+        iou = calculate_iou(track[:4], det['bbox_xyxy'])
+        if iou > best_iou and iou >= iou_thresh:
+            best_iou = iou
+            best_idx = i
+    return best_idx
+
 
 def filter_duplicate_boxes(boxes, scores, class_ids, iou_threshold=0.5):
     filtered_boxes = []
@@ -77,8 +87,10 @@ def draw_boxes_on_image(image, boxes, classes, class_ids, scores, min_score_thre
             image = cv2.putText(image, label, (x1, y1 - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
     return image
 
-# --- Tích hợp SQLite để lưu và tải trạng thái ---
-
+# INTEGRATE SQL TO SAVE AND LOAD
+def bbox_to_xyxy(bbox):
+    x,y,w,h = bbox
+    return [x,y,x+w,y+h]
 def get_db_connection():
     conn = sqlite3.connect('tracker_db.sqlite')
     return conn
@@ -99,7 +111,7 @@ def setup_database(conn):
     ''')
     conn.commit()
 
-# Thêm một biến toàn cục để đếm số khung hình có detection
+# COUNT DETECTION FRAME
 frame_counter = 0
 
 def save_tracker_state_to_db(trackings, conn, max_frames=20):
@@ -111,7 +123,7 @@ def save_tracker_state_to_db(trackings, conn, max_frames=20):
     uuid_map = {}  # track_id (StrongSORT) -> uuid
 
     for det in trackings:
-        track_id = int(det[4])          # ID nội bộ StrongSORT
+        track_id = int(det[4])
         bbox = det[:4].tolist()
         class_id = int(det[5])
 
@@ -122,7 +134,7 @@ def save_tracker_state_to_db(trackings, conn, max_frames=20):
         bbox_str = json.dumps(bbox)
         reid_blob = pickle.dumps(reid_feature)
 
-        # 🔍 tìm object cũ bằng IoU + class
+        # FIND OLD OBJECTS BY IOU+CLASS
         cursor.execute("""
             SELECT uuid, bbox FROM tracked_objects
             WHERE class_id = ?
@@ -162,7 +174,7 @@ def update_env():
     global interval, work_in_night
     global slice_width, slice_height
     global xmin, ymin, xmax, ymax, roi
-    global FRAME_WIDTH, FRAME_HEIGHT, slice_boxes
+    global FRAME_WIDTH, FRAME_HEIGHT, slice_boxes,conf_thres, iou_thres
 
     interval = int(os.getenv('interval', 10))
     work_in_night = os.getenv('work_in_night', 'True')
@@ -179,7 +191,8 @@ def update_env():
 
     FRAME_WIDTH = int(os.getenv('frame_width', 1920))
     FRAME_HEIGHT = int(os.getenv('frame_height', 1080))
-
+    conf_thres = float(os.getenv('conf_thres', 0.55))
+    iou_thres = float(os.getenv('iou_thres', 0.5))
     slice_boxes = get_slice_bboxes(
         FRAME_HEIGHT, FRAME_WIDTH,
         slice_height, slice_width,
@@ -197,9 +210,9 @@ def load_reid_features_from_db(conn):
         reid_map[track_id] = reid_feature
     return reid_map
 
-# Load configurations
+# LOAD CONFIGURATIONS
 root_dir = os.getenv('root_dir', '/'.join(os.path.abspath(__file__).split('/')[:-2]))
-yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'pLitterFloat_800x752_to_640x640.pt')
+yolo_weights = Path(root_dir) / 'models' / os.getenv('weights', 'best.pt')
 reid_weights = Path(root_dir) / 'models' / os.getenv('reid_weights', 'osnet_x0_25_msmt17.pt')
 FRAME_WIDTH, FRAME_HEIGHT = int(os.getenv('frame_width', 1920)), int(os.getenv('frame_height', 1280))
 
@@ -207,11 +220,11 @@ device = torch.device('cuda:0')
 half = True
 tracker_state_file = 'tracker_state.json'
 
-# --- Kết nối DB và khởi tạo ---
+# CONNECT AND SETUP DB
 conn = get_db_connection()
 setup_database(conn)
 
-# Load YOLOv5 and StrongSORT
+# LOAD MODEL
 if os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet') not in sys.path:
     sys.path.append(os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet'))
 if os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet/yolov5') not in sys.path:
@@ -230,7 +243,7 @@ cfg = get_config()
 cfg.merge_from_file(os.path.join(root_dir, 'Yolov5_StrongSORT_OSNet/trackers/strong_sort/configs/strong_sort.yaml'))
 tracker = StrongSORT(reid_weights, device, half, max_dist=cfg.STRONGSORT.MAX_DIST,
                      max_iou_distance=cfg.STRONGSORT.MAX_IOU_DISTANCE,
-                     max_age=cfg.STRONGSORT.MAX_AGE, n_init=cfg.STRONGSORT.N_INIT,
+                     max_age=5, n_init=0,
                      nn_budget=cfg.STRONGSORT.NN_BUDGET)
 tracker.model.warmup()
 
@@ -249,7 +262,11 @@ def load_uuid_map_from_db(conn):
     cursor = conn.cursor()
     cursor.execute("SELECT track_id, uuid FROM tracked_objects")
     return {row[0]: row[1] for row in cursor.fetchall()}
-# Main loop
+# ===============================
+# MAIN LOOP
+# ===============================
+provisional_tracks = {}
+PROVISIONAL_TTL = 150
 with torch.no_grad():
     # Load previous state from database on startup
     reid_map = load_reid_features_from_db(conn)
@@ -258,7 +275,7 @@ with torch.no_grad():
     while True:
         update_env()
         print('ROI :', roi)
-
+        now_ts = time.time()
         current_time_str = datetime.now().strftime("%H:%M:%S")
         if current_time_str >= end or current_time_str < start:
             if work_in_night in (False, 'False'):
@@ -291,7 +308,7 @@ with torch.no_grad():
                 img = img.unsqueeze(0)
 
             pred = model(img)
-            pred = non_max_suppression(pred, 0.4, 0.5)
+            pred = non_max_suppression(pred, conf_thres, iou_thres)
 
             proc_pred = pred[0].cpu()
             for i, det in enumerate(proc_pred):
@@ -306,44 +323,98 @@ with torch.no_grad():
         class_ids = preds[:, 5].numpy().astype(int)
 
         filtered_boxes, filtered_scores, filtered_class_ids = filter_duplicate_boxes(boxes, scores, class_ids, iou_threshold=0.5)
-
+	
         dets = []
         for i in range(len(filtered_boxes)):
             det = list(filtered_boxes[i]) + [filtered_scores[i], filtered_class_ids[i]]
             dets.append(det)
 
         filtered_dets = [det for det in dets if is_within_roi(det[:4], roi)]
+        # ===============================
+        # SAVE ALL YOLO DETECTIONS
+        # ===============================
+        yolo_records = []
+        for det in filtered_dets:
+            x1, y1, x2, y2, score, cls = map(float, det)
+            cls = int(cls)
+            bbox_xyxy = [x1, y1, x2, y2]
+        
+            matched_uuid = None
+            for uid, info in provisional_tracks.items():
+                if info['class_id'] == cls:
+                    if calculate_iou(bbox_xyxy, info['bbox']) > 0.5:
+                        matched_uuid = uid
+                        break
+        
+            if matched_uuid is None:
+                matched_uuid = str(uuid.uuid4())
+                provisional_tracks[matched_uuid] = {
+                    'bbox': bbox_xyxy,
+                    'class_id': cls,
+                    'last_seen': time.time(),
+                    'confirmed': False
+                }
+            else:
+                provisional_tracks[matched_uuid]['bbox'] = bbox_xyxy
+                provisional_tracks[matched_uuid]['last_seen'] = time.time()
+        
+            record = {
+                'category': model.names[cls],
+                'track_id': matched_uuid,
+                'bbox': [x1, y1, x2 - x1, y2 - y1],
+                'segmentation': [[x1, y1, x2, y1, x2, y2, x1, y2]],
+                'matched':False
+            }
+            yolo_records.append(record)
+            pred_json['preds'].append(record)
+        # ===============================
+        # STRONGSORT TRACKING
+        # ===============================
         if len(filtered_dets)>0:
             dets_np = torch.tensor(filtered_dets, dtype=torch.float32)
         else:
             dets_np = torch.empty((0, 6), dtype=torch.float32)
         trackings = tracker.update(dets_np, img0)
-        # Always save the image and an empty JSON file if no detections are found
+        # ===============================
+        # MATCH TRACK → YOLO
+        # ===============================
+        if trackings is not None and len(trackings) > 0:
+            uuid_map = save_tracker_state_to_db(trackings, conn)
+
+            for trk in trackings:
+                trk = trk.tolist()
+                strongsort_id = int(trk[4])
+                uuid_id = uuid_map.get(strongsort_id)
+
+                if uuid_id is None:
+                    continue
+
+                trk_box = trk[:4]
+
+                for rec in yolo_records:
+                    if rec['matched']:
+                        continue
+                    rec_bbox_xyxy = bbox_to_xyxy(rec['bbox'])
+                    if calculate_iou(trk_box, rec_bbox_xyxy) > 0.5:
+                        rec['track_id'] = uuid_id
+                        rec['matched'] = True
+                        break
+
+        # ===============================
+        # CLEAN PROVISIONAL (TIME-BASED)
+        # ===============================
+        provisional_tracks = {
+            uid: info
+            for uid, info in provisional_tracks.items()
+            if now_ts - info['last_seen'] < PROVISIONAL_TTL
+        }
+        # ===============================
+        # SAVE IMAGE + JSON
+        # ===============================
         try:
             img_path = f"{data_dir}/{im_name}.jpg"
             json_path = f"{data_dir}/{im_name}.json"
             cv2.imwrite(img_path, img0)
-            
-            # Populate JSON with detections if available
-            if trackings is not None and len(trackings) > 0:
-                uuid_map = save_tracker_state_to_db(trackings, conn)
-                for det in trackings:
-                    strongsort_id = int(det[4])
-                    matched_uuid = uuid_map.get(strongsort_id)
-                    category = model.names[int(det[5])]
-                    bbox = [det[0], det[1], det[2] - det[0], det[3] - det[1]]
-                    seg = [[det[0], det[1], det[2], det[1], det[2], det[3], det[0], det[3]]]
-
-                    pred_json['preds'].append({
-                        'category': category,
-                        'track_id': matched_uuid,
-                        'bbox': bbox,
-                        'segmentation': seg
-                    })
-                print(f"Saved: {img_path}, {json_path}")
-            else:
-                print(f"Saved: {img_path}. No objects detected.")
-
             with open(json_path, 'w') as f:
                 json.dump(pred_json, f)
 
